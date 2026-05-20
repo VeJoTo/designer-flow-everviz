@@ -2,16 +2,9 @@
   padding: var(--space-6) var(--space-10) var(--space-10);
 }
 
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--color-text-link);
-  font-weight: var(--fw-semibold);
-  margin-bottom: var(--space-5);
-}
-.back-link img { filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%); }
-.back-link:hover { text-decoration: underline; }
+/* .back-link styles now live in base.css; library pages only customise
+   the bottom margin since they sit above a hero heading. */
+.back-link { margin-bottom: var(--space-5); }
 
 .library__head {
   display: flex;
