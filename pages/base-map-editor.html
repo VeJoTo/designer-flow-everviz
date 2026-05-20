@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="assets/css/chrome.css" />
   <link rel="stylesheet" href="assets/css/pages/editor.css" />
 </head>
-<body data-screen="designer-tools" data-screen-title="Base map editor" data-crumbs='[]' data-page-mode="editor">
+<body data-screen="designer-tools" data-screen-title="Base map editor" data-crumbs='[]' data-page-mode="editor" data-save-toast="Basemap saved">
   <div class="app app--editor">
     <div id="chrome" class="chrome-mount"></div>
     <main>
@@ -215,6 +215,12 @@
     </main>
   </div>
 
+  <!-- Save toast (shown after Save in modal) -->
+  <div class="save-toast" data-save-toast-el hidden role="status" aria-live="polite">
+    <img src="assets/icons/check-circle.svg" alt="" width="20" height="20" />
+    <span data-save-toast-text></span>
+  </div>
+
   <!-- Save modal -->
   <div class="save-modal" data-save-modal hidden aria-hidden="true">
     <div class="save-modal__backdrop" data-save-modal-close></div>
@@ -232,7 +238,7 @@
       <footer class="save-modal__foot">
         <button class="btn btn--outline" data-save-modal-close>Cancel</button>
         <a class="btn btn--outline" href="pages/map-designer.html">Save &amp; go to Map designer</a>
-        <button class="btn btn--primary" data-save-modal-close>Save</button>
+        <button class="btn btn--primary" data-save-modal-close data-action="save-confirm">Save</button>
       </footer>
     </div>
   </div>
@@ -272,6 +278,26 @@
       });
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && !modal.hidden) closeModal();
+      });
+
+      // Save toast — shown when the modal's Save button is clicked.
+      const toast = document.querySelector("[data-save-toast-el]");
+      const toastText = toast?.querySelector("[data-save-toast-text]");
+      const toastMessage = document.body.dataset.saveToast || "Saved";
+      let toastTimer;
+      const showToast = () => {
+        if (!toast) return;
+        if (toastText) toastText.textContent = toastMessage;
+        toast.hidden = false;
+        requestAnimationFrame(() => toast.classList.add("is-visible"));
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("is-visible");
+          setTimeout(() => { toast.hidden = true; }, 220);
+        }, 2400);
+      };
+      document.querySelectorAll('[data-action="save-confirm"]').forEach((btn) => {
+        btn.addEventListener("click", showToast);
       });
     });
   </script>
