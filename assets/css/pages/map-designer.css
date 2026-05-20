@@ -9,20 +9,20 @@
 .screen__head p {
   color: var(--color-text-primary);
   max-width: 640px;
-  margin: 0 0 var(--space-8);
+  margin: 0 0 var(--space-10);
 }
 
-.md-section { margin-top: var(--space-8); }
+.md-section { margin-top: var(--space-10); }
 .md-section:first-of-type { margin-top: 0; }
 .md-section__title {
   font-size: 24px;
   color: var(--color-text-primary);
   font-weight: var(--fw-bold);
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-4);
 }
 .md-section__desc {
   color: var(--color-text-primary);
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-6);
   max-width: 640px;
 }
 
