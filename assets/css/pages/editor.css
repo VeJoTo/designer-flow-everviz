@@ -180,7 +180,7 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   place-items: center;
   color: var(--color-text-muted);
 }
-.layer-item__menu img { opacity: 0.6; }
+.layer-item__menu img { opacity: 0.85; }
 .layer-item--child .layer-item__row { padding-left: var(--space-8); }
 .layer-item--selected {
   background: var(--color-text-primary);
