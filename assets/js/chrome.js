@@ -6,7 +6,9 @@
   const mount = document.getElementById("chrome");
   if (!mount) return;
 
-  const res = await fetch("/partials/chrome.html");
+  // Relative URL so it resolves against the page's <base href>, which
+  // points to the site root from both the entry page and pages/*.html.
+  const res = await fetch("partials/chrome.html");
   if (!res.ok) {
     console.error("Failed to load chrome partial", res.status);
     return;
