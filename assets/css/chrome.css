@@ -56,4 +56,10 @@
 .topbar__crumb {
   color: var(--color-text-link);
   font-size: var(--fs-body);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
+.topbar__crumb-parent { color: var(--color-text-link); }
+.topbar__crumb-parent:hover { text-decoration: underline; }
+.topbar__crumb-sep { color: var(--color-text-muted); }
