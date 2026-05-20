@@ -72,7 +72,10 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   margin-left: var(--space-3);
   transition: opacity var(--duration-fast) var(--ease-out);
 }
-.editor-action--save:hover { opacity: 0.92; color: var(--color-text-on-dark); }
+.editor-action--save:hover {
+  background: var(--color-btn-hover);
+  color: var(--color-text-primary);
+}
 
 /* 3-column body */
 .editor-grid {
@@ -127,6 +130,12 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   background: var(--color-text-primary);
 }
 .icon-pill--accent img { filter: brightness(0) invert(1); }
+.icon-pill--accent:hover {
+  background: var(--color-btn-hover);
+}
+.icon-pill--accent:hover img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
 .icon-pill--ghost { background: transparent; }
 .icon-pill--ghost:hover { background: var(--color-brand-purple-soft); }
 

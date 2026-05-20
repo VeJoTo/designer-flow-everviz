@@ -36,7 +36,10 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
   background: var(--color-text-primary);
   color: var(--color-text-on-dark);
 }
-.btn--primary:hover { opacity: 0.92; }
+.btn--primary:hover {
+  background: var(--color-btn-hover);
+  color: var(--color-text-primary);
+}
 
 /* Shared back link — used at the top of sub-pages. */
 .back-link {
