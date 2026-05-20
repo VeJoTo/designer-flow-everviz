@@ -247,6 +247,15 @@
     // Layer selection: clicking a layer moves the purple highlight and
     // updates the Layer ID field in the properties pane.
     document.addEventListener("DOMContentLoaded", () => {
+      // Title from ?name=… query (set by library cards when editing
+      // existing items; absent on Create new so title stays "Untitled").
+      const params = new URLSearchParams(window.location.search);
+      const nameParam = params.get("name");
+      if (nameParam) {
+        const titleEl = document.querySelector(".editor-bar__title-text");
+        if (titleEl) titleEl.textContent = nameParam;
+      }
+
       const idInput = document.querySelector('[data-prop="layer-id"]');
       document.querySelectorAll(".layer-item__row").forEach((row) => {
         row.addEventListener("click", () => {
