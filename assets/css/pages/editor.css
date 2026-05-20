@@ -283,6 +283,10 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   color: var(--color-text-muted);
 }
 
+/* Hidden layer state — set when user picks Hide from the context menu */
+.layer-item--hidden { opacity: 0.45; }
+.layer-item--hidden .layer-item__name { text-decoration: line-through; }
+
 .layers-pane__foot {
   padding: var(--space-3) var(--space-4);
   font-size: 12px;
