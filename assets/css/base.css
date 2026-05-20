@@ -38,6 +38,19 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
 }
 .btn--primary:hover { opacity: 0.92; }
 
+/* Shared back link — used at the top of sub-pages. */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+}
+.back-link img {
+  filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%);
+}
+.back-link:hover { text-decoration: underline; }
+
 /* Cross-document view transitions: replaces the default white-flash
    navigation with a quick crossfade. Supported in Chromium 126+ and
    Safari 18+; degrades gracefully (plain navigation) elsewhere. */
