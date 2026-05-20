@@ -16,7 +16,7 @@
 .md-section:first-of-type { margin-top: 0; }
 .md-section__title {
   font-size: 24px;
-  color: var(--color-text-link);
+  color: var(--color-text-primary);
   font-weight: var(--fw-bold);
   margin: 0 0 var(--space-3);
 }
