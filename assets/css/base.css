@@ -14,7 +14,9 @@ button { font: inherit; cursor: pointer; background: none; border: none; padding
 a { color: var(--color-text-link); text-decoration: none; }
 h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight); margin: 0; }
 
-/* Shared button — pill-shaped, used across every screen. */
+/* Shared button — pill-shaped, used across every screen.
+   align-self prevents the button from stretching when its parent is a
+   flex column (e.g. inside a card). Override per-context if needed. */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -27,9 +29,11 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
   transition: background var(--duration-fast) var(--ease-out), opacity var(--duration-fast) var(--ease-out);
   text-decoration: none;
   border: none;
+  align-self: flex-start;
+  width: fit-content;
 }
 .btn--primary {
-  background: var(--color-brand-purple);
+  background: var(--color-text-primary);
   color: var(--color-text-on-dark);
 }
 .btn--primary:hover { opacity: 0.92; }
