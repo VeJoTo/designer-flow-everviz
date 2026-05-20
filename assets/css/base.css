@@ -36,9 +36,13 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
   background: var(--color-text-primary);
   color: var(--color-text-on-dark);
 }
+.btn--primary img { filter: brightness(0) invert(1); }
 .btn--primary:hover {
   background: var(--color-btn-hover);
   color: var(--color-text-primary);
+}
+.btn--primary:hover img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
 }
 
 /* Shared back link — used at the top of sub-pages. */
