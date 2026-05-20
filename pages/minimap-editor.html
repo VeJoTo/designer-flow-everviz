@@ -218,16 +218,16 @@
   <!-- Layer item context menu (opens from three-dot button) -->
   <div class="layer-menu" data-layer-menu hidden role="menu">
     <button class="layer-menu__item" role="menuitem" data-action="hide">
-      <img src="assets/icons/eye-slash.svg" alt="" width="16" height="16" />
-      Hide
+      <img src="assets/icons/eye-slash.svg" alt="" width="16" height="16" data-menu-icon />
+      <span data-menu-label>Hide</span>
     </button>
     <button class="layer-menu__item" role="menuitem" data-action="duplicate">
       <img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" />
-      Duplicate
+      <span>Duplicate</span>
     </button>
     <button class="layer-menu__item layer-menu__item--danger" role="menuitem" data-action="delete">
       <img src="assets/icons/trash.svg" alt="" width="16" height="16" />
-      Delete
+      <span>Delete</span>
     </button>
   </div>
 
@@ -273,14 +273,28 @@
       }
 
       const idInput = document.querySelector('[data-prop="layer-id"]');
-      document.querySelectorAll(".layer-item__row").forEach((row) => {
-        row.addEventListener("click", () => {
-          const li = row.closest(".layer-item");
-          document.querySelectorAll(".layer-item--selected").forEach((s) => s.classList.remove("layer-item--selected"));
-          li.classList.add("layer-item--selected");
-          const name = li.querySelector(".layer-item__name")?.textContent;
-          if (idInput && name) idInput.value = name;
-        });
+      const layersList = document.querySelector(".layers-list");
+      const layerFoot = document.querySelector(".layers-pane__foot");
+      const updateLayerCount = () => {
+        if (!layerFoot) return;
+        const all = layersList.querySelectorAll(".layer-item");
+        const visible = layersList.querySelectorAll(
+          ".layer-item:not(.layer-item--hidden)"
+        );
+        layerFoot.textContent = `${all.length} layers · ${visible.length} visible`;
+      };
+      const selectLayer = (li) => {
+        layersList
+          .querySelectorAll(".layer-item--selected")
+          .forEach((s) => s.classList.remove("layer-item--selected"));
+        li.classList.add("layer-item--selected");
+        const name = li.querySelector(".layer-item__name")?.textContent;
+        if (idInput && name) idInput.value = name;
+      };
+      // Event-delegated row click → select (works for cloned items too).
+      layersList.addEventListener("click", (e) => {
+        const row = e.target.closest(".layer-item__row");
+        if (row) selectLayer(row.closest(".layer-item"));
       });
 
       // Save modal
@@ -327,35 +341,72 @@
 
       // Per-layer context menu (Hide / Duplicate / Delete)
       const layerMenu = document.querySelector("[data-layer-menu]");
-      let menuTrigger = null;
+      let menuTrigger = null; // the layer-item__menu button that opened the menu
+      let menuTargetLi = null; // the .layer-item it belongs to
       const positionMenu = (triggerBtn) => {
         const rect = triggerBtn.getBoundingClientRect();
         layerMenu.style.top = `${rect.bottom + 4}px`;
-        // Align the menu's right edge to the button's right edge.
         layerMenu.style.left = `${rect.right - 168}px`;
       };
+      const syncHideLabel = () => {
+        const icon = layerMenu.querySelector("[data-menu-icon]");
+        const label = layerMenu.querySelector("[data-menu-label]");
+        const isHidden = menuTargetLi?.classList.contains("layer-item--hidden");
+        if (icon) icon.src = isHidden ? "assets/icons/eye.svg" : "assets/icons/eye-slash.svg";
+        if (label) label.textContent = isHidden ? "Show" : "Hide";
+      };
       const openLayerMenu = (triggerBtn) => {
+        menuTrigger = triggerBtn;
+        menuTargetLi = triggerBtn.closest(".layer-item");
+        syncHideLabel();
         positionMenu(triggerBtn);
         layerMenu.hidden = false;
-        menuTrigger = triggerBtn;
       };
       const closeLayerMenu = () => {
         layerMenu.hidden = true;
         menuTrigger = null;
+        menuTargetLi = null;
       };
-      document.querySelectorAll(".layer-item__menu").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          if (layerMenu.hidden || menuTrigger !== btn) openLayerMenu(btn);
-          else closeLayerMenu();
-        });
+
+      // Delegated click on layers list: handle menu button toggling.
+      layersList.addEventListener("click", (e) => {
+        const menuBtn = e.target.closest(".layer-item__menu");
+        if (!menuBtn) return;
+        e.stopPropagation();
+        if (layerMenu.hidden || menuTrigger !== menuBtn) openLayerMenu(menuBtn);
+        else closeLayerMenu();
       });
-      layerMenu.querySelectorAll(".layer-menu__item").forEach((item) => {
-        item.addEventListener("click", () => closeLayerMenu());
+
+      // Menu actions
+      layerMenu.addEventListener("click", (e) => {
+        const item = e.target.closest(".layer-menu__item");
+        if (!item || !menuTargetLi) return;
+        const action = item.dataset.action;
+        if (action === "hide") {
+          menuTargetLi.classList.toggle("layer-item--hidden");
+          updateLayerCount();
+        } else if (action === "duplicate") {
+          const clone = menuTargetLi.cloneNode(true);
+          clone.classList.remove("layer-item--selected");
+          const nameEl = clone.querySelector(".layer-item__name");
+          if (nameEl) nameEl.textContent = `${nameEl.textContent} copy`;
+          menuTargetLi.after(clone);
+          updateLayerCount();
+        } else if (action === "delete") {
+          const wasSelected = menuTargetLi.classList.contains("layer-item--selected");
+          const next = menuTargetLi.nextElementSibling || menuTargetLi.previousElementSibling;
+          menuTargetLi.remove();
+          if (wasSelected && next && next.classList.contains("layer-item")) {
+            selectLayer(next);
+          }
+          updateLayerCount();
+        }
+        closeLayerMenu();
       });
+
       document.addEventListener("click", (e) => {
         if (layerMenu.hidden) return;
-        if (e.target === menuTrigger || menuTrigger?.contains(e.target)) return;
+        if (menuTrigger && (e.target === menuTrigger || menuTrigger.contains(e.target))) return;
         if (layerMenu.contains(e.target)) return;
         closeLayerMenu();
       });
