@@ -215,6 +215,22 @@
     </main>
   </div>
 
+  <!-- Layer item context menu (opens from three-dot button) -->
+  <div class="layer-menu" data-layer-menu hidden role="menu">
+    <button class="layer-menu__item" role="menuitem" data-action="hide">
+      <img src="assets/icons/eye-slash.svg" alt="" width="16" height="16" />
+      Hide
+    </button>
+    <button class="layer-menu__item" role="menuitem" data-action="duplicate">
+      <img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" />
+      Duplicate
+    </button>
+    <button class="layer-menu__item layer-menu__item--danger" role="menuitem" data-action="delete">
+      <img src="assets/icons/trash.svg" alt="" width="16" height="16" />
+      Delete
+    </button>
+  </div>
+
   <!-- Save toast (shown after Save in modal) -->
   <div class="save-toast" data-save-toast-el hidden role="status" aria-live="polite">
     <img src="assets/icons/check-circle.svg" alt="" width="20" height="20" />
@@ -307,6 +323,44 @@
       };
       document.querySelectorAll('[data-action="save-confirm"]').forEach((btn) => {
         btn.addEventListener("click", showToast);
+      });
+
+      // Per-layer context menu (Hide / Duplicate / Delete)
+      const layerMenu = document.querySelector("[data-layer-menu]");
+      let menuTrigger = null;
+      const positionMenu = (triggerBtn) => {
+        const rect = triggerBtn.getBoundingClientRect();
+        layerMenu.style.top = `${rect.bottom + 4}px`;
+        // Align the menu's right edge to the button's right edge.
+        layerMenu.style.left = `${rect.right - 168}px`;
+      };
+      const openLayerMenu = (triggerBtn) => {
+        positionMenu(triggerBtn);
+        layerMenu.hidden = false;
+        menuTrigger = triggerBtn;
+      };
+      const closeLayerMenu = () => {
+        layerMenu.hidden = true;
+        menuTrigger = null;
+      };
+      document.querySelectorAll(".layer-item__menu").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (layerMenu.hidden || menuTrigger !== btn) openLayerMenu(btn);
+          else closeLayerMenu();
+        });
+      });
+      layerMenu.querySelectorAll(".layer-menu__item").forEach((item) => {
+        item.addEventListener("click", () => closeLayerMenu());
+      });
+      document.addEventListener("click", (e) => {
+        if (layerMenu.hidden) return;
+        if (e.target === menuTrigger || menuTrigger?.contains(e.target)) return;
+        if (layerMenu.contains(e.target)) return;
+        closeLayerMenu();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !layerMenu.hidden) closeLayerMenu();
       });
     });
   </script>
