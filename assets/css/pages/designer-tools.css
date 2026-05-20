@@ -36,8 +36,16 @@
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
 }
-.card--disabled { cursor: not-allowed; opacity: 0.92; }
-.card--disabled:hover { transform: none; box-shadow: var(--shadow-card); }
+.card--disabled {
+  cursor: not-allowed;
+  background: #F3F1EC;
+  box-shadow: none;
+  color: var(--color-text-muted);
+}
+.card--disabled:hover { transform: none; box-shadow: none; }
+.card--disabled .card__title,
+.card--disabled .card__desc { color: var(--color-text-muted); }
+.card--disabled .card__icon { background: #E8E5DD; filter: grayscale(1); }
 .card__icon {
   width: 56px;
   height: 56px;
