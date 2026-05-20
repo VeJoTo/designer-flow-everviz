@@ -2,25 +2,280 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=1280" />
   <base href="../" />
-  <title>Base maps library · everviz prototype</title>
+  <title>Base-maps library · everviz prototype</title>
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/chrome.css" />
-  <style>
-    .placeholder { padding: var(--space-10); }
-    .placeholder a { display: inline-block; margin-top: var(--space-4); }
-  </style>
+  <link rel="stylesheet" href="assets/css/pages/library.css" />
 </head>
-<body data-screen="designer-tools" data-screen-title="Base maps library">
+<body data-screen="designer-tools" data-screen-title="Base-maps library" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]'>
   <div class="app">
     <div id="chrome" class="chrome-mount"></div>
     <main>
-      <section class="placeholder">
-        <h1>Base maps library</h1>
-        <p>This screen will be built in the next iteration. Vera will send the screenshot next.</p>
-        <a href="pages/map-designer.html">← Back to Map designer</a>
+      <section class="screen screen--library">
+        <a class="back-link" href="pages/map-designer.html">
+          <img src="assets/icons/arrow-uturn-left.svg" alt="" width="16" height="16" />
+          Back to Map designer
+        </a>
+        <header class="library__head">
+          <h1>Base-maps</h1>
+          <a class="btn btn--primary" href="pages/base-map-editor.html">Create new</a>
+        </header>
+
+        <ul class="library-grid">
+          <li class="map-card map-card--europe">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open Mediterranean Europe">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">Mediterranean Europe</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--world">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open World map">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">World map</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--nordic-dark">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open Nordic dark">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">Nordic dark</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--uk">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open United Kingdom">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">United Kingdom</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--scandinavia">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open Scandinavia">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">Scandinavia</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--central-europe">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open Central Europe">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">Central Europe</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--mediterranean">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open Mediterranean">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">Mediterranean</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--north-africa">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open North Africa">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">North Africa</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--middle-east">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open Middle East">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">Middle East</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--north-america">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open North America">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">North America</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--south-america">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open South America">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">South America</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--asia-east">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open East Asia">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">East Asia</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--asia-india">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open South Asia">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">South Asia</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+
+          <li class="map-card map-card--australia">
+            <a class="map-card__hit" href="pages/base-map-editor.html" aria-label="Open Australia">
+              <div class="map-card__thumb" aria-hidden="true"></div>
+            </a>
+            <div class="map-card__body">
+              <h3 class="map-card__title">Australia</h3>
+              <a class="map-card__default" data-tooltip="Not part of this prototype">Set as default base-map</a>
+              <div class="map-card__actions">
+                <div class="map-card__actions-group">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                  <a class="icon-btn" href="pages/base-map-editor.html" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+                  <button class="icon-btn icon-btn--toggle" data-tooltip="Not part of this prototype" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+                </div>
+                <button class="icon-btn icon-btn--danger" data-tooltip="Not part of this prototype" aria-label="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+          </li>
+        </ul>
       </section>
     </main>
   </div>

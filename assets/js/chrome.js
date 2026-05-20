@@ -30,11 +30,7 @@ const CHROME_HTML = `
   <a href="./" class="topbar__brand" data-tooltip="Not part of this prototype" aria-label="Everviz home">
     everviz<span class="topbar__brand-dot" aria-hidden="true">.</span>
   </a>
-  <nav class="topbar__crumb" aria-label="Breadcrumb">
-    <a href="./" class="topbar__crumb-parent" data-chrome-crumb-parent>Designer tools</a>
-    <span class="topbar__crumb-sep" data-chrome-crumb-sep aria-hidden="true">/</span>
-    <span data-chrome-breadcrumb>Designer tools</span>
-  </nav>
+  <nav class="topbar__crumb" aria-label="Breadcrumb" data-chrome-crumb-nav></nav>
 </header>
 `;
 
@@ -49,20 +45,27 @@ function renderChrome() {
     if (active) active.setAttribute("aria-current", "page");
   }
 
-  const title = document.body.dataset.screenTitle;
-  if (title) {
-    const crumb = mount.querySelector("[data-chrome-breadcrumb]");
-    if (crumb) crumb.textContent = title;
+  // Build the breadcrumb. body.dataset.crumbs is a JSON array of
+  // {title, href} ancestors (oldest first). body.dataset.screenTitle is
+  // the current leaf — rendered as plain text (not linked).
+  const nav = mount.querySelector("[data-chrome-crumb-nav]");
+  const title = document.body.dataset.screenTitle || "Designer tools";
+  let crumbs = [];
+  try {
+    crumbs = JSON.parse(document.body.dataset.crumbs || "[]");
+  } catch (e) {
+    console.warn("invalid data-crumbs JSON, ignoring", e);
   }
-
-  // On the entry screen (Designer tools), hide the parent link + separator
-  // so the breadcrumb shows only one segment.
-  const isEntry = (title || "").toLowerCase() === "designer tools";
-  if (isEntry) {
-    const parent = mount.querySelector("[data-chrome-crumb-parent]");
-    const sep = mount.querySelector("[data-chrome-crumb-sep]");
-    if (parent) parent.style.display = "none";
-    if (sep) sep.style.display = "none";
+  if (nav) {
+    const parts = [];
+    for (const c of crumbs) {
+      parts.push(
+        `<a class="topbar__crumb-parent" href="${c.href}">${c.title}</a>`,
+        `<span class="topbar__crumb-sep" aria-hidden="true">/</span>`
+      );
+    }
+    parts.push(`<span>${title}</span>`);
+    nav.innerHTML = parts.join("");
   }
 
   if (window.__protoInitTooltips) window.__protoInitTooltips();
