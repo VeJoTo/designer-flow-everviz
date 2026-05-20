@@ -1,6 +1,5 @@
 .screen--map-designer {
   padding: var(--space-8) var(--space-10);
-  max-width: 1100px;
 }
 .screen__head h1 {
   font-size: var(--fs-h1);
