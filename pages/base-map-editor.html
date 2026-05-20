@@ -30,7 +30,7 @@
           <button class="editor-action" data-tooltip="Not part of this prototype">Layer groups</button>
           <button class="editor-action" data-tooltip="Not part of this prototype">Sources</button>
           <button class="editor-action" data-tooltip="Not part of this prototype">Settings</button>
-          <button class="editor-action editor-action--save" data-tooltip="Not part of this prototype">Save</button>
+          <button class="editor-action editor-action--save" data-action="open-save-modal">Save</button>
         </div>
       </header>
 
@@ -215,6 +215,28 @@
     </main>
   </div>
 
+  <!-- Save modal -->
+  <div class="save-modal" data-save-modal hidden aria-hidden="true">
+    <div class="save-modal__backdrop" data-save-modal-close></div>
+    <div class="save-modal__panel" role="dialog" aria-modal="true" aria-labelledby="save-modal-title">
+      <header class="save-modal__head">
+        <h2 class="save-modal__title" id="save-modal-title">Save Basemap</h2>
+        <button class="save-modal__close" aria-label="Close" data-save-modal-close>
+          <img src="assets/icons/x-mark.svg" alt="" width="18" height="18" />
+        </button>
+      </header>
+      <div class="save-modal__body">
+        <label class="save-modal__label" for="save-template-name">Name basemap</label>
+        <input id="save-template-name" type="text" class="save-modal__input" value="Untitled project" />
+      </div>
+      <footer class="save-modal__foot">
+        <button class="btn btn--outline" data-save-modal-close>Cancel</button>
+        <a class="btn btn--outline" href="pages/map-designer.html">Save &amp; go to Map designer</a>
+        <button class="btn btn--primary" data-save-modal-close>Save</button>
+      </footer>
+    </div>
+  </div>
+
   <script>
     // Layer selection: clicking a layer moves the purple highlight and
     // updates the Layer ID field in the properties pane.
@@ -228,6 +250,28 @@
           const name = li.querySelector(".layer-item__name")?.textContent;
           if (idInput && name) idInput.value = name;
         });
+      });
+
+      // Save modal
+      const modal = document.querySelector("[data-save-modal]");
+      const openModal = () => {
+        modal.hidden = false;
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      };
+      const closeModal = () => {
+        modal.hidden = true;
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      };
+      document.querySelectorAll('[data-action="open-save-modal"]').forEach((btn) => {
+        btn.addEventListener("click", openModal);
+      });
+      modal.querySelectorAll("[data-save-modal-close]").forEach((el) => {
+        el.addEventListener("click", closeModal);
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modal.hidden) closeModal();
       });
     });
   </script>
