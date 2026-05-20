@@ -51,7 +51,7 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
 .editor-bar__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  gap: var(--space-8);
 }
 .editor-action {
   font-size: var(--fs-body);
