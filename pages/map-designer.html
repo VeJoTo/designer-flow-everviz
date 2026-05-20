@@ -2,24 +2,237 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=1280" />
   <base href="../" />
   <title>Map designer · everviz prototype</title>
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/chrome.css" />
-  <style>
-    .placeholder { padding: var(--space-10); }
-    .placeholder a { display: inline-block; margin-top: var(--space-4); }
-  </style>
+  <link rel="stylesheet" href="assets/css/pages/map-designer.css" />
 </head>
 <body data-screen="designer-tools" data-screen-title="Map designer">
   <div class="app">
     <div id="chrome" class="chrome-mount"></div>
     <main>
-      <section class="placeholder">
-        <h1>Map designer</h1>
-        <p>This screen will be built in the next iteration. Vera will send the screenshot next.</p>
-        <a href="./">← Back to Designer tools</a>
+      <section class="screen screen--map-designer">
+        <header class="screen__head">
+          <h1>Map designer</h1>
+          <p>Create custom base map styles and presets to use in your map templates.<br />
+             Build reusable templates with your preferred styles, icons, labels, markers, and regions.</p>
+        </header>
+
+        <section class="md-section">
+          <h2 class="md-section__title">Template components</h2>
+          <p class="md-section__desc">Create custom mini-maps, base maps and presets to use in your templates. You can use built-in options or create your own.</p>
+
+          <div class="component-cards">
+            <article class="component-card">
+              <div class="component-card__icon"><img src="assets/icons/globe-card.svg" alt="" width="22" height="22" /></div>
+              <h3 class="component-card__title">Base map style</h3>
+              <a class="btn btn--primary" href="pages/base-maps-library.html">Manage base-maps</a>
+            </article>
+            <article class="component-card">
+              <div class="component-card__icon"><img src="assets/icons/map.svg" alt="" width="22" height="22" /></div>
+              <h3 class="component-card__title">Presets editor</h3>
+              <a class="btn btn--primary" href="pages/preset-editor.html">Manage Presets</a>
+            </article>
+            <article class="component-card">
+              <div class="component-card__icon"><img src="assets/icons/globe-alt.svg" alt="" width="22" height="22" /></div>
+              <h3 class="component-card__title">Mini-map style</h3>
+              <a class="btn btn--primary" href="pages/mini-map-library.html">Manage mini-maps</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="md-section">
+          <h2 class="md-section__title">Templates</h2>
+
+          <div class="filter-bar">
+            <div class="filter-bar__field">
+              <label class="field-label">Search by title</label>
+              <div class="search">
+                <input type="text" class="search__input" placeholder="Search by title" readonly />
+                <button class="search__submit" data-tooltip="Not part of this prototype" aria-label="Search">
+                  <img src="assets/icons/magnifying-glass.svg" alt="" width="16" height="16" />
+                </button>
+              </div>
+            </div>
+            <div class="filter-bar__field">
+              <label class="field-label">Select tags</label>
+              <button class="select" data-tooltip="Not part of this prototype">
+                <span class="select__value select__value--placeholder">Select tags</span>
+                <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+              </button>
+            </div>
+            <div class="filter-bar__field">
+              <label class="field-label">Sort by</label>
+              <button class="select" data-tooltip="Not part of this prototype">
+                <span class="select__value">Most recent</span>
+                <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+              </button>
+            </div>
+            <button class="btn btn--primary filter-bar__cta" data-tooltip="Not part of this prototype">Create new</button>
+          </div>
+
+          <ul class="template-grid">
+            <li class="template-card template-card--v1">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v2">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v3">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v4">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v1">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v2">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v3">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v4">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v1">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v2">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v3">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+            <li class="template-card template-card--v4">
+              <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Untitled template">
+                <div class="template-card__thumb" aria-hidden="true"></div>
+              </a>
+              <div class="template-card__body">
+                <h3 class="template-card__title">Untitled</h3>
+                <a class="template-card__default" data-tooltip="Not part of this prototype">Set as default location map template</a>
+                <div class="template-card__actions">
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="16" height="16" /></button>
+                  <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
       </section>
     </main>
   </div>
