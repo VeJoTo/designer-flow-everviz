@@ -1,0 +1,46 @@
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--color-text-body);
+  background: var(--color-bg-app);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; cursor: pointer; background: none; border: none; padding: 0; color: inherit; }
+a { color: var(--color-text-link); text-decoration: none; }
+h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight); margin: 0; }
+
+/* Layout shell: sidebar | (topbar / main) */
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: var(--topbar-height) 1fr;
+  min-height: 100vh;
+}
+/* The chrome mount is a wrapper around sidebar + topbar — make its
+   children participate directly in the .app grid. */
+#chrome { display: contents; }
+.app > .sidebar { grid-column: 1; grid-row: 1 / -1; }
+.app > .topbar  { grid-column: 2; grid-row: 1; }
+.app > main     { grid-column: 2; grid-row: 2; }
+
+/* Tooltip (used by tooltip.js) */
+.proto-tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  font-size: var(--fs-small);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+.proto-tooltip.is-visible { opacity: 1; transform: translateY(0); }
+[data-tooltip] { cursor: not-allowed; }

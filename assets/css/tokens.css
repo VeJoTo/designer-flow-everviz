@@ -1,0 +1,64 @@
+:root {
+  /* Colors — pulled from Figma everviz-atomic-design / 1. Atoms / Colors.
+     Note: Figma MCP rate limit was reached on 2026-05-20; values below are
+     fallbacks matched to the reference screenshot palette. Re-run
+     get_variable_defs on fileKey=DUj7wK97nsYhDe5O82ajoz nodeId=1:117 when
+     the limit resets to verify / overwrite with canonical Figma hex codes. */
+  --color-bg-app: #FAF5EA;           /* cream page background */
+  --color-bg-surface: #FFFFFF;        /* white cards */
+  --color-bg-sidebar: #10153D;        /* deep navy sidebar */
+  --color-bg-topbar: #FFFFFF;
+  --color-text-primary: #10153D;      /* navy headings */
+  --color-text-body: #2A2F5C;
+  --color-text-muted: #6A6E8A;
+  --color-text-on-dark: #FFFFFF;
+  --color-text-link: #5B5BFF;         /* purple link */
+  --color-brand-purple: #5B5BFF;
+  --color-brand-purple-soft: #E6E6FF; /* card icon backdrop */
+  --color-accent-dot: #FF4D6D;        /* the red dot in the everviz logo */
+  --color-border-subtle: #ECE8DD;
+
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --fs-display: 56px;
+  --fs-h1: 40px;
+  --fs-h2: 28px;
+  --fs-body: 16px;
+  --fs-small: 14px;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --lh-tight: 1.15;
+  --lh-body: 1.5;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --space-10: 64px;
+  --space-12: 96px;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* Shadows */
+  --shadow-card: 0 2px 8px rgba(16, 21, 61, 0.06);
+  --shadow-card-hover: 0 8px 20px rgba(16, 21, 61, 0.10);
+
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Sidebar geometry */
+  --sidebar-width: 56px;
+  --topbar-height: 64px;
+}
