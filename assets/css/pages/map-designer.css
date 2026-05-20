@@ -165,32 +165,18 @@
 .template-card__thumb {
   position: absolute;
   inset: 0;
-  /* default fallback — overridden by variant classes */
-  background: #B8D5E6;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #B8D5E6;
 }
-.template-card--v1 .template-card__thumb {
-  background:
-    radial-gradient(circle at 30% 60%, #ECE2C8 0%, transparent 30%),
-    radial-gradient(circle at 70% 40%, #ECE2C8 0%, transparent 26%),
-    radial-gradient(circle at 50% 80%, #ECE2C8 0%, transparent 18%),
-    linear-gradient(120deg, #B8D5E6 0%, #A5C8DE 100%);
-}
-.template-card--v2 .template-card__thumb {
-  background:
-    radial-gradient(circle at 40% 50%, #F4ECD8 0%, transparent 35%),
-    radial-gradient(circle at 75% 70%, #F4ECD8 0%, transparent 22%),
-    linear-gradient(140deg, #C0DDEB 0%, #ABCEE2 100%);
-}
+.template-card--v1 .template-card__thumb { background-image: url("../../img/maps/europe.png"); }
+.template-card--v2 .template-card__thumb { background-image: url("../../img/maps/world.png"); }
 .template-card--v3 .template-card__thumb {
-  background:
-    radial-gradient(ellipse at 50% 50%, #2C4F6B 0%, #1A3349 60%),
-    linear-gradient(120deg, #0F1F30 0%, #1A3349 100%);
+  background-image: url("../../img/maps/north-europe.png");
+  filter: invert(0.92) hue-rotate(180deg) saturate(0.5) brightness(0.9);
 }
-.template-card--v4 .template-card__thumb {
-  background:
-    radial-gradient(circle at 50% 60%, #F0E6CC 0%, transparent 28%),
-    linear-gradient(160deg, #BAD7E7 0%, #99BFD6 100%);
-}
+.template-card--v4 .template-card__thumb { background-image: url("../../img/maps/uk.png"); }
 .template-card__body {
   padding: var(--space-3) var(--space-3) var(--space-4);
   display: flex;

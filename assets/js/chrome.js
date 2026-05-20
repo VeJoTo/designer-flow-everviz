@@ -27,6 +27,16 @@
     if (crumb) crumb.textContent = title;
   }
 
+  // On the entry screen (Designer tools), hide the parent link + separator
+  // so the breadcrumb shows only one segment.
+  const isEntry = (title || "").toLowerCase() === "designer tools";
+  if (isEntry) {
+    const parent = mount.querySelector("[data-chrome-crumb-parent]");
+    const sep = mount.querySelector("[data-chrome-crumb-sep]");
+    if (parent) parent.style.display = "none";
+    if (sep) sep.style.display = "none";
+  }
+
   // Re-init tooltips on the newly-inserted chrome
   if (window.__protoInitTooltips) window.__protoInitTooltips();
 })();
