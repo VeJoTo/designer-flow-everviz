@@ -78,8 +78,22 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
 /* The chrome mount is a wrapper around sidebar + topbar — make its
    children participate directly in the .app grid. */
 #chrome { display: contents; }
-.app > .sidebar { grid-column: 1; grid-row: 1 / -1; }
-.app > .topbar  { grid-column: 2; grid-row: 1; }
+.app > .sidebar {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  z-index: 4;
+}
+.app > .topbar  {
+  grid-column: 2;
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
 .app > main     { grid-column: 2; grid-row: 2; }
 
 /* Tooltip (used by tooltip.js) — speech-bubble style with arrow on top */
@@ -88,29 +102,29 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
   z-index: 9999;
   background: var(--color-text-primary);
   color: var(--color-text-on-dark);
-  font-size: var(--fs-body);
-  font-weight: var(--fw-bold);
-  padding: 10px 18px;
-  border-radius: 10px;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  padding: 6px 10px;
+  border-radius: 8px;
   pointer-events: none;
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-out);
-  box-shadow: 0 8px 24px rgba(40, 39, 126, 0.25);
-  max-width: 280px;
+  box-shadow: 0 6px 16px rgba(40, 39, 126, 0.22);
+  max-width: 240px;
   text-align: center;
   line-height: 1.25;
 }
 .proto-tooltip::before {
   content: "";
   position: absolute;
-  top: -6px;
+  top: -5px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  border-left: 7px solid transparent;
-  border-right: 7px solid transparent;
-  border-bottom: 7px solid var(--color-text-primary);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid var(--color-text-primary);
 }
 .proto-tooltip.is-visible { opacity: 1; }
 [data-tooltip] { cursor: not-allowed; }

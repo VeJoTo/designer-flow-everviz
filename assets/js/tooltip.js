@@ -22,7 +22,7 @@
     node.textContent = text;
     const rect = target.getBoundingClientRect();
     const left = rect.left + rect.width / 2;
-    const top = rect.bottom + 14;
+    const top = rect.bottom + 10;
     node.style.left = `${Math.round(left)}px`;
     node.style.top = `${Math.round(top)}px`;
     node.style.transform = `translate(-50%, 0)`;

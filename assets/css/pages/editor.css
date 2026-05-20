@@ -181,6 +181,10 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   color: var(--color-text-muted);
 }
 .layer-item__menu img { opacity: 0.85; }
+.layer-item__row:hover { background: var(--color-brand-purple-soft); }
+.layer-item--selected .layer-item__row:hover { background: var(--color-text-primary); }
+.layer-item__menu:hover { background: rgba(91, 91, 255, 0.10); }
+.layer-item--selected .layer-item__menu:hover { background: rgba(255, 255, 255, 0.10); }
 .layer-item--child .layer-item__row { padding-left: var(--space-8); }
 .layer-item--selected {
   background: var(--color-text-primary);
