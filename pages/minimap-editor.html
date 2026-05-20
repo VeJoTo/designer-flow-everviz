@@ -4,26 +4,233 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=1280" />
   <base href="../" />
-  <title>Mini-map editor · everviz prototype</title>
+  <title>Minimap editor · everviz prototype</title>
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/chrome.css" />
-  <style>
-    .placeholder { padding: var(--space-10); }
-    .placeholder a { display: inline-block; margin-top: var(--space-4); }
-  </style>
+  <link rel="stylesheet" href="assets/css/pages/editor.css" />
 </head>
-<body data-screen="designer-tools" data-screen-title="Mini-map editor" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"},{"title":"Mini-maps library","href":"pages/mini-map-library.html"}]'>
-  <div class="app">
+<body data-screen="designer-tools" data-screen-title="Minimap editor" data-crumbs='[]' data-page-mode="editor">
+  <div class="app app--editor">
     <div id="chrome" class="chrome-mount"></div>
     <main>
-      <section class="placeholder">
-        <h1>Mini-map editor</h1>
-        <p>This screen will be built in the next iteration. Vera will send the screenshot next.</p>
-        <a href="pages/mini-map-library.html">← Back to Mini-maps library</a>
-      </section>
+      <header class="editor-bar">
+        <div class="editor-bar__left">
+          <a class="back-link" href="pages/mini-map-library.html">
+            <img src="assets/icons/arrow-uturn-left.svg" alt="" width="14" height="14" />
+            Back to Minimap library
+          </a>
+          <div class="editor-bar__title">
+            <a class="editor-bar__title-text" data-tooltip="Not part of this prototype">Minimap-default</a>
+            <button class="icon-btn" data-tooltip="Not part of this prototype" aria-label="Rename"><img src="assets/icons/pencil.svg" alt="" width="14" height="14" /></button>
+          </div>
+        </div>
+        <div class="editor-bar__actions">
+          <button class="editor-action" data-tooltip="Not part of this prototype">Open</button>
+          <button class="editor-action" data-tooltip="Not part of this prototype">Layer groups</button>
+          <button class="editor-action" data-tooltip="Not part of this prototype">Sources</button>
+          <button class="editor-action" data-tooltip="Not part of this prototype">Settings</button>
+          <button class="editor-action editor-action--save" data-tooltip="Not part of this prototype">Save</button>
+        </div>
+      </header>
+
+      <div class="editor-grid">
+        <aside class="editor-pane editor-pane--layers">
+          <div class="layers-pane__head">
+            <h2 class="layers-pane__title">Layers</h2>
+            <div class="layers-pane__head-actions">
+              <button class="icon-pill" data-tooltip="Not part of this prototype" aria-label="Filter layers"><img src="assets/icons/adjustments-horizontal.svg" alt="" width="14" height="14" /></button>
+              <button class="icon-pill icon-pill--accent" data-tooltip="Not part of this prototype" aria-label="Add layer"><img src="assets/icons/plus.svg" alt="" width="14" height="14" /></button>
+              <button class="icon-pill icon-pill--ghost" data-tooltip="Not part of this prototype" aria-label="Collapse panel"><img src="assets/icons/chevron-left.svg" alt="" width="14" height="14" /></button>
+            </div>
+          </div>
+          <div class="layers-pane__search">
+            <input type="text" class="layers-pane__search-input" placeholder="Search layers..." readonly />
+          </div>
+          <ul class="layers-list">
+            <li class="layer-item" data-layer-id="background">
+              <button class="layer-item__row">
+                <span class="layer-item__handle" aria-hidden="true"></span>
+                <span class="layer-item__swatch layer-item__swatch--background"></span>
+                <span class="layer-item__body">
+                  <span class="layer-item__name">background</span>
+                  <span class="layer-item__meta">background</span>
+                </span>
+              </button>
+              <button class="layer-item__menu" data-tooltip="Not part of this prototype" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="14" height="14" /></button>
+            </li>
+            <li class="layer-item layer-item--selected" data-layer-id="water">
+              <button class="layer-item__row">
+                <span class="layer-item__handle" aria-hidden="true"></span>
+                <span class="layer-item__swatch layer-item__swatch--water"></span>
+                <span class="layer-item__body">
+                  <span class="layer-item__name">water</span>
+                  <span class="layer-item__meta">fill · water</span>
+                </span>
+              </button>
+              <button class="layer-item__menu" data-tooltip="Not part of this prototype" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="14" height="14" /></button>
+            </li>
+            <li class="layer-item layer-item--child" data-layer-id="ocean">
+              <button class="layer-item__row">
+                <span class="layer-item__handle" aria-hidden="true"></span>
+                <span class="layer-item__swatch layer-item__swatch--ocean"></span>
+                <span class="layer-item__body">
+                  <span class="layer-item__name">ocean</span>
+                  <span class="layer-item__meta">fill · water</span>
+                </span>
+              </button>
+              <button class="layer-item__menu" data-tooltip="Not part of this prototype" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="14" height="14" /></button>
+            </li>
+            <li class="layer-item layer-item--child" data-layer-id="lake">
+              <button class="layer-item__row">
+                <span class="layer-item__handle" aria-hidden="true"></span>
+                <span class="layer-item__swatch layer-item__swatch--lake"></span>
+                <span class="layer-item__body">
+                  <span class="layer-item__name">lake</span>
+                  <span class="layer-item__meta">fill · water</span>
+                </span>
+              </button>
+              <button class="layer-item__menu" data-tooltip="Not part of this prototype" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="14" height="14" /></button>
+            </li>
+            <li class="layer-item" data-layer-id="waterway">
+              <button class="layer-item__row">
+                <span class="layer-item__handle" aria-hidden="true"></span>
+                <span class="layer-item__swatch layer-item__swatch--waterway"></span>
+                <span class="layer-item__body">
+                  <span class="layer-item__name">waterway</span>
+                  <span class="layer-item__meta">line · waterway</span>
+                </span>
+              </button>
+              <button class="layer-item__menu" data-tooltip="Not part of this prototype" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="14" height="14" /></button>
+            </li>
+            <li class="layer-item" data-layer-id="building">
+              <button class="layer-item__row">
+                <span class="layer-item__handle" aria-hidden="true"></span>
+                <span class="layer-item__swatch layer-item__swatch--building"></span>
+                <span class="layer-item__body">
+                  <span class="layer-item__name">building</span>
+                  <span class="layer-item__meta">fill-extrusion · building</span>
+                </span>
+              </button>
+              <button class="layer-item__menu" data-tooltip="Not part of this prototype" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="14" height="14" /></button>
+            </li>
+            <li class="layer-item layer-item--child" data-layer-id="residential">
+              <button class="layer-item__row">
+                <span class="layer-item__handle" aria-hidden="true"></span>
+                <span class="layer-item__swatch layer-item__swatch--building"></span>
+                <span class="layer-item__body">
+                  <span class="layer-item__name">residential</span>
+                  <span class="layer-item__meta">fill-extrusion · building</span>
+                </span>
+              </button>
+              <button class="layer-item__menu" data-tooltip="Not part of this prototype" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="14" height="14" /></button>
+            </li>
+          </ul>
+          <div class="layers-pane__foot">7 layers · 6 visible</div>
+        </aside>
+
+        <section class="editor-pane editor-pane--properties">
+          <div class="prop-row">
+            <label class="prop-label">LAYER ID</label>
+            <input type="text" class="prop-input" value="water" data-prop="layer-id" readonly />
+          </div>
+          <div class="prop-row">
+            <label class="prop-label">LAYER TYPE</label>
+            <input type="text" class="prop-input" value="fill" readonly />
+          </div>
+
+          <details class="prop-section" open>
+            <summary class="prop-section__head">
+              <span class="prop-section__title">Paint Properties <span class="prop-section__count">2</span></span>
+              <img src="assets/icons/chevron-down.svg" alt="" width="14" height="14" />
+            </summary>
+            <div class="prop-section__body">
+              <div class="prop-row">
+                <label class="prop-label">Fill Color</label>
+                <div class="color-input">
+                  <span class="color-input__swatch" style="background:#a8c5e6"></span>
+                  <input type="text" class="prop-input prop-input--inline" value="#a8c5e6" readonly />
+                </div>
+              </div>
+              <div class="prop-row">
+                <label class="prop-label">Fill Opacity</label>
+                <div class="slider-row">
+                  <input type="range" class="prop-slider" min="0" max="1" step="0.05" value="1" data-tooltip="Not part of this prototype" />
+                  <span class="prop-slider__value">1</span>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="prop-section" open>
+            <summary class="prop-section__head">
+              <span class="prop-section__title">Filter</span>
+              <img src="assets/icons/chevron-down.svg" alt="" width="14" height="14" />
+            </summary>
+            <div class="prop-section__body">
+              <div class="prop-row">
+                <label class="prop-label">Filter Expression</label>
+                <div class="prop-input-with-clear">
+                  <input type="text" class="prop-input" value='[&quot;==&quot;,[&quot;get&quot;,&quot;class&quot;],&quot;lake&quot;]' readonly />
+                  <button class="prop-input__clear" data-tooltip="Not part of this prototype" aria-label="Clear">×</button>
+                </div>
+              </div>
+              <div class="prop-row">
+                <label class="prop-label">Operator</label>
+                <button class="prop-select" data-tooltip="Not part of this prototype">
+                  <span></span>
+                  <img src="assets/icons/chevron-down.svg" alt="" width="14" height="14" />
+                </button>
+              </div>
+              <div class="prop-row">
+                <label class="prop-label">Property</label>
+                <input type="text" class="prop-input" value="class" readonly />
+              </div>
+              <div class="prop-row">
+                <label class="prop-label">Value</label>
+                <input type="text" class="prop-input" value="" readonly />
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <aside class="editor-pane editor-pane--map">
+          <div class="map-preview" aria-hidden="true"></div>
+          <div class="map-overlay map-overlay--top">
+            <div class="map-search">
+              <img src="assets/icons/magnifying-glass.svg" alt="" width="14" height="14" />
+              <input type="text" class="map-search__input" placeholder="Search" readonly />
+            </div>
+            <div class="map-controls">
+              <button class="map-chip" data-tooltip="Not part of this prototype">Zoom: 0.45</button>
+              <button class="map-control-btn" data-tooltip="Not part of this prototype" aria-label="Zoom in"><img src="assets/icons/magnifying-glass-plus.svg" alt="" width="14" height="14" /></button>
+              <button class="map-control-btn" data-tooltip="Not part of this prototype" aria-label="Zoom out"><img src="assets/icons/magnifying-glass-minus.svg" alt="" width="14" height="14" /></button>
+              <button class="map-control-btn" data-tooltip="Not part of this prototype" aria-label="Recenter"><img src="assets/icons/viewfinder-circle.svg" alt="" width="14" height="14" /></button>
+            </div>
+          </div>
+          <button class="map-help-fab" data-tooltip="Not part of this prototype" aria-label="Help"><img src="assets/icons/question-mark-circle.svg" alt="" width="20" height="20" /></button>
+          <div class="map-attribution">MapLibre | © Stadia Maps | OpenMapTiles © OpenStreetMap</div>
+        </aside>
+      </div>
     </main>
   </div>
+
+  <script>
+    // Layer selection: clicking a layer moves the purple highlight and
+    // updates the Layer ID field in the properties pane.
+    document.addEventListener("DOMContentLoaded", () => {
+      const idInput = document.querySelector('[data-prop="layer-id"]');
+      document.querySelectorAll(".layer-item__row").forEach((row) => {
+        row.addEventListener("click", () => {
+          const li = row.closest(".layer-item");
+          document.querySelectorAll(".layer-item--selected").forEach((s) => s.classList.remove("layer-item--selected"));
+          li.classList.add("layer-item--selected");
+          const name = li.querySelector(".layer-item__name")?.textContent;
+          if (idInput && name) idInput.value = name;
+        });
+      });
+    });
+  </script>
   <script src="assets/js/tooltip.js" defer></script>
   <script src="assets/js/chrome.js" defer></script>
 </body>
