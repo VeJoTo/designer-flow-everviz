@@ -270,6 +270,38 @@
       if (nameParam) {
         const titleEl = document.querySelector(".editor-bar__title-text");
         if (titleEl) titleEl.textContent = nameParam;
+
+        // Swap the map preview to the matching tile based on the name.
+        // First pattern wins, so more-specific patterns come first.
+        const MAP_LOOKUP = [
+          [/nordic dark|northern europe.*dark/i, "north-europe.png", true],
+          [/mediterranean europe|southern europe|tourism.*europe/i, "europe.png", false],
+          [/(^|\s)mediterranean(\s|$)/i, "mediterranean.png", false],
+          [/northern europe|air quality.*northern/i, "north-europe.png", false],
+          [/central europe/i, "central-europe.png", false],
+          [/scandinavia|infrastructure.*scandinav/i, "scandinavia.png", false],
+          [/nordic|energy mix.*nordic/i, "north-europe.png", false],
+          [/(^|\s)(uk|united kingdom|london|constituency)(\s|$)|election results.*uk|transit.*london/i, "uk.png", false],
+          [/north africa/i, "north-africa.png", false],
+          [/middle east/i, "middle-east.png", false],
+          [/north america/i, "north-america.png", false],
+          [/south america/i, "south-america.png", false],
+          [/east asia/i, "asia-east.png", false],
+          [/south asia/i, "asia-india.png", false],
+          [/australia/i, "australia.png", false],
+          [/europe|election results.*europe|population.*mediterranean/i, "europe.png", false],
+          [/world|global|climate zones|time zones|economic/i, "world.png", false],
+        ];
+        const preview = document.querySelector(".map-preview");
+        if (preview) {
+          for (const [pattern, image, dark] of MAP_LOOKUP) {
+            if (pattern.test(nameParam)) {
+              preview.style.backgroundImage = `url("assets/img/maps/${image}")`;
+              if (dark) preview.classList.add("map-preview--dark");
+              break;
+            }
+          }
+        }
       }
 
       const idInput = document.querySelector('[data-prop="layer-id"]');
