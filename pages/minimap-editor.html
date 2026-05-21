@@ -21,8 +21,8 @@
             Back to Minimap library
           </a>
           <div class="editor-bar__title">
-            <a class="editor-bar__title-text">Untitled</a>
-            <button class="icon-btn" aria-label="Rename"><img src="assets/icons/pencil.svg" alt="" width="14" height="14" /></button>
+            <span class="editor-bar__title-text" data-editor-title contenteditable="true" spellcheck="false">Untitled</span>
+            <button class="icon-btn" data-action="focus-title" aria-label="Rename"><img src="assets/icons/pencil.svg" alt="" width="14" height="14" /></button>
           </div>
         </div>
         <div class="editor-bar__actions">
@@ -329,9 +329,46 @@
         if (row) selectLayer(row.closest(".layer-item"));
       });
 
+      // Inline-editable title (pencil focuses, Enter commits, Esc reverts)
+      const titleEl = document.querySelector("[data-editor-title]");
+      if (titleEl) {
+        let titleBefore = "";
+        titleEl.addEventListener("focus", () => {
+          titleBefore = titleEl.textContent;
+          // Select all text inside the contenteditable span
+          const range = document.createRange();
+          range.selectNodeContents(titleEl);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        });
+        titleEl.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            titleEl.blur();
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            titleEl.textContent = titleBefore;
+            titleEl.blur();
+          }
+        });
+        titleEl.addEventListener("blur", () => {
+          const v = (titleEl.textContent || "").replace(/\s+/g, " ").trim();
+          titleEl.textContent = v || "Untitled";
+        });
+        // Pencil click focuses the title for editing.
+        document.querySelectorAll('[data-action="focus-title"]').forEach((btn) => {
+          btn.addEventListener("click", () => titleEl.focus());
+        });
+      }
+
       // Save modal
       const modal = document.querySelector("[data-save-modal]");
       const openModal = () => {
+        // Pre-fill the modal's name input with whatever the editor title
+        // currently shows (so renames flow into Save).
+        const input = document.getElementById("save-template-name");
+        if (input && titleEl) input.value = (titleEl.textContent || "").trim();
         modal.hidden = false;
         modal.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden";
