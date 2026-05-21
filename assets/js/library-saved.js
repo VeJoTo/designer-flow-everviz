@@ -45,11 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="map-card__default">Set as default ${defaultLabel}</a>
         <div class="map-card__actions">
           <div class="map-card__actions-group">
-            <button class="icon-btn" aria-label="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
-            <a class="icon-btn" href="${url}" aria-label="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
-            <button class="icon-btn icon-btn--toggle" aria-label="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
+            <button class="icon-btn" aria-label="Duplicate" data-tooltip="Duplicate"><img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" /></button>
+            <a class="icon-btn" href="${url}" aria-label="Edit" data-tooltip="Edit"><img src="assets/icons/pencil.svg" alt="" width="16" height="16" /></a>
+            <button class="icon-btn icon-btn--toggle" aria-label="Favorite" data-tooltip="Favorite"><img src="assets/icons/star.svg" alt="" width="16" height="16" /></button>
           </div>
-          <button class="icon-btn icon-btn--danger" aria-label="Delete" data-saved-delete><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
+          <button class="icon-btn icon-btn--danger" aria-label="Delete" data-saved-delete data-tooltip="Delete"><img src="assets/icons/trash.svg" alt="" width="16" height="16" /></button>
         </div>
       </div>
     `;

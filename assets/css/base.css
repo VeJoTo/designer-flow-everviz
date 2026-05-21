@@ -216,4 +216,3 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
   border-bottom: 5px solid var(--color-text-primary);
 }
 .proto-tooltip.is-visible { opacity: 1; }
-[data-tooltip] { cursor: not-allowed; }
