@@ -41,9 +41,19 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   font-size: var(--fs-body);
   color: var(--color-text-primary);
   text-decoration: underline;
-  cursor: not-allowed;
+  cursor: text;
   font-weight: var(--fw-semibold);
   white-space: nowrap;
+  outline: none;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: -2px -6px;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.editor-bar__title-text:hover { background: rgba(40, 39, 126, 0.06); }
+.editor-bar__title-text:focus {
+  background: var(--color-brand-purple-soft);
+  text-decoration: none;
 }
 .editor-bar__title .icon-btn { color: var(--color-text-primary); }
 .editor-bar__title .icon-btn img {
