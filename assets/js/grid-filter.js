@@ -123,8 +123,32 @@
           });
           chips.appendChild(chip);
         }
-        chips.hidden = state.tags.size === 0;
+        const anyFilterActive =
+          state.search !== "" ||
+          state.tags.size > 0 ||
+          state.sort !== "recent";
+        if (anyFilterActive) {
+          const clearAll = document.createElement("button");
+          clearAll.className = "filter-chip filter-chip--clear";
+          clearAll.type = "button";
+          clearAll.textContent = "Clear all";
+          clearAll.addEventListener("click", () => clearFilters());
+          chips.appendChild(clearAll);
+        }
+        chips.hidden = !anyFilterActive;
       }
+    }
+
+    function clearFilters() {
+      state.search = "";
+      state.tags.clear();
+      state.sort = "recent";
+      if (search) search.value = "";
+      syncTagOptions();
+      sortPopover?.querySelectorAll(".sort-option").forEach((o) => {
+        o.classList.toggle("is-selected", o.dataset.value === "recent");
+      });
+      render();
     }
 
     // Search
@@ -223,20 +247,8 @@
       });
     }
 
-    // Clear all
-    if (clear) {
-      clear.addEventListener("click", () => {
-        state.search = "";
-        state.tags.clear();
-        state.sort = "recent";
-        if (search) search.value = "";
-        syncTagOptions();
-        sortPopover?.querySelectorAll(".sort-option").forEach((o) => {
-          o.classList.toggle("is-selected", o.dataset.value === "recent");
-        });
-        render();
-      });
-    }
+    // Clear all (empty-state button)
+    if (clear) clear.addEventListener("click", clearFilters);
 
     syncTagOptions();
     render();
