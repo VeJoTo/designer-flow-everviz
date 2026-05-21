@@ -27,8 +27,9 @@
     const state = {
       search: "",
       tags: new Set(),
-      sort: "recent", // "recent" | "name-asc" | "name-desc"
+      sort: "recent", // "recent" | "name-asc" | "name-desc" | "favorites"
     };
+    const favKind = root.dataset.favKind;
 
     const search = root.querySelector("[data-filter-search]");
     const tagTrigger = root.querySelector("[data-filter-tag-trigger]");
@@ -43,6 +44,7 @@
       recent: "Most recent",
       "name-asc": "Name (A–Z)",
       "name-desc": "Name (Z–A)",
+      favorites: "Favorites",
     };
     const initialOrder = items.map((el, i) => [el, i]);
 
@@ -58,6 +60,10 @@
       if (state.tags.size) {
         const tags = new Set(itemTags(item));
         for (const t of state.tags) if (!tags.has(t)) return false;
+      }
+      if (state.sort === "favorites" && favKind && window.Favorites) {
+        const key = item.dataset.savedId || item.dataset.name;
+        if (!window.Favorites.isFavorite(favKind, key)) return false;
       }
       return true;
     }
@@ -150,6 +156,9 @@
       });
       render();
     }
+
+    // Re-render when a star is toggled anywhere — keeps favorites sort honest.
+    root.addEventListener("favorite-changed", () => render());
 
     // Search
     if (search) {
