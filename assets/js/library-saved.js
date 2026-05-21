@@ -71,8 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const li = btn.closest(".map-card");
     if (!li) return;
     const name = li.querySelector(".map-card__title")?.textContent?.trim() || "this map";
+    const title = kind === "minimap" ? "Delete minimap" : "Delete basemap";
     const ok = await window.confirmDialog?.({
-      title: "Delete map",
+      title,
       message: `Are you sure you want to delete <strong>${escapeHTML(name)}</strong>?`,
       confirmLabel: "Delete",
       destructive: true,
