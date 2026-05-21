@@ -14,7 +14,7 @@
   <div class="app">
     <div id="chrome" class="chrome-mount"></div>
     <main>
-      <section class="screen screen--library" data-filter-root>
+      <section class="screen screen--library" data-filter-root data-fav-kind="minimap">
         <a class="back-link" href="pages/map-designer.html">
           <img src="assets/icons/arrow-long-left.svg" alt="" width="18" height="18" />
           Back to Map designer
@@ -75,6 +75,7 @@
           <button class="sort-option is-selected" data-value="recent" role="menuitemradio" aria-checked="true">Most recent</button>
           <button class="sort-option" data-value="name-asc" role="menuitemradio" aria-checked="false">Name (A–Z)</button>
           <button class="sort-option" data-value="name-desc" role="menuitemradio" aria-checked="false">Name (Z–A)</button>
+            <button class="sort-option" data-value="favorites" role="menuitemradio" aria-checked="false">Favorites</button>
         </div>
 
 
@@ -356,6 +357,7 @@
   <script src="assets/js/confirm-dialog.js" defer></script>
   <script src="assets/js/library-saved.js" defer></script>
   <script src="assets/js/grid-filter.js" defer></script>
+  <script src="assets/js/favorites.js" defer></script>
   <script src="assets/js/dates.js" defer></script>
 </body>
 </html>

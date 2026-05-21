@@ -170,6 +170,16 @@
 }
 .filter-empty .btn { align-self: center; }
 
+/* Favorited card state — fills the star + lavender backdrop on the button */
+.map-card.is-favorited .icon-btn--toggle,
+.template-card.is-favorited .icon-btn--toggle {
+  background: var(--color-brand-purple-soft);
+}
+.map-card.is-favorited .icon-btn--toggle img,
+.template-card.is-favorited .icon-btn--toggle img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
+
 /* Created date stamp on cards */
 .card-date {
   display: block;
