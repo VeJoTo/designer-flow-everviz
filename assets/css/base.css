@@ -44,6 +44,86 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
 .btn--primary:hover img {
   filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
 }
+.btn--danger {
+  background: #C0392B;
+  color: var(--color-text-on-dark);
+}
+.btn--danger:hover { background: #A93226; }
+.btn--outline {
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-text-primary);
+}
+.btn--outline:hover { background: var(--color-bg-app); }
+
+/* Confirm dialog — generic Promise-driven modal */
+.confirm-modal[hidden] { display: none; }
+.confirm-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 11000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+.confirm-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 21, 61, 0.55);
+  backdrop-filter: blur(2px);
+}
+.confirm-modal__panel {
+  position: relative;
+  width: min(480px, 100%);
+  background: var(--color-bg-app);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(16, 21, 61, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+.confirm-modal__head {
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.confirm-modal__title {
+  color: var(--color-text-on-dark);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  margin: 0;
+}
+.confirm-modal__close {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  color: var(--color-text-on-dark);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.confirm-modal__close img { filter: brightness(0) invert(1); }
+.confirm-modal__close:hover { background: rgba(255, 255, 255, 0.1); }
+.confirm-modal__body {
+  padding: var(--space-5);
+  color: var(--color-text-primary);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+.confirm-modal__foot {
+  padding: 0 var(--space-5) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.confirm-modal__foot .btn { align-self: auto; }
 
 /* Shared back link — used at the top of sub-pages. */
 .back-link {
