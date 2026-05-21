@@ -8,6 +8,9 @@
   padding: var(--space-3) 0;
   gap: var(--space-2);
   grid-row: 1 / -1;
+  /* Persist across page navigations: the cross-document view transition
+     treats this as the same element on both pages, so it doesn't fade. */
+  view-transition-name: app-sidebar;
 }
 .sidebar__hamburger,
 .sidebar__item {
@@ -38,6 +41,7 @@
   gap: var(--space-6);
   padding: 0 var(--space-6);
   border-bottom: 1px solid var(--color-border-subtle);
+  view-transition-name: app-topbar;
 }
 .topbar__brand {
   display: inline-flex;

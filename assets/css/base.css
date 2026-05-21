@@ -64,7 +64,16 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
 @view-transition { navigation: auto; }
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 180ms;
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* Named chrome doesn't crossfade — they persist as the same element
+   across pages. A tiny duration keeps any layout-shift settling. */
+::view-transition-old(app-sidebar),
+::view-transition-new(app-sidebar),
+::view-transition-old(app-topbar),
+::view-transition-new(app-topbar) {
+  animation-duration: 120ms;
   animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
