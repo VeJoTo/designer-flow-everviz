@@ -8,26 +8,26 @@
 
 const CHROME_HTML = `
 <aside class="sidebar" aria-label="Primary navigation">
-  <button class="sidebar__hamburger" aria-label="Menu">
+  <button class="sidebar__hamburger" aria-label="Menu" data-tooltip="Menu">
     <img src="assets/icons/bars-3.svg" alt="" width="22" height="22" />
   </button>
   <nav class="sidebar__nav" aria-label="Sections">
-    <a href="#" class="sidebar__item" aria-label="Charts"><img src="assets/icons/presentation-chart-line.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Maps"><img src="assets/icons/cube.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Cloud"><img src="assets/icons/cloud.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Team"><img src="assets/icons/users.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Permissions"><img src="assets/icons/lock-closed.svg" alt="" width="20" height="20" /></a>
-    <a href="./" class="sidebar__item" data-nav-key="designer-tools" aria-label="Designer tools"><img src="assets/icons/paint-brush.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Editor"><img src="assets/icons/pencil-square.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Embed"><img src="assets/icons/code-bracket.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Undo"><img src="assets/icons/arrow-uturn-left.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Chat"><img src="assets/icons/chat-bubble-left.svg" alt="" width="20" height="20" /></a>
-    <a href="#" class="sidebar__item" aria-label="Help"><img src="assets/icons/question-mark-circle.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Charts" data-tooltip="Charts"><img src="assets/icons/presentation-chart-line.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Maps" data-tooltip="Maps"><img src="assets/icons/cube.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Cloud" data-tooltip="Cloud"><img src="assets/icons/cloud.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Team" data-tooltip="Team"><img src="assets/icons/users.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Permissions" data-tooltip="Permissions"><img src="assets/icons/lock-closed.svg" alt="" width="20" height="20" /></a>
+    <a href="./" class="sidebar__item" data-nav-key="designer-tools" aria-label="Designer tools" data-tooltip="Designer tools"><img src="assets/icons/paint-brush.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Editor" data-tooltip="Editor"><img src="assets/icons/pencil-square.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Embed" data-tooltip="Embed"><img src="assets/icons/code-bracket.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Undo" data-tooltip="Undo"><img src="assets/icons/arrow-uturn-left.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Settings" data-tooltip="Settings"><img src="assets/icons/cog-6-tooth.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Chat" data-tooltip="Chat"><img src="assets/icons/chat-bubble-left.svg" alt="" width="20" height="20" /></a>
+    <a href="#" class="sidebar__item" aria-label="Help" data-tooltip="Help"><img src="assets/icons/question-mark-circle.svg" alt="" width="20" height="20" /></a>
   </nav>
 </aside>
 <header class="topbar">
-  <a href="./" class="topbar__brand" aria-label="Everviz home">
+  <a href="./" class="topbar__brand" aria-label="Everviz home" data-tooltip="Everviz home">
     <img src="assets/img/everviz-logo.png" alt="everviz" />
   </a>
   <nav class="topbar__crumb" aria-label="Breadcrumb" data-chrome-crumb-nav></nav>

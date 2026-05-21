@@ -22,7 +22,7 @@
           </a>
           <div class="editor-bar__title">
             <span class="editor-bar__title-text" data-editor-title contenteditable="true" spellcheck="false">Untitled</span>
-            <button class="icon-btn" data-action="focus-title" aria-label="Rename"><img src="assets/icons/pencil.svg" alt="" width="14" height="14" /></button>
+            <button class="icon-btn" data-action="focus-title" aria-label="Rename" data-tooltip="Rename"><img src="assets/icons/pencil.svg" alt="" width="14" height="14" /></button>
           </div>
         </div>
         <div class="editor-bar__actions">
@@ -39,9 +39,9 @@
           <div class="layers-pane__head">
             <h2 class="layers-pane__title">Layers</h2>
             <div class="layers-pane__head-actions">
-              <button class="icon-pill" aria-label="Expand or collapse all layers"><img src="assets/icons/expand-collapse.svg" alt="" width="24" height="24" /></button>
+              <button class="icon-pill" aria-label="Expand or collapse all layers" data-tooltip="Expand or collapse all layers"><img src="assets/icons/expand-collapse.svg" alt="" width="24" height="24" /></button>
               <button class="icon-pill icon-pill--accent" data-tooltip="Add a new layer" aria-label="Add a new layer"><img src="assets/icons/plus.svg" alt="" width="24" height="24" /></button>
-              <button class="icon-pill icon-pill--ghost" aria-label="Collapse panel"><img src="assets/icons/chevron-left.svg" alt="" width="24" height="24" /></button>
+              <button class="icon-pill icon-pill--ghost" aria-label="Collapse panel" data-tooltip="Collapse panel"><img src="assets/icons/chevron-left.svg" alt="" width="24" height="24" /></button>
             </div>
           </div>
           <div class="layers-pane__search">
@@ -57,7 +57,7 @@
                   <span class="layer-item__meta">background</span>
                 </span>
               </button>
-              <button class="layer-item__menu" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
+              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
             </li>
             <li class="layer-item layer-item--selected" data-layer-id="water">
               <button class="layer-item__row">
@@ -68,7 +68,7 @@
                   <span class="layer-item__meta">fill · water</span>
                 </span>
               </button>
-              <button class="layer-item__menu" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
+              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
             </li>
             <li class="layer-item layer-item--child" data-layer-id="ocean">
               <button class="layer-item__row">
@@ -79,7 +79,7 @@
                   <span class="layer-item__meta">fill · water</span>
                 </span>
               </button>
-              <button class="layer-item__menu" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
+              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
             </li>
             <li class="layer-item layer-item--child" data-layer-id="lake">
               <button class="layer-item__row">
@@ -90,7 +90,7 @@
                   <span class="layer-item__meta">fill · water</span>
                 </span>
               </button>
-              <button class="layer-item__menu" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
+              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
             </li>
             <li class="layer-item" data-layer-id="waterway">
               <button class="layer-item__row">
@@ -101,7 +101,7 @@
                   <span class="layer-item__meta">line · waterway</span>
                 </span>
               </button>
-              <button class="layer-item__menu" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
+              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
             </li>
             <li class="layer-item" data-layer-id="building">
               <button class="layer-item__row">
@@ -112,7 +112,7 @@
                   <span class="layer-item__meta">fill-extrusion · building</span>
                 </span>
               </button>
-              <button class="layer-item__menu" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
+              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
             </li>
             <li class="layer-item layer-item--child" data-layer-id="residential">
               <button class="layer-item__row">
@@ -123,7 +123,7 @@
                   <span class="layer-item__meta">fill-extrusion · building</span>
                 </span>
               </button>
-              <button class="layer-item__menu" aria-label="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
+              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
             </li>
           </ul>
           <div class="layers-pane__foot">7 layers · 6 visible</div>
@@ -203,12 +203,12 @@
             </div>
             <div class="map-controls">
               <button class="map-chip">Zoom: 0.45</button>
-              <button class="map-control-btn" aria-label="Zoom in"><img src="assets/icons/magnifying-glass-plus.svg" alt="" width="14" height="14" /></button>
-              <button class="map-control-btn" aria-label="Zoom out"><img src="assets/icons/magnifying-glass-minus.svg" alt="" width="14" height="14" /></button>
-              <button class="map-control-btn" aria-label="Recenter"><img src="assets/icons/viewfinder-circle.svg" alt="" width="14" height="14" /></button>
+              <button class="map-control-btn" aria-label="Zoom in" data-tooltip="Zoom in"><img src="assets/icons/magnifying-glass-plus.svg" alt="" width="14" height="14" /></button>
+              <button class="map-control-btn" aria-label="Zoom out" data-tooltip="Zoom out"><img src="assets/icons/magnifying-glass-minus.svg" alt="" width="14" height="14" /></button>
+              <button class="map-control-btn" aria-label="Recenter" data-tooltip="Recenter"><img src="assets/icons/viewfinder-circle.svg" alt="" width="14" height="14" /></button>
             </div>
           </div>
-          <button class="map-help-fab" aria-label="Help"><img src="assets/icons/question-mark-circle.svg" alt="" width="20" height="20" /></button>
+          <button class="map-help-fab" aria-label="Help" data-tooltip="Help"><img src="assets/icons/question-mark-circle.svg" alt="" width="20" height="20" /></button>
           <div class="map-attribution">MapLibre | © Stadia Maps | OpenMapTiles © OpenStreetMap</div>
         </aside>
       </div>
@@ -243,7 +243,7 @@
     <div class="save-modal__panel" role="dialog" aria-modal="true" aria-labelledby="save-modal-title">
       <header class="save-modal__head">
         <h2 class="save-modal__title" id="save-modal-title">Save Minimap</h2>
-        <button class="save-modal__close" aria-label="Close" data-save-modal-close>
+        <button class="save-modal__close" aria-label="Close" data-save-modal-close data-tooltip="Close">
           <img src="assets/icons/x-mark.svg" alt="" width="18" height="18" />
         </button>
       </header>
