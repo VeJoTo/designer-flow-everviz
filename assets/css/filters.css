@@ -60,6 +60,8 @@
   cursor: pointer;
 }
 .select__value--placeholder { color: var(--color-text-muted); }
+.select img { transition: transform var(--duration-fast) var(--ease-out); }
+.select.is-open img { transform: rotate(180deg); }
 .filter-bar__cta { align-self: end; }
 
 /* Filter popovers (tags + sort) */
