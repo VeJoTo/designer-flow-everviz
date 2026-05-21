@@ -28,7 +28,7 @@ const CHROME_HTML = `
 </aside>
 <header class="topbar">
   <a href="./" class="topbar__brand" aria-label="Everviz home">
-    everviz<span class="topbar__brand-dot" aria-hidden="true">.</span>
+    <img src="assets/img/everviz-logo.png" alt="everviz" />
   </a>
   <nav class="topbar__crumb" aria-label="Breadcrumb" data-chrome-crumb-nav></nav>
 </header>
