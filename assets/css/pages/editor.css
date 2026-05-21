@@ -453,6 +453,9 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   background-position: center;
   background-repeat: no-repeat;
 }
+.map-preview--dark {
+  filter: invert(0.92) hue-rotate(180deg) saturate(0.5) brightness(0.9);
+}
 .map-overlay {
   position: absolute;
   left: var(--space-4);
