@@ -68,7 +68,12 @@
       if (state.sort === "name-desc") {
         return (b.dataset.name || "").localeCompare(a.dataset.name || "");
       }
-      // Most recent: keep authoring order from the DOM.
+      // Most recent: prefer data-created (newer first), fall back to DOM order.
+      const da = a.dataset.created;
+      const db = b.dataset.created;
+      if (da && db && da !== db) return da < db ? 1 : -1;
+      if (da && !db) return -1;
+      if (!da && db) return 1;
       const ia = initialOrder.find(([el]) => el === a)?.[1] ?? 0;
       const ib = initialOrder.find(([el]) => el === b)?.[1] ?? 0;
       return ia - ib;
