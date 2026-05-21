@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="assets/css/filters.css" />
   <link rel="stylesheet" href="assets/css/pages/library.css" />
 </head>
-<body data-screen="designer-tools" data-screen-title="Mini-maps library" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]'>
+<body data-screen="designer-tools" data-screen-title="Mini-maps library" data-library-kind="minimap" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]'>
   <div class="app">
     <div id="chrome" class="chrome-mount"></div>
     <main>
@@ -59,12 +59,12 @@
 
         <div class="filter-popover" data-filter-tag-popover hidden role="menu">
             <button class="tag-option" data-value="Europe" role="menuitemcheckbox" aria-checked="false">Europe</button>
-            <button class="tag-option" data-value="Mediterranean" role="menuitemcheckbox" aria-checked="false">Mediterranean Europe minimap</button>
+            <button class="tag-option" data-value="Mediterranean" role="menuitemcheckbox" aria-checked="false">Mediterranean</button>
             <button class="tag-option" data-value="World" role="menuitemcheckbox" aria-checked="false">World</button>
             <button class="tag-option" data-value="Nordics" role="menuitemcheckbox" aria-checked="false">Nordics</button>
             <button class="tag-option" data-value="UK" role="menuitemcheckbox" aria-checked="false">UK</button>
             <button class="tag-option" data-value="Africa" role="menuitemcheckbox" aria-checked="false">Africa</button>
-            <button class="tag-option" data-value="Middle East" role="menuitemcheckbox" aria-checked="false">World minimap</button>
+            <button class="tag-option" data-value="Middle East" role="menuitemcheckbox" aria-checked="false">Middle East</button>
             <button class="tag-option" data-value="Americas" role="menuitemcheckbox" aria-checked="false">Americas</button>
             <button class="tag-option" data-value="Asia" role="menuitemcheckbox" aria-checked="false">Asia</button>
             <button class="tag-option" data-value="Oceania" role="menuitemcheckbox" aria-checked="false">Oceania</button>
@@ -84,7 +84,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">Nordic dark minimap</h3>
+              <h3 class="map-card__title">Mediterranean Europe minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -103,7 +103,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">United Kingdom minimap</h3>
+              <h3 class="map-card__title">World minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -122,7 +122,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">Scandinavia minimap</h3>
+              <h3 class="map-card__title">Nordic dark minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -141,7 +141,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">Central Europe minimap</h3>
+              <h3 class="map-card__title">United Kingdom minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -160,7 +160,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">Mediterranean minimap</h3>
+              <h3 class="map-card__title">Scandinavia minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -179,7 +179,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">North Africa minimap</h3>
+              <h3 class="map-card__title">Central Europe minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -198,7 +198,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">Middle East minimap</h3>
+              <h3 class="map-card__title">Mediterranean minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -217,7 +217,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">North America minimap</h3>
+              <h3 class="map-card__title">North Africa minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -236,7 +236,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">South America minimap</h3>
+              <h3 class="map-card__title">Middle East minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -255,7 +255,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">East Asia minimap</h3>
+              <h3 class="map-card__title">North America minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -274,7 +274,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">South Asia minimap</h3>
+              <h3 class="map-card__title">South America minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -293,7 +293,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">Australia minimap</h3>
+              <h3 class="map-card__title">East Asia minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -312,7 +312,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">South Asia</h3>
+              <h3 class="map-card__title">South Asia minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -331,7 +331,7 @@
               <div class="map-card__thumb" aria-hidden="true"></div>
             </a>
             <div class="map-card__body">
-              <h3 class="map-card__title">Australia</h3>
+              <h3 class="map-card__title">Australia minimap</h3>
               <span class="card-date" data-date-slot></span>
               <a class="map-card__default">Set as default mini-map</a>
               <div class="map-card__actions">
@@ -351,7 +351,9 @@
   <script src="assets/js/tooltip.js" defer></script>
   <script src="assets/js/chrome.js" defer></script>
   <script src="assets/js/prefetch.js" defer></script>
+  <script src="assets/js/saved-maps.js" defer></script>
   <script src="assets/js/library.js" defer></script>
+  <script src="assets/js/library-saved.js" defer></script>
   <script src="assets/js/grid-filter.js" defer></script>
   <script src="assets/js/dates.js" defer></script>
 </body>
