@@ -61,15 +61,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const list = window.SavedMaps.list(kind);
   for (const entry of list) grid.prepend(renderEntry(entry));
 
-  // Delete handler — saved cards only
-  grid.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-saved-delete]");
+  // Delete handler — works on any map-card. Saved cards (with
+  // [data-saved-delete] / data-saved-id) also clear localStorage.
+  // Static cards just disappear from the DOM.
+  grid.addEventListener("click", async (e) => {
+    const btn = e.target.closest('.icon-btn--danger, [data-saved-delete]');
     if (!btn) return;
     e.preventDefault();
     const li = btn.closest(".map-card");
-    const id = li?.dataset.savedId;
-    if (!id) return;
-    window.SavedMaps.delete(kind, id);
+    if (!li) return;
+    const name = li.querySelector(".map-card__title")?.textContent?.trim() || "this map";
+    const ok = await window.confirmDialog?.({
+      title: "Delete map",
+      message: `Are you sure you want to delete <strong>${escapeHTML(name)}</strong>?`,
+      confirmLabel: "Delete",
+      destructive: true,
+    });
+    if (!ok) return;
+    const id = li.dataset.savedId;
+    if (id && window.SavedMaps) window.SavedMaps.delete(kind, id);
     li.remove();
   });
 });
