@@ -190,9 +190,11 @@
       const openTags = () => {
         positionTagPopover();
         tagPopover.hidden = false;
+        tagTrigger.classList.add("is-open");
       };
       const closeTags = () => {
         tagPopover.hidden = true;
+        tagTrigger.classList.remove("is-open");
       };
       tagTrigger.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -228,9 +230,11 @@
       const openSort = () => {
         positionSortPopover();
         sortPopover.hidden = false;
+        sortTrigger.classList.add("is-open");
       };
       const closeSort = () => {
         sortPopover.hidden = true;
+        sortTrigger.classList.remove("is-open");
       };
       sortTrigger.addEventListener("click", (e) => {
         e.stopPropagation();
