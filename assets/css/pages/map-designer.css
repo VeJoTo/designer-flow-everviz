@@ -55,67 +55,6 @@
 
 /* .btn styles now live in base.css so other pages can use them. */
 
-/* Filter bar */
-.filter-bar {
-  background: var(--color-bg-surface);
-  border-radius: var(--radius-md);
-  padding: var(--space-4) var(--space-5);
-  display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(180px, 1fr) minmax(180px, 1fr) auto;
-  gap: var(--space-5);
-  align-items: end;
-  margin-bottom: var(--space-5);
-}
-.field-label {
-  display: block;
-  font-size: var(--fs-small);
-  color: var(--color-text-primary);
-  font-weight: var(--fw-semibold);
-  margin-bottom: var(--space-2);
-}
-.search { display: flex; }
-.search__input {
-  flex: 1;
-  border: 1px solid var(--color-border-subtle);
-  border-right: none;
-  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-  padding: 8px var(--space-3);
-  font: inherit;
-  background: var(--color-bg-app);
-  color: var(--color-text-body);
-  outline: none;
-  min-width: 0;
-}
-.search__input::placeholder { color: var(--color-text-muted); }
-.search__submit {
-  background: var(--color-brand-purple);
-  color: var(--color-text-on-dark);
-  width: 40px;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  display: grid;
-  place-items: center;
-  border: none;
-  cursor: pointer;
-}
-.search__submit img { filter: brightness(0) invert(1); }
-.select {
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 8px var(--space-3);
-  background: var(--color-bg-app);
-  color: var(--color-text-body);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  width: 100%;
-  text-align: left;
-  font: inherit;
-  cursor: pointer;
-}
-.select__value--placeholder { color: var(--color-text-muted); }
-.filter-bar__cta { align-self: end; }
-
 /* Template grid */
 .template-grid {
   list-style: none;
@@ -134,6 +73,7 @@
   flex-direction: column;
   transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
 }
+.template-card[hidden] { display: none; }
 .template-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
