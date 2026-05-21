@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/chrome.css" />
+  <link rel="stylesheet" href="assets/css/filters.css" />
   <link rel="stylesheet" href="assets/css/pages/map-designer.css" />
 </head>
 <body data-screen="designer-tools" data-screen-title="Map designer" data-crumbs='[{"title":"Designer tools","href":"./"}]'>
@@ -44,38 +45,67 @@
           </div>
         </section>
 
-        <section class="md-section">
+        <section class="md-section" data-filter-root>
           <h2 class="md-section__title">Templates</h2>
 
           <div class="filter-bar">
             <div class="filter-bar__field">
-              <label class="field-label">Search by title</label>
+              <label class="field-label" for="tpl-search">Search by title</label>
               <div class="search">
-                <input type="text" class="search__input" placeholder="Search by title" readonly />
-                <button class="search__submit" aria-label="Search">
+                <input id="tpl-search" type="text" class="search__input" placeholder="Search by title" data-filter-search />
+                <button class="search__submit" aria-label="Search" tabindex="-1">
                   <img src="assets/icons/magnifying-glass.svg" alt="" width="16" height="16" />
                 </button>
               </div>
             </div>
             <div class="filter-bar__field">
               <label class="field-label">Select tags</label>
-              <button class="select">
-                <span class="select__value select__value--placeholder">Select tags</span>
+              <button class="select" data-filter-tag-trigger>
+                <span class="select__value select__value--placeholder" data-filter-tag-label>Select tags</span>
                 <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
               </button>
             </div>
             <div class="filter-bar__field">
               <label class="field-label">Sort by</label>
-              <button class="select">
-                <span class="select__value">Most recent</span>
+              <button class="select" data-filter-sort-trigger>
+                <span class="select__value" data-filter-sort-label>Most recent</span>
                 <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
               </button>
             </div>
             <button class="btn btn--primary filter-bar__cta"><img src="assets/icons/plus.svg" alt="" width="16" height="16" />Create new</button>
           </div>
 
-          <ul class="template-grid">
-            <li class="template-card template-card--v1">
+          <div class="filter-chips" data-filter-chips hidden></div>
+
+          <div class="filter-empty" data-filter-empty hidden>
+            <p class="filter-empty__msg">No templates match these filters.</p>
+            <button class="btn btn--outline" data-filter-clear>Clear filters</button>
+          </div>
+
+          <!-- Tag popover (hoisted to fixed positioning) -->
+          <div class="filter-popover" data-filter-tag-popover hidden role="menu">
+            <button class="tag-option" data-value="Europe" role="menuitemcheckbox" aria-checked="false">Europe</button>
+            <button class="tag-option" data-value="Mediterranean" role="menuitemcheckbox" aria-checked="false">Mediterranean</button>
+            <button class="tag-option" data-value="World" role="menuitemcheckbox" aria-checked="false">World</button>
+            <button class="tag-option" data-value="Nordics" role="menuitemcheckbox" aria-checked="false">Nordics</button>
+            <button class="tag-option" data-value="UK" role="menuitemcheckbox" aria-checked="false">UK</button>
+            <button class="tag-option" data-value="Elections" role="menuitemcheckbox" aria-checked="false">Elections</button>
+            <button class="tag-option" data-value="Environment" role="menuitemcheckbox" aria-checked="false">Environment</button>
+            <button class="tag-option" data-value="Infrastructure" role="menuitemcheckbox" aria-checked="false">Infrastructure</button>
+            <button class="tag-option" data-value="Tourism" role="menuitemcheckbox" aria-checked="false">Tourism</button>
+            <button class="tag-option" data-value="Economic" role="menuitemcheckbox" aria-checked="false">Economic</button>
+            <button class="tag-option" data-value="Reference" role="menuitemcheckbox" aria-checked="false">Reference</button>
+          </div>
+
+          <!-- Sort popover -->
+          <div class="filter-popover" data-filter-sort-popover hidden role="menu">
+            <button class="sort-option is-selected" data-value="recent" role="menuitemradio" aria-checked="true">Most recent</button>
+            <button class="sort-option" data-value="name-asc" role="menuitemradio" aria-checked="false">Name (A–Z)</button>
+            <button class="sort-option" data-value="name-desc" role="menuitemradio" aria-checked="false">Name (Z–A)</button>
+          </div>
+
+          <ul class="template-grid" data-filter-grid>
+            <li class="template-card template-card--v1" data-filter-item data-name="Election results — Europe" data-tags="Europe,Elections">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Election results — Europe template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -89,7 +119,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v2">
+            <li class="template-card template-card--v2" data-filter-item data-name="Climate zones — World" data-tags="World,Environment">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Climate zones — World template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -103,7 +133,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v3">
+            <li class="template-card template-card--v3" data-filter-item data-name="Energy mix — Nordics" data-tags="Nordics,Environment">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Energy mix — Nordics template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -117,7 +147,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v4">
+            <li class="template-card template-card--v4" data-filter-item data-name="Election results — UK" data-tags="UK,Elections">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Election results — UK template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -131,7 +161,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v1">
+            <li class="template-card template-card--v1" data-filter-item data-name="Population density — Mediterranean" data-tags="Mediterranean,Reference">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Population density — Mediterranean template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -145,7 +175,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v2">
+            <li class="template-card template-card--v2" data-filter-item data-name="Time zones — Global" data-tags="World,Reference">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Time zones — Global template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -159,7 +189,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v3">
+            <li class="template-card template-card--v3" data-filter-item data-name="Infrastructure — Scandinavia" data-tags="Nordics,Infrastructure">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Infrastructure — Scandinavia template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -173,7 +203,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v4">
+            <li class="template-card template-card--v4" data-filter-item data-name="Constituency map — UK" data-tags="UK,Elections">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Constituency map — UK template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -187,7 +217,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v1">
+            <li class="template-card template-card--v1" data-filter-item data-name="Tourism — Southern Europe" data-tags="Europe,Tourism">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Tourism — Southern Europe template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -201,7 +231,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v2">
+            <li class="template-card template-card--v2" data-filter-item data-name="World economic indicators" data-tags="World,Economic">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open World economic indicators template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -215,7 +245,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v3">
+            <li class="template-card template-card--v3" data-filter-item data-name="Air quality — Northern Europe" data-tags="Nordics,Environment">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Air quality — Northern Europe template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -229,7 +259,7 @@
                 </div>
               </div>
             </li>
-            <li class="template-card template-card--v4">
+            <li class="template-card template-card--v4" data-filter-item data-name="Transit — London" data-tags="UK,Infrastructure">
               <a class="template-card__hit" href="pages/base-map-editor.html" aria-label="Open Transit — London template">
                 <div class="template-card__thumb" aria-hidden="true"></div>
               </a>
@@ -252,5 +282,6 @@
   <script src="assets/js/chrome.js" defer></script>
   <script src="assets/js/prefetch.js" defer></script>
   <script src="assets/js/library.js" defer></script>
+  <script src="assets/js/grid-filter.js" defer></script>
 </body>
 </html>

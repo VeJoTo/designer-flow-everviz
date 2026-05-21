@@ -1,0 +1,165 @@
+/* Filter bar, popovers, tag chips, empty state — shared across
+   map-designer Templates section and the libraries. */
+
+/* Filter bar */
+.filter-bar {
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 1fr) minmax(180px, 1fr) auto;
+  gap: var(--space-5);
+  align-items: end;
+  margin-bottom: var(--space-5);
+}
+.field-label {
+  display: block;
+  font-size: var(--fs-small);
+  color: var(--color-text-primary);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-2);
+}
+.search { display: flex; }
+.search__input {
+  flex: 1;
+  border: 1px solid var(--color-border-subtle);
+  border-right: none;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  padding: 8px var(--space-3);
+  font: inherit;
+  background: var(--color-bg-app);
+  color: var(--color-text-body);
+  outline: none;
+  min-width: 0;
+}
+.search__input::placeholder { color: var(--color-text-muted); }
+.search__submit {
+  background: var(--color-brand-purple);
+  color: var(--color-text-on-dark);
+  width: 40px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  cursor: pointer;
+}
+.search__submit img { filter: brightness(0) invert(1); }
+.select {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px var(--space-3);
+  background: var(--color-bg-app);
+  color: var(--color-text-body);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.select__value--placeholder { color: var(--color-text-muted); }
+.filter-bar__cta { align-self: end; }
+
+/* Filter popovers (tags + sort) */
+.filter-popover[hidden] { display: none; }
+.filter-popover {
+  position: fixed;
+  z-index: 9000;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  box-shadow: 0 12px 28px rgba(16, 21, 61, 0.18);
+  min-width: 200px;
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tag-option,
+.sort-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 8px var(--space-3);
+  border-radius: 6px;
+  text-align: left;
+  font: inherit;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-weight: var(--fw-medium);
+  position: relative;
+}
+.tag-option:hover,
+.sort-option:hover { background: var(--color-brand-purple-soft); }
+.tag-option.is-selected,
+.sort-option.is-selected { background: var(--color-brand-purple-soft); }
+.tag-option.is-selected::after {
+  content: "✓";
+  margin-left: auto;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+.sort-option.is-selected::after {
+  content: "✓";
+  margin-left: auto;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+
+/* Active-tag chips below the filter bar */
+.filter-chips[hidden] { display: none; }
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 4px 12px;
+  border-radius: 999px;
+  background: var(--color-brand-purple-soft);
+  color: var(--color-text-primary);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  border: none;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.filter-chip:hover { background: #D1D6FA; }
+.filter-chip__x {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(40, 39, 126, 0.12);
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* No-results state */
+.filter-empty[hidden] { display: none; }
+.filter-empty {
+  text-align: center;
+  padding: var(--space-10) var(--space-5);
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+.filter-empty__msg {
+  color: var(--color-text-body);
+  font-size: var(--fs-body);
+  margin: 0;
+}
+.filter-empty .btn { align-self: center; }
+

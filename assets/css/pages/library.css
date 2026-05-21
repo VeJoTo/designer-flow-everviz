@@ -38,6 +38,7 @@
   flex-direction: column;
   transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
 }
+.map-card[hidden] { display: none; }
 .map-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
