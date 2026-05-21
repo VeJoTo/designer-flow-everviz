@@ -85,7 +85,10 @@
       return ia - ib;
     }
     function render() {
-      const ordered = [...items].sort(compare);
+      // Re-query the DOM each render so cards that have been removed
+      // (e.g. user deleted a saved card) don't get resurrected.
+      const current = Array.from(grid.querySelectorAll("[data-filter-item]"));
+      const ordered = [...current].sort(compare);
       let visible = 0;
       for (const item of ordered) {
         if (matches(item)) {
