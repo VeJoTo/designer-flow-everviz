@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="assets/css/chrome.css" />
   <link rel="stylesheet" href="assets/css/pages/editor.css" />
 </head>
-<body data-screen="designer-tools" data-screen-title="Base map editor" data-crumbs='[]' data-page-mode="editor" data-save-toast="Basemap saved">
+<body data-screen="designer-tools" data-screen-title="Base map editor" data-crumbs='[]' data-page-mode="editor" data-save-toast="Basemap saved" data-editor-kind="basemap" data-library-href="pages/base-maps-library.html">
   <div class="app app--editor">
     <div id="chrome" class="chrome-mount"></div>
     <main>
@@ -253,7 +253,7 @@
       </div>
       <footer class="save-modal__foot">
         <button class="btn btn--outline" data-save-modal-close>Cancel</button>
-        <a class="btn btn--outline" href="pages/base-maps-library.html">Save &amp; go to Base-maps library</a>
+        <a class="btn btn--outline" href="pages/base-maps-library.html" data-action="save-and-go">Save &amp; go to Base-maps library</a>
         <button class="btn btn--primary" data-save-modal-close data-action="save-confirm">Save</button>
       </footer>
     </div>
@@ -367,8 +367,36 @@
           setTimeout(() => { toast.hidden = true; }, 220);
         }, 2400);
       };
+
+      // Persist the save to localStorage (used by both Save and Save & go).
+      const editorKind = document.body.dataset.editorKind; // "minimap" | "basemap"
+      const persistSave = () => {
+        const nameInput = document.getElementById("save-template-name");
+        const name = (nameInput?.value || "").trim() || "Untitled";
+        const previewEl = document.querySelector(".map-preview");
+        const thumb = previewEl?.style.backgroundImage || "";
+        // If we arrived here from an existing saved entry (?id=...), update it.
+        const id = new URLSearchParams(window.location.search).get("id") || null;
+        const entry = window.SavedMaps?.save(editorKind, { id, name, thumb });
+        if (entry) {
+          // Update the editor title to reflect the saved name.
+          const titleEl = document.querySelector(".editor-bar__title-text");
+          if (titleEl) titleEl.textContent = entry.name;
+        }
+        return entry;
+      };
+
       document.querySelectorAll('[data-action="save-confirm"]').forEach((btn) => {
-        btn.addEventListener("click", showToast);
+        btn.addEventListener("click", () => {
+          persistSave();
+          showToast();
+        });
+      });
+      document.querySelectorAll('[data-action="save-and-go"]').forEach((link) => {
+        link.addEventListener("click", () => {
+          persistSave();
+          // Anchor navigation continues normally
+        });
       });
 
       // Per-layer context menu (Hide / Duplicate / Delete)
@@ -447,6 +475,7 @@
       });
     });
   </script>
+  <script src="assets/js/saved-maps.js" defer></script>
   <script src="assets/js/tooltip.js" defer></script>
   <script src="assets/js/chrome.js" defer></script>
   <script src="assets/js/prefetch.js" defer></script>
