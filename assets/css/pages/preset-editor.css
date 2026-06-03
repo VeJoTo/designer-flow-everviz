@@ -325,130 +325,145 @@
   filter: saturate(0.6) brightness(1.1) contrast(0.95);
 }
 
-/* Centered marker pin over the preview — driven by CSS vars so the
-   Marker style controls can update color / size / shape live. */
+/* Centered marker pin over the preview */
 .preset-map__pin {
-  --pin-color: #FF4D5F;
-  --pin-size: 32px;
   position: absolute;
   top: 50%;
   left: 50%;
-  width: calc(var(--pin-size) * 0.7);
-  height: var(--pin-size);
+  width: 18px;
+  height: 26px;
   transform: translate(-50%, -100%);
   background:
-    radial-gradient(circle at 50% 35%, #fff 0 14%, transparent 18%),
-    var(--pin-color);
+    radial-gradient(circle at 50% 35%, #fff 0 4px, transparent 5px),
+    linear-gradient(to bottom, #FF4D5F 0%, #C0392B 100%);
   clip-path: polygon(50% 100%, 0 35%, 0 0, 100% 0, 100% 35%);
   filter: drop-shadow(0 4px 8px rgba(16, 21, 61, 0.45));
-  transition: width var(--duration-fast) var(--ease-out),
-              height var(--duration-fast) var(--ease-out),
-              background-color var(--duration-fast) var(--ease-out);
-}
-/* Shape variants — explicit class so the pin can switch geometry. */
-.preset-map__pin--circle {
-  width: var(--pin-size);
-  height: var(--pin-size);
-  clip-path: none;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-.preset-map__pin--square {
-  width: var(--pin-size);
-  height: var(--pin-size);
-  clip-path: none;
-  border-radius: var(--radius-sm);
-  transform: translate(-50%, -50%);
-}
-.preset-map__pin--tag {
-  width: var(--pin-size);
-  height: calc(var(--pin-size) * 1.2);
-  clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
-  border-radius: 0;
 }
 
 /* ──────────────────────────────────────────────────────────────
-   MARKER STYLE CONTROLS — segmented control, color, slider
+   LABELS — anchor-point picker, XY offset pair
    ────────────────────────────────────────────────────────────── */
 
-/* Pill-shaped segmented control (Shape: Pin / Circle / Square / Tag) */
-.seg-control {
-  display: flex;
+/* 3×3 anchor-point picker. Cells are tiny circles; the active one
+   fills with brand navy. The middle cell is disabled (the marker
+   itself isn't a valid label anchor target). */
+.anchor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 28px);
+  grid-template-rows: repeat(3, 28px);
+  gap: var(--space-2);
+  padding: var(--space-2);
   background: var(--color-bg-app);
-  border-radius: 999px;
-  padding: 4px;
-  width: 100%;
+  border-radius: var(--radius-sm);
+  width: fit-content;
 }
-.seg-control__btn {
-  flex: 1;
-  padding: 8px 4px;
-  border-radius: 999px;
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-  background: transparent;
+.anchor-grid__cell {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-bg-surface);
+  border: 1.5px solid var(--color-border-subtle);
   transition: background var(--duration-fast) var(--ease-out),
-              color var(--duration-fast) var(--ease-out);
+              border-color var(--duration-fast) var(--ease-out);
 }
-.seg-control__btn:hover { color: var(--color-text-primary); }
-.seg-control__btn--active {
+.anchor-grid__cell:hover:not(.anchor-grid__cell--disabled):not(.anchor-grid__cell--active) {
+  border-color: var(--color-text-primary);
+}
+.anchor-grid__cell--active {
   background: var(--color-text-primary);
-  color: var(--color-text-on-dark);
+  border-color: var(--color-text-primary);
+}
+.anchor-grid__cell--disabled {
+  background: transparent;
+  border: 1.5px dashed var(--color-border-subtle);
+  cursor: default;
+  opacity: 0.6;
 }
 
-/* Color swatch + hex input pair */
-.color-input {
+/* XY numeric pair (Anchor offset) */
+.xy-input {
+  display: flex;
+  gap: var(--space-2);
+}
+.xy-input__field {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-}
-.color-input__swatch {
-  position: relative;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid var(--color-border-subtle);
-  cursor: pointer;
-  overflow: hidden;
-}
-.color-input__swatch input[type="color"] {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  padding: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-.color-input__hex {
-  width: 100px;
+  padding: 6px 10px;
   border: 1.5px solid var(--color-border-subtle);
   border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: var(--fs-small);
-  text-transform: uppercase;
-  color: var(--color-text-primary);
-  outline: none;
+  background: var(--color-bg-surface);
+  flex: 1;
 }
-.color-input__hex:focus { border-color: var(--color-text-primary); }
-
-/* Range slider with px readout */
-.size-slider {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-.size-slider__range {
-  width: 140px;
-  accent-color: var(--color-text-primary);
-}
-.size-slider__value {
+.xy-input__axis {
+  font-weight: var(--fw-bold);
   font-size: var(--fs-small);
   color: var(--color-text-muted);
-  min-width: 50px;
+}
+.xy-input__field input {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: var(--color-text-primary);
   text-align: right;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+}
+.xy-input__field input::-webkit-outer-spin-button,
+.xy-input__field input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.xy-input__unit {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+/* Toggle switch (Connector → Enabled). Native checkbox + styled track. */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+.switch input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.switch__track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--color-border-subtle);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-bg-surface);
+  box-shadow: 0 1px 3px rgba(16, 21, 61, 0.25);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+.switch input:checked + .switch__track {
+  background: var(--color-text-primary);
+}
+.switch input:checked + .switch__track .switch__thumb {
+  transform: translateX(20px);
+}
+.switch input:focus-visible + .switch__track {
+  outline: 2px solid var(--color-text-link);
+  outline-offset: 2px;
 }
 
 /* ──────────────────────────────────────────────────────────────
