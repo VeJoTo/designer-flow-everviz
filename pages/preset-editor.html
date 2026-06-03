@@ -16,16 +16,12 @@
   <div class="app app--editor">
     <div id="chrome" class="chrome-mount"></div>
     <main>
-      <!-- Visible breadcrumb at the top of the editor body. Mirrors the
-           topbar breadcrumb (which renders into the global chrome) but
-           lives inside the editor so it's always in view. -->
-      <nav class="preset-crumb" aria-label="Breadcrumb">
-        <a href="./" class="preset-crumb__link">Designer tools</a>
-        <span class="preset-crumb__sep" aria-hidden="true">/</span>
-        <a href="pages/map-designer.html" class="preset-crumb__link">Map designer</a>
-        <span class="preset-crumb__sep" aria-hidden="true">/</span>
-        <span class="preset-crumb__leaf">Preset editor</span>
-      </nav>
+      <!-- 'Back to Map designer' link below the topbar breadcrumb,
+           matching the library / basemap-editor pattern. -->
+      <a class="preset-back-link" href="pages/map-designer.html">
+        <img src="assets/icons/arrow-long-left.svg" alt="" width="18" height="18" />
+        Back to Map designer
+      </a>
 
       <!-- Editor-level filter bar (sits above the 3-pane body) -->
       <div class="preset-filter-bar">

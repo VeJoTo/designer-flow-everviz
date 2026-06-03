@@ -18,27 +18,25 @@
   overflow: hidden;
 }
 
-/* Visible breadcrumb across the top of the editor body. Same purple-
-   link aesthetic as the topbar breadcrumb (which doesn't render
-   reliably in editor mode). */
-.preset-crumb {
-  display: flex;
+/* The basemap/minimap editors use an .editor-bar header so they hide
+   the topbar breadcrumb (editor.css). The preset editor has no such
+   header, so re-show the topbar breadcrumb here. */
+body[data-page-mode="editor"] .topbar__crumb { display: flex; }
+
+/* Back link sits above the filter bar, same purple link + arrow style
+   as the libraries (.back-link in base.css). */
+.preset-back-link {
+  display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-6);
-  background: var(--color-bg-surface);
-  border-bottom: 1px solid var(--color-border-subtle);
-  font-size: var(--fs-body);
-}
-.preset-crumb__link {
+  padding: var(--space-4) var(--space-6) var(--space-3);
   color: var(--color-text-link);
   font-weight: var(--fw-semibold);
+  background: transparent;
 }
-.preset-crumb__link:hover { text-decoration: underline; }
-.preset-crumb__sep { color: var(--color-text-muted); }
-.preset-crumb__leaf {
-  color: var(--color-text-primary);
-  font-weight: var(--fw-semibold);
+.preset-back-link:hover { text-decoration: underline; }
+.preset-back-link img {
+  filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%);
 }
 
 /* Top filter bar — sits above the 3-pane body, full-bleed white. */
