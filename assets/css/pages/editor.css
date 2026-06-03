@@ -96,6 +96,25 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   border-top: 1px solid var(--color-border-subtle);
   min-height: 0;
   overflow: hidden;
+  transition: grid-template-columns var(--duration-base) var(--ease-out);
+}
+/* Collapsed Layers pane: just a narrow rail with the toggle chevron. */
+.editor-grid.layers-collapsed { grid-template-columns: 56px 440px 1fr; }
+.editor-pane--layers.is-collapsed > *:not(.layers-pane__head),
+.editor-pane--layers.is-collapsed .layers-pane__title,
+.editor-pane--layers.is-collapsed .icon-pill:not([data-action="toggle-layers-pane"]) {
+  display: none;
+}
+.editor-pane--layers.is-collapsed .layers-pane__head {
+  padding: var(--space-3) 0;
+  justify-content: center;
+}
+.editor-pane--layers.is-collapsed .layers-pane__head-actions {
+  width: 100%;
+  justify-content: center;
+}
+.editor-pane--layers.is-collapsed [data-action="toggle-layers-pane"] img {
+  transform: scaleX(-1);
 }
 .editor-pane {
   min-width: 0;

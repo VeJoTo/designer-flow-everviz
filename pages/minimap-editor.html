@@ -41,7 +41,7 @@
             <div class="layers-pane__head-actions">
               <button class="icon-pill" aria-label="Expand or collapse all layers" data-tooltip="Expand or collapse all layers"><img src="assets/icons/expand-collapse.svg" alt="" width="24" height="24" /></button>
               <button class="icon-pill icon-pill--accent" data-tooltip="Add a new layer" aria-label="Add a new layer"><img src="assets/icons/plus.svg" alt="" width="24" height="24" /></button>
-              <button class="icon-pill icon-pill--ghost" aria-label="Collapse panel" data-tooltip="Collapse panel"><img src="assets/icons/chevron-left.svg" alt="" width="24" height="24" /></button>
+              <button class="icon-pill icon-pill--ghost" data-action="toggle-layers-pane" aria-label="Collapse panel" data-tooltip="Collapse panel"><img src="assets/icons/chevron-left.svg" alt="" width="24" height="24" /></button>
             </div>
           </div>
           <div class="layers-pane__search">
@@ -462,6 +462,20 @@
         link.addEventListener("click", () => {
           persistSave();
           // Anchor navigation continues normally
+        });
+      });
+
+      // Collapse / expand the Layers pane. Shrinks the editor grid's
+      // first column to a 56px rail; only the toggle chevron remains.
+      const layersPane = document.querySelector(".editor-pane--layers");
+      const editorGrid = document.querySelector(".editor-grid");
+      document.querySelectorAll('[data-action="toggle-layers-pane"]').forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const collapsed = layersPane.classList.toggle("is-collapsed");
+          editorGrid.classList.toggle("layers-collapsed", collapsed);
+          const label = collapsed ? "Expand panel" : "Collapse panel";
+          btn.setAttribute("aria-label", label);
+          btn.setAttribute("data-tooltip", label);
         });
       });
 
