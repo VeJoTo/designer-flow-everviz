@@ -4,26 +4,361 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=1280" />
   <base href="../" />
-  <title>Presets editor · everviz prototype</title>
+  <title>Preset editor · everviz prototype</title>
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/chrome.css" />
-  <style>
-    .placeholder { padding: var(--space-10); }
-    .placeholder a { display: inline-block; margin-top: var(--space-4); }
-  </style>
+  <link rel="stylesheet" href="assets/css/filters.css" />
+  <link rel="stylesheet" href="assets/css/pages/editor.css" />
+  <link rel="stylesheet" href="assets/css/pages/preset-editor.css" />
 </head>
-<body data-screen="designer-tools" data-screen-title="Presets editor" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]'>
-  <div class="app">
+<body data-screen="designer-tools" data-screen-title="Preset editor" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]' data-save-toast="Preset saved">
+  <div class="app app--editor">
     <div id="chrome" class="chrome-mount"></div>
     <main>
-      <section class="placeholder">
-        <h1>Presets editor</h1>
-        <p>This screen will be built in the next iteration. Vera will send the screenshot next.</p>
-        <a href="pages/map-designer.html">← Back to Map designer</a>
-      </section>
+      <!-- Editor-level filter bar (sits above the 3-pane body) -->
+      <div class="preset-filter-bar">
+        <div class="filter-bar__field">
+          <label class="field-label">Filter by type</label>
+          <button class="select" data-tooltip="Filter by preset type">
+            <span class="select__value">All</span>
+            <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+          </button>
+        </div>
+        <div class="filter-bar__field">
+          <label class="field-label">Select tags</label>
+          <button class="select">
+            <span class="select__value select__value--placeholder">Select tags</span>
+            <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+          </button>
+        </div>
+        <button class="preset-filter-bar__clear" type="button">clear</button>
+      </div>
+
+      <!-- Three-pane editor body -->
+      <div class="editor-grid preset-editor-grid">
+        <!-- LEFT: Create new + sections -->
+        <aside class="editor-pane preset-pane preset-pane--list">
+          <a class="btn btn--primary preset-create-new" href="#">
+            Create new
+            <img src="assets/icons/plus.svg" alt="" width="16" height="16" />
+          </a>
+
+          <div class="preset-sections">
+            <details class="preset-section" open data-preset-section>
+              <summary class="preset-section__head">
+                <span class="preset-section__title">Markers</span>
+                <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <ul class="preset-items">
+                <li class="preset-item preset-item--selected" data-preset-item>
+                  <span class="preset-item__dot" style="background:#FF4D5F"></span>
+                  <span class="preset-item__name">Default marker</span>
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Hide" data-tooltip="Hide">
+                    <img src="assets/icons/eye.svg" alt="" width="18" height="18" />
+                  </button>
+                  <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
+                    <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
+                  </button>
+                </li>
+                <li class="preset-item preset-item--hidden" data-preset-item>
+                  <span class="preset-item__dot" style="background:#1A2B7A"></span>
+                  <span class="preset-item__name">Blue Marker</span>
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
+                    <img src="assets/icons/eye-slash.svg" alt="" width="18" height="18" />
+                  </button>
+                  <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
+                    <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
+                  </button>
+                </li>
+                <li class="preset-item preset-item--hidden" data-preset-item>
+                  <span class="preset-item__dot" style="background:#5B5BFF"></span>
+                  <span class="preset-item__name">Darkmode marker</span>
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
+                    <img src="assets/icons/eye-slash.svg" alt="" width="18" height="18" />
+                  </button>
+                  <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
+                    <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
+                  </button>
+                </li>
+              </ul>
+            </details>
+
+            <details class="preset-section" data-preset-section>
+              <summary class="preset-section__head">
+                <span class="preset-section__title">Icons</span>
+                <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <ul class="preset-items"></ul>
+            </details>
+
+            <details class="preset-section" data-preset-section>
+              <summary class="preset-section__head">
+                <span class="preset-section__title">Labels</span>
+                <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <ul class="preset-items"></ul>
+            </details>
+
+            <details class="preset-section" data-preset-section>
+              <summary class="preset-section__head">
+                <span class="preset-section__title">Regions</span>
+                <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <ul class="preset-items"></ul>
+            </details>
+
+            <details class="preset-section" data-preset-section>
+              <summary class="preset-section__head">
+                <span class="preset-section__title">Shapes</span>
+                <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <ul class="preset-items"></ul>
+            </details>
+
+            <details class="preset-section" data-preset-section>
+              <summary class="preset-section__head">
+                <span class="preset-section__title">Zoom</span>
+                <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <ul class="preset-items"></ul>
+            </details>
+          </div>
+        </aside>
+
+        <!-- MIDDLE: properties of the selected preset item -->
+        <section class="editor-pane preset-pane preset-pane--properties">
+          <div class="prop-row prop-row--stacked">
+            <label class="prop-label prop-label--title">Preset Name</label>
+            <input type="text" class="prop-input" value="Default marker" data-prop="preset-name" />
+          </div>
+          <div class="prop-row prop-row--stacked">
+            <label class="prop-label prop-label--title">Description</label>
+            <textarea class="prop-input prop-input--area" rows="3" data-prop="preset-desc"></textarea>
+          </div>
+
+          <details class="prop-section" open>
+            <summary class="prop-section__head">
+              <span class="prop-section__title">Icons</span>
+              <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+            </summary>
+            <div class="prop-section__body">
+              <button type="button" class="prop-add">
+                Add Icons
+                <span class="prop-add__plus"><img src="assets/icons/plus.svg" alt="" width="12" height="12" /></span>
+              </button>
+              <div class="prop-row prop-row--inline">
+                <label class="prop-label">Icon Size</label>
+                <div class="prop-stepper">
+                  <input type="number" class="prop-stepper__input" value="0" min="0" data-prop="icon-size" />
+                  <span class="prop-stepper__spinners">
+                    <button type="button" aria-label="Increment" data-stepper="up">▲</button>
+                    <button type="button" aria-label="Decrement" data-stepper="down">▼</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="prop-section" open>
+            <summary class="prop-section__head">
+              <span class="prop-section__title">Labels</span>
+              <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+            </summary>
+            <div class="prop-section__body">
+              <button type="button" class="prop-add">
+                Add Label
+                <span class="prop-add__plus"><img src="assets/icons/plus.svg" alt="" width="12" height="12" /></span>
+              </button>
+              <div class="prop-row prop-row--inline">
+                <label class="prop-label">Placement</label>
+                <button type="button" class="prop-select">
+                  <span>Bottom</span>
+                  <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                </button>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <!-- RIGHT: map preview with base-style switcher -->
+        <aside class="editor-pane preset-pane preset-pane--map">
+          <div class="preset-map__head">
+            <span class="preset-map__label">Base map style</span>
+            <div class="preset-style-toggle" data-style-group>
+              <button type="button" class="preset-style-btn preset-style-btn--active" data-style="satellite">Satellite</button>
+              <button type="button" class="preset-style-btn" data-style="globe">Globe</button>
+              <button type="button" class="preset-style-btn preset-style-btn--add" aria-label="Add base style" data-tooltip="Add base style">
+                <img src="assets/icons/plus.svg" alt="" width="14" height="14" />
+              </button>
+            </div>
+          </div>
+          <div class="preset-map__preview" data-preview>
+            <span class="preset-map__pin" aria-hidden="true"></span>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Bottom action bar -->
+      <div class="preset-actions">
+        <a class="btn btn--outline" href="pages/map-designer.html">Cancel</a>
+        <button type="button" class="btn btn--primary" data-action="save-preset">Save Preset</button>
+      </div>
     </main>
   </div>
+
+  <!-- Toast (shown after Save) -->
+  <div class="save-toast" data-save-toast-el hidden role="status" aria-live="polite">
+    <img src="assets/icons/check-circle.svg" alt="" width="20" height="20" />
+    <span data-save-toast-text></span>
+  </div>
+
+  <!-- Item context menu (Hide / Duplicate / Delete) -->
+  <div class="layer-menu" data-item-menu hidden role="menu">
+    <button class="layer-menu__item" role="menuitem" data-action="menu-hide">
+      <img src="assets/icons/eye-slash.svg" alt="" width="16" height="16" data-menu-icon />
+      <span data-menu-label>Hide</span>
+    </button>
+    <button class="layer-menu__item" role="menuitem" data-action="menu-duplicate">
+      <img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" />
+      <span>Duplicate</span>
+    </button>
+    <button class="layer-menu__item layer-menu__item--danger" role="menuitem" data-action="menu-delete">
+      <img src="assets/icons/trash.svg" alt="" width="16" height="16" />
+      <span>Delete</span>
+    </button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // --- Item selection in the left pane ---
+      const itemsRoot = document.querySelector(".preset-pane--list");
+      const nameInput = document.querySelector('[data-prop="preset-name"]');
+      const selectItem = (li) => {
+        document.querySelectorAll(".preset-item--selected").forEach((s) => s.classList.remove("preset-item--selected"));
+        li.classList.add("preset-item--selected");
+        const name = li.querySelector(".preset-item__name")?.textContent.trim();
+        if (nameInput && name) nameInput.value = name;
+      };
+      itemsRoot.addEventListener("click", (e) => {
+        const toggle = e.target.closest("[data-action='toggle-visible']");
+        const menu = e.target.closest(".preset-item__menu");
+        if (toggle || menu) return; // handled elsewhere
+        const li = e.target.closest("[data-preset-item]");
+        if (li) selectItem(li);
+      });
+
+      // --- Per-item visibility toggle (eye / eye-slash) ---
+      itemsRoot.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action='toggle-visible']");
+        if (!btn) return;
+        e.stopPropagation();
+        const li = btn.closest("[data-preset-item]");
+        const isHidden = li.classList.toggle("preset-item--hidden");
+        const img = btn.querySelector("img");
+        img.src = isHidden ? "assets/icons/eye-slash.svg" : "assets/icons/eye.svg";
+        btn.setAttribute("aria-label", isHidden ? "Show" : "Hide");
+        btn.setAttribute("data-tooltip", isHidden ? "Show" : "Hide");
+      });
+
+      // --- Item context menu (Hide / Duplicate / Delete) ---
+      const menuEl = document.querySelector("[data-item-menu]");
+      let menuTrigger = null;
+      let menuTargetLi = null;
+      const closeMenu = () => { menuEl.hidden = true; menuTrigger = null; menuTargetLi = null; };
+      const openMenu = (btn) => {
+        menuTrigger = btn;
+        menuTargetLi = btn.closest("[data-preset-item]");
+        const r = btn.getBoundingClientRect();
+        menuEl.style.top = `${r.bottom + 4}px`;
+        menuEl.style.left = `${r.right - 168}px`;
+        // sync the Hide/Show label to current state
+        const isHidden = menuTargetLi.classList.contains("preset-item--hidden");
+        menuEl.querySelector("[data-menu-icon]").src = isHidden ? "assets/icons/eye.svg" : "assets/icons/eye-slash.svg";
+        menuEl.querySelector("[data-menu-label]").textContent = isHidden ? "Show" : "Hide";
+        menuEl.hidden = false;
+      };
+      itemsRoot.addEventListener("click", (e) => {
+        const btn = e.target.closest(".preset-item__menu");
+        if (!btn) return;
+        e.stopPropagation();
+        if (menuEl.hidden || menuTrigger !== btn) openMenu(btn);
+        else closeMenu();
+      });
+      menuEl.addEventListener("click", (e) => {
+        const action = e.target.closest("[data-action]")?.dataset.action;
+        if (!action || !menuTargetLi) return;
+        if (action === "menu-hide") {
+          // Reuse the eye toggle so visual state stays consistent.
+          menuTargetLi.querySelector("[data-action='toggle-visible']")?.click();
+        } else if (action === "menu-duplicate") {
+          const clone = menuTargetLi.cloneNode(true);
+          clone.classList.remove("preset-item--selected");
+          const nm = clone.querySelector(".preset-item__name");
+          if (nm) nm.textContent = `${nm.textContent} copy`;
+          menuTargetLi.after(clone);
+        } else if (action === "menu-delete") {
+          const next = menuTargetLi.nextElementSibling || menuTargetLi.previousElementSibling;
+          const wasSelected = menuTargetLi.classList.contains("preset-item--selected");
+          menuTargetLi.remove();
+          if (wasSelected && next) selectItem(next);
+        }
+        closeMenu();
+      });
+      document.addEventListener("click", (e) => {
+        if (menuEl.hidden) return;
+        if (menuTrigger && (e.target === menuTrigger || menuTrigger.contains(e.target))) return;
+        if (menuEl.contains(e.target)) return;
+        closeMenu();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !menuEl.hidden) closeMenu();
+      });
+
+      // --- Base map style toggle (Satellite / Globe) ---
+      document.querySelectorAll("[data-style-group] [data-style]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("[data-style-group] [data-style]").forEach((b) => b.classList.remove("preset-style-btn--active"));
+          btn.classList.add("preset-style-btn--active");
+          const preview = document.querySelector("[data-preview]");
+          if (preview) preview.dataset.style = btn.dataset.style;
+        });
+      });
+
+      // --- Numeric stepper (Icon Size) ---
+      document.querySelectorAll("[data-stepper]").forEach((b) => {
+        b.addEventListener("click", () => {
+          const wrap = b.closest(".prop-stepper");
+          const input = wrap.querySelector("input");
+          const v = parseInt(input.value || "0", 10);
+          input.value = String(Math.max(0, v + (b.dataset.stepper === "up" ? 1 : -1)));
+        });
+      });
+
+      // --- Filter bar clear ---
+      document.querySelector(".preset-filter-bar__clear")?.addEventListener("click", () => {
+        document.querySelectorAll(".select__value").forEach((v) => {
+          if (v.dataset.original) v.textContent = v.dataset.original;
+        });
+      });
+
+      // --- Save toast ---
+      const toast = document.querySelector("[data-save-toast-el]");
+      const toastText = toast?.querySelector("[data-save-toast-text]");
+      let toastTimer;
+      document.querySelector("[data-action='save-preset']")?.addEventListener("click", () => {
+        if (!toast) return;
+        if (toastText) toastText.textContent = document.body.dataset.saveToast || "Preset saved";
+        toast.hidden = false;
+        requestAnimationFrame(() => toast.classList.add("is-visible"));
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("is-visible");
+          setTimeout(() => { toast.hidden = true; }, 220);
+        }, 2400);
+      });
+    });
+  </script>
   <script src="assets/js/tooltip.js" defer></script>
   <script src="assets/js/chrome.js" defer></script>
   <script src="assets/js/prefetch.js" defer></script>
