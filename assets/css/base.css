@@ -223,4 +223,15 @@ h1 { line-height: var(--lh-display); } /* Spec: 40px / 40px */
   border-right: 5px solid transparent;
   border-bottom: 5px solid var(--color-text-primary);
 }
+/* Right-placed variant (sidebar icons) — arrow on the left edge,
+   pointing left toward the icon. */
+.proto-tooltip--right::before {
+  top: 50%;
+  left: -5px;
+  transform: translateY(-50%);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid var(--color-text-primary);
+  border-left: 0;
+}
 .proto-tooltip.is-visible { opacity: 1; }

@@ -21,11 +21,25 @@
     const node = ensureNode();
     node.textContent = text;
     const rect = target.getBoundingClientRect();
-    const left = rect.left + rect.width / 2;
-    const top = rect.bottom + 10;
-    node.style.left = `${Math.round(left)}px`;
-    node.style.top = `${Math.round(top)}px`;
-    node.style.transform = `translate(-50%, 0)`;
+
+    // Placement: explicit data-tooltip-placement wins; otherwise sidebar
+    // icons get right-placement (they hug the left edge — a centered
+    // tooltip below would overflow off-screen), everything else gets
+    // the default bottom-placement.
+    const explicit = target.getAttribute("data-tooltip-placement");
+    const placement = explicit || (target.closest(".sidebar") ? "right" : "bottom");
+    node.classList.toggle("proto-tooltip--right", placement === "right");
+
+    if (placement === "right") {
+      node.style.left = `${Math.round(rect.right + 10)}px`;
+      node.style.top  = `${Math.round(rect.top + rect.height / 2)}px`;
+      node.style.transform = "translate(0, -50%)";
+    } else {
+      node.style.left = `${Math.round(rect.left + rect.width / 2)}px`;
+      node.style.top  = `${Math.round(rect.bottom + 10)}px`;
+      node.style.transform = "translate(-50%, 0)";
+    }
+
     requestAnimationFrame(() => node.classList.add("is-visible"));
     clearTimeout(hideTimer);
   }
