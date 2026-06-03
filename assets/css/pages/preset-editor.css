@@ -445,10 +445,10 @@
 }
 
 /* Label boxes on the preview — small text chip with a soft shadow,
-   centered on the marker point. Background and text inherit from
-   the live values in the Label style textarea (future hookup —
-   for the prototype the chip uses a neutral white-on-dark look). */
-.preset-map__label {
+   centered on the marker point. Renamed from .preset-map__label
+   to avoid colliding with the 'Base map style' heading text in
+   the right-pane head. */
+.preset-map__textlabel {
   position: absolute;
   transform: translate(-50%, -50%);
   background: #FFFFFF;
