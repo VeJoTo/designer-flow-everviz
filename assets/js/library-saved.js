@@ -61,6 +61,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const list = window.SavedMaps.list(kind);
   for (const entry of list) grid.prepend(renderEntry(entry));
 
+  // Toggle the true-empty state when the grid has zero cards. Different
+  // from the filter-no-match empty state — this one means "you have no
+  // basemaps/minimaps at all" and replaces the grid + filter bar with a
+  // single "Create your first…" card.
+  const screen = document.querySelector(".screen--library");
+  const emptyBlock = document.querySelector("[data-library-empty]");
+  function syncEmptyState() {
+    if (!screen || !emptyBlock) return;
+    const hasCards = grid.querySelector(".map-card") !== null;
+    screen.classList.toggle("is-empty", !hasCards);
+    emptyBlock.hidden = hasCards;
+  }
+  syncEmptyState();
+
   // Delete handler — works on any map-card. Saved cards (with
   // [data-saved-delete] / data-saved-id) also clear localStorage.
   // Static cards just disappear from the DOM.
@@ -82,5 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const id = li.dataset.savedId;
     if (id && window.SavedMaps) window.SavedMaps.delete(kind, id);
     li.remove();
+    syncEmptyState();
   });
 });

@@ -131,3 +131,49 @@
 .icon-btn--danger:hover img {
   filter: invert(28%) sepia(83%) saturate(2200%) hue-rotate(340deg) brightness(98%) contrast(96%);
 }
+
+/* True empty state — shown when the library has zero cards AND no
+   filter is active. Distinct from .filter-empty, which fires when
+   filters match nothing. Toggled by library-saved.js. */
+.library-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding: var(--space-12) var(--space-6);
+  max-width: 480px;
+  margin: var(--space-8) auto;
+}
+.library-empty__icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--color-brand-purple-soft);
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--space-2);
+}
+.library-empty__icon img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
+.library-empty__title {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+.library-empty__desc {
+  color: var(--color-text-body);
+  margin: 0 0 var(--space-3);
+  max-width: 360px;
+}
+/* When the page is in empty state, hide the filter bar and grid so the
+   empty card stands alone. The library__head (with H1 + Create new) and
+   back-link stay visible. */
+.screen--library.is-empty .filter-bar,
+.screen--library.is-empty .library-grid,
+.screen--library.is-empty .filter-chips,
+.screen--library.is-empty .filter-empty {
+  display: none;
+}
