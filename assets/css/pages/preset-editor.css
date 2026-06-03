@@ -66,6 +66,11 @@ body[data-page-mode="editor"] .topbar__crumb { display: flex; }
   font-size: var(--fs-body);
 }
 .preset-filter-bar__clear:hover { text-decoration: underline; }
+/* Inputs inside the preset filter bar use the editor's neutral grey
+   instead of the brand cream so they cohere with the rest of the
+   editor surface. */
+.preset-filter-bar .select,
+.preset-filter-bar .search__input { background: #F5F5F5; }
 
 /* Three-pane grid (override editor.css proportions for this screen) */
 .preset-editor-grid {
