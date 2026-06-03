@@ -130,6 +130,35 @@ h1 { line-height: var(--lh-display); } /* Spec: 40px / 40px */
 }
 .confirm-modal__foot .btn { align-self: auto; }
 
+/* Default-card state — used on both .map-card and .template-card. Pill
+   sits over the top-right of the thumbnail; affordance text below
+   switches from purple "Set as default …" to navy semibold "Default …". */
+.is-default .map-card__thumb::after,
+.is-default .template-card__thumb::after {
+  content: "Default";
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 1;
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  box-shadow: 0 2px 6px rgba(16, 21, 61, 0.18);
+}
+.is-default .map-card__default,
+.is-default .template-card__default {
+  color: var(--color-text-primary);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+}
+.map-card__default,
+.template-card__default { cursor: pointer; }
+
 /* Shared back link — used at the top of sub-pages. */
 .back-link {
   display: inline-flex;
