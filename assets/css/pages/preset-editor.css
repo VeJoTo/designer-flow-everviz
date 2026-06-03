@@ -160,8 +160,20 @@
 /* ──────────────────────────────────────────────────────────────
    MIDDLE PANE — properties of the selected item
    ────────────────────────────────────────────────────────────── */
+/* Two-row layout: scrollable form on top, fixed action bar on bottom.
+   The form scrolls inside .preset-pane__scroll; the action bar lives
+   outside that scroll area, so it never overlaps with content. */
 .preset-pane--properties {
-  padding: var(--space-5) var(--space-5) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+.preset-pane__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--space-5) var(--space-5) var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -463,14 +475,12 @@
    the right and only puts Cancel / Save Preset under the form.
    ────────────────────────────────────────────────────────────── */
 .preset-actions {
-  position: sticky;
-  bottom: 0;
-  margin-top: auto;
+  flex-shrink: 0;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-3) 0;
+  padding: var(--space-3) var(--space-5);
   background: var(--color-bg-surface);
   border-top: 1px solid var(--color-border-subtle);
 }

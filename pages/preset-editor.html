@@ -126,8 +126,12 @@
           </div>
         </aside>
 
-        <!-- MIDDLE: properties of the selected preset item -->
+        <!-- MIDDLE: properties of the selected preset item.
+             Inner .preset-pane__scroll holds the scrollable form;
+             .preset-actions sits below it in a fixed slot so it never
+             overlaps with form content while scrolling. -->
         <section class="editor-pane preset-pane preset-pane--properties">
+          <div class="preset-pane__scroll">
           <div class="prop-row prop-row--stacked">
             <label class="prop-label prop-label--title">Preset Name</label>
             <input type="text" class="prop-input" value="Default marker" data-prop="preset-name" />
@@ -221,9 +225,11 @@
               </div>
             </div>
           </details>
+          </div><!-- /.preset-pane__scroll -->
 
-          <!-- Action bar lives at the bottom of the middle pane (per Figma),
-               not as a full-width footer below the map preview. -->
+          <!-- Action bar — lives at the bottom of the middle pane (per Figma),
+               in its own non-scrolling slot so form content never bleeds
+               past it. -->
           <div class="preset-actions">
             <a class="btn btn--outline" href="pages/map-designer.html">Cancel</a>
             <button type="button" class="btn btn--primary" data-action="save-preset">Save Preset</button>
