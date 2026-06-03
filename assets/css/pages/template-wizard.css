@@ -211,11 +211,10 @@ body[data-page-mode="wizard"] main {
   text-overflow: ellipsis;
 }
 
-/* Selected map: navy bg + white text */
-.map-pick--selected {
-  background: var(--color-text-primary);
-  border-color: var(--color-text-primary);
-}
+/* Selected map: only the label bar (bottom) turns navy. The thumbnail
+   on top keeps its own color so the red accent dot stays visible. */
+.map-pick--selected { border-color: var(--color-text-primary); }
+.map-pick--selected .map-pick__body { background: var(--color-text-primary); }
 .map-pick--selected .map-pick__title,
 .map-pick--selected .map-pick__kind { color: var(--color-text-on-dark); }
 
