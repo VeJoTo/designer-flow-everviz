@@ -51,7 +51,7 @@
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <ul class="preset-items">
-                <li class="preset-item preset-item--selected" data-preset-item data-pin-color="#FF4D5F" data-pin-x="48" data-pin-y="56">
+                <li class="preset-item preset-item--selected" data-preset-item data-kind="marker" data-pin-color="#FF4D5F" data-pin-x="48" data-pin-y="56">
                   <span class="preset-item__dot" style="background:#FF4D5F"></span>
                   <span class="preset-item__name">Default marker</span>
                   <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Hide" data-tooltip="Hide">
@@ -61,7 +61,7 @@
                     <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
                   </button>
                 </li>
-                <li class="preset-item preset-item--hidden" data-preset-item data-pin-color="#1A2B7A" data-pin-x="30" data-pin-y="40">
+                <li class="preset-item preset-item--hidden" data-preset-item data-kind="marker" data-pin-color="#1A2B7A" data-pin-x="30" data-pin-y="40">
                   <span class="preset-item__dot" style="background:#1A2B7A"></span>
                   <span class="preset-item__name">Blue Marker</span>
                   <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
@@ -71,7 +71,7 @@
                     <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
                   </button>
                 </li>
-                <li class="preset-item preset-item--hidden" data-preset-item data-pin-color="#5B5BFF" data-pin-x="60" data-pin-y="72">
+                <li class="preset-item preset-item--hidden" data-preset-item data-kind="marker" data-pin-color="#5B5BFF" data-pin-x="60" data-pin-y="72">
                   <span class="preset-item__dot" style="background:#5B5BFF"></span>
                   <span class="preset-item__name">Darkmode marker</span>
                   <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
@@ -89,7 +89,38 @@
                 <span class="preset-section__title">Icons</span>
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
-              <ul class="preset-items"></ul>
+              <ul class="preset-items">
+                <li class="preset-item" data-preset-item data-kind="icon">
+                  <span class="preset-item__dot" style="background:#5B5BFF"></span>
+                  <span class="preset-item__name">Default icon</span>
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Hide" data-tooltip="Hide">
+                    <img src="assets/icons/eye.svg" alt="" width="18" height="18" />
+                  </button>
+                  <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
+                    <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
+                  </button>
+                </li>
+                <li class="preset-item preset-item--hidden" data-preset-item data-kind="icon">
+                  <span class="preset-item__dot" style="background:#FF4D5F"></span>
+                  <span class="preset-item__name">Compass</span>
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
+                    <img src="assets/icons/eye-slash.svg" alt="" width="18" height="18" />
+                  </button>
+                  <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
+                    <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
+                  </button>
+                </li>
+                <li class="preset-item preset-item--hidden" data-preset-item data-kind="icon">
+                  <span class="preset-item__dot" style="background:#1A2B7A"></span>
+                  <span class="preset-item__name">Info</span>
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
+                    <img src="assets/icons/eye-slash.svg" alt="" width="18" height="18" />
+                  </button>
+                  <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
+                    <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
+                  </button>
+                </li>
+              </ul>
             </details>
 
             <details class="preset-section" data-preset-section>
@@ -132,6 +163,8 @@
              overlaps with form content while scrolling. -->
         <section class="editor-pane preset-pane preset-pane--properties">
           <div class="preset-pane__scroll">
+          <!-- Marker properties (shown when a Marker item is selected) -->
+          <div class="props-panel" data-panel="marker">
           <div class="prop-row prop-row--stacked">
             <label class="prop-label prop-label--title">Preset Name</label>
             <input type="text" class="prop-input" value="Default marker" data-prop="preset-name" />
@@ -225,6 +258,32 @@
               </div>
             </div>
           </details>
+          </div><!-- /.props-panel data-panel="marker" -->
+
+          <!-- Icon properties (shown when an Icon item is selected) -->
+          <div class="props-panel" data-panel="icon" hidden>
+            <div class="prop-row prop-row--stacked">
+              <label class="prop-label prop-label--title" for="icon-name">Name</label>
+              <input id="icon-name" type="text" class="prop-input" placeholder="Name" data-prop="icon-name" />
+            </div>
+
+            <div class="prop-row prop-row--inline">
+              <label class="prop-label">Upload SVG</label>
+              <label class="prop-upload">
+                <img src="assets/icons/arrow-up-tray.svg" alt="" width="20" height="20" />
+                <span>Select file</span>
+                <input type="file" accept=".svg,image/svg+xml" data-prop="icon-svg" />
+              </label>
+            </div>
+
+            <div class="prop-row prop-row--inline">
+              <label class="prop-label">Center</label>
+              <button type="button" class="prop-select" data-select="icon-center">
+                <span data-select-value>Bottom</span>
+                <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+              </button>
+            </div>
+          </div>
           </div><!-- /.preset-pane__scroll -->
 
           <!-- Action bar — lives at the bottom of the middle pane (per Figma),
@@ -285,7 +344,16 @@
       // --- Item selection in the left pane ---
       const itemsRoot = document.querySelector(".preset-pane--list");
       const nameInput = document.querySelector('[data-prop="preset-name"]');
+      const iconNameInput = document.querySelector('[data-prop="icon-name"]');
       const previewArea = document.querySelector("[data-preview]");
+
+      // Swap the middle-pane panel based on the selected item's kind
+      // (marker / icon / future: label, region, …).
+      const showPanel = (kind) => {
+        document.querySelectorAll(".props-panel").forEach((p) => {
+          p.hidden = p.dataset.panel !== kind;
+        });
+      };
       // Every non-hidden marker gets its own pin in the preview, placed
       // at the row's data-pin-x / data-pin-y (% of the preview area) and
       // tinted to data-pin-color. Hiding a row removes that one pin;
@@ -307,7 +375,11 @@
         document.querySelectorAll(".preset-item--selected").forEach((s) => s.classList.remove("preset-item--selected"));
         li.classList.add("preset-item--selected");
         const name = li.querySelector(".preset-item__name")?.textContent.trim();
-        if (nameInput && name) nameInput.value = name;
+        const kind = li.dataset.kind || "marker";
+        showPanel(kind);
+        // Drop the row's name into whichever panel's name field is active.
+        const target = kind === "icon" ? iconNameInput : nameInput;
+        if (target && name) target.value = name;
         // Selecting a hidden marker auto-shows it — the user clearly wants
         // to work with it, so the eye flips back to visible and the pin
         // appears in the preview.
@@ -397,6 +469,15 @@
       });
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && !menuEl.hidden) closeMenu();
+      });
+
+      // --- Upload SVG: reflect chosen filename in the bar ---
+      document.querySelectorAll('[data-prop="icon-svg"]').forEach((input) => {
+        input.addEventListener("change", () => {
+          const label = input.closest(".prop-upload")?.querySelector("span");
+          if (!label) return;
+          label.textContent = input.files?.[0]?.name || "Select file";
+        });
       });
 
       // --- Base map style toggle (Satellite / Globe) ---
