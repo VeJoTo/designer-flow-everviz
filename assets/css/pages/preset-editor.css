@@ -134,6 +134,26 @@
   height: 10px;
   border-radius: 50%;
 }
+/* Icon items render a Heroicons glyph in place of the colored dot.
+   Glyph is picked via the row's [data-icon] attribute; tint via the
+   row's inline --icon-tint. Same mask-image trick as the preview pins. */
+.preset-item__icon {
+  width: 18px;
+  height: 18px;
+  background-color: var(--icon-tint, var(--color-text-primary));
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+}
+/* mask-image is set inline by JS so that uploaded user SVGs (as
+   data URLs) work the same way as the built-in glyphs without
+   running into CSS url() resolution quirks. */
+.preset-item--selected .preset-item__icon {
+  background-color: var(--color-text-on-dark);
+}
 .preset-item__name {
   font-size: var(--fs-body);
   color: var(--color-text-primary);
@@ -369,6 +389,26 @@
   filter: saturate(0.6) brightness(1.1) contrast(0.95);
 }
 
+/* Icon glyphs on the preview — picked by [data-icon] like the
+   left-pane items. Centered on the marker point (not anchored from
+   the tip, since icons aren't pins). Tinted via --pin-tint. */
+.preset-map__icon {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  transform: translate(-50%, -50%);
+  background-color: var(--pin-tint, #FF4D5F);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+  filter: drop-shadow(0 2px 6px rgba(16, 21, 61, 0.4));
+}
+/* .preset-map__icon mask-image is set inline by renderPins(), matching
+   the source the row uses (built-in glyph path or uploaded data URL). */
+
 /* Marker pins on the preview — Heroicons solid map-pin used as a
    CSS mask so each pin can be tinted to its marker's color via
    --pin-tint. One pin per non-hidden marker; positions are set
@@ -435,6 +475,73 @@
   font-size: var(--fs-small);
   color: var(--color-text-muted);
 }
+
+/* Real dropdown popovers for the prop chips (Placement / Default
+   anchor point / Center / future). The .prop-row--inline that wraps
+   them is position:relative so the popover anchors below the chip. */
+.preset-pane--properties .prop-select-wrap { position: relative; }
+.prop-select-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: var(--space-4);
+  z-index: 20;
+  margin: 0;
+  padding: var(--space-2);
+  list-style: none;
+  min-width: 160px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 24px rgba(16, 21, 61, 0.15);
+}
+.prop-select-menu[hidden] { display: none; }
+.prop-select-menu li { margin: 0; }
+.prop-select-option {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  background: transparent;
+}
+.prop-select-option:hover { background: var(--color-brand-purple-soft); }
+.prop-select-option.is-selected {
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+}
+/* Trigger chevron flips when the popover is open. */
+.prop-select-wrap.is-open .prop-select img { transform: rotate(180deg); }
+.prop-select img { transition: transform var(--duration-fast) var(--ease-out); }
+
+/* Upload SVG bar — sits inside a cream chip like the dropdowns. The
+   purple 'Select file' label + upload icon overlay a hidden file input. */
+.prop-upload {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+.prop-upload input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.prop-upload img {
+  width: 20px;
+  height: 20px;
+  filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%);
+}
+
+/* Props panel swap — only the panel matching the selected item's
+   data-kind is visible. */
+.props-panel[hidden] { display: none; }
 
 /* Toggle switch (Connector → Enabled). Native checkbox + styled track. */
 .switch {
