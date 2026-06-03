@@ -126,8 +126,12 @@
           </div>
         </aside>
 
-        <!-- MIDDLE: properties of the selected preset item -->
+        <!-- MIDDLE: properties of the selected preset item.
+             Inner .preset-pane__scroll holds the scrollable form;
+             .preset-actions sits below it in a fixed slot so it never
+             overlaps with form content while scrolling. -->
         <section class="editor-pane preset-pane preset-pane--properties">
+          <div class="preset-pane__scroll">
           <div class="prop-row prop-row--stacked">
             <label class="prop-label prop-label--title">Preset Name</label>
             <input type="text" class="prop-input" value="Default marker" data-prop="preset-name" />
@@ -150,7 +154,7 @@
               <div class="prop-row prop-row--inline">
                 <label class="prop-label">Icon Size</label>
                 <div class="prop-stepper">
-                  <input type="number" class="prop-stepper__input" value="0" min="0" data-prop="icon-size" />
+                  <input type="number" class="prop-stepper__input" value="14" min="0" max="40" data-prop="icon-size" />
                   <span class="prop-stepper__spinners">
                     <button type="button" aria-label="Increment" data-stepper="up">▲</button>
                     <button type="button" aria-label="Decrement" data-stepper="down">▼</button>
@@ -170,18 +174,62 @@
                 Add Label
                 <span class="prop-add__plus"><img src="assets/icons/plus.svg" alt="" width="12" height="12" /></span>
               </button>
+
               <div class="prop-row prop-row--inline">
                 <label class="prop-label">Placement</label>
-                <button type="button" class="prop-select">
-                  <span>Bottom</span>
+                <button type="button" class="prop-select" data-select="placement">
+                  <span data-select-value>Bottom</span>
                   <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
                 </button>
+              </div>
+
+              <div class="prop-row prop-row--inline">
+                <label class="prop-label">Default anchor point</label>
+                <button type="button" class="prop-select" data-select="anchor-point">
+                  <span data-select-value>Bottom</span>
+                  <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                </button>
+              </div>
+
+              <div class="prop-row prop-row--stacked">
+                <label class="prop-label">Anchor offset</label>
+                <div class="xy-input">
+                  <span class="xy-input__field">
+                    <span class="xy-input__axis">X</span>
+                    <input type="number" value="0" data-prop="offset-x" />
+                    <span class="xy-input__unit">px</span>
+                  </span>
+                  <span class="xy-input__field">
+                    <span class="xy-input__axis">Y</span>
+                    <input type="number" value="8" data-prop="offset-y" />
+                    <span class="xy-input__unit">px</span>
+                  </span>
+                </div>
               </div>
             </div>
           </details>
 
-          <!-- Action bar lives at the bottom of the middle pane (per Figma),
-               not as a full-width footer below the map preview. -->
+          <details class="prop-section" open>
+            <summary class="prop-section__head">
+              <span class="prop-section__title">Connector</span>
+              <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+            </summary>
+            <div class="prop-section__body">
+              <div class="prop-row prop-row--inline">
+                <label class="prop-label" for="connector-enabled">Enabled</label>
+                <!-- Native checkbox styled as a switch via CSS -->
+                <label class="switch">
+                  <input id="connector-enabled" type="checkbox" data-prop="connector-enabled" />
+                  <span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span>
+                </label>
+              </div>
+            </div>
+          </details>
+          </div><!-- /.preset-pane__scroll -->
+
+          <!-- Action bar — lives at the bottom of the middle pane (per Figma),
+               in its own non-scrolling slot so form content never bleeds
+               past it. -->
           <div class="preset-actions">
             <a class="btn btn--outline" href="pages/map-designer.html">Cancel</a>
             <button type="button" class="btn btn--primary" data-action="save-preset">Save Preset</button>
