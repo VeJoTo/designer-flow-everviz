@@ -18,6 +18,27 @@
   overflow: hidden;
 }
 
+/* The basemap/minimap editors use an .editor-bar header so they hide
+   the topbar breadcrumb (editor.css). The preset editor has no such
+   header, so re-show the topbar breadcrumb here. */
+body[data-page-mode="editor"] .topbar__crumb { display: flex; }
+
+/* Back link sits above the filter bar, same purple link + arrow style
+   as the libraries (.back-link in base.css). */
+.preset-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-6) var(--space-3);
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  background: transparent;
+}
+.preset-back-link:hover { text-decoration: underline; }
+.preset-back-link img {
+  filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%);
+}
+
 /* Top filter bar — sits above the 3-pane body, full-bleed white. */
 .preset-filter-bar {
   display: flex;
@@ -53,8 +74,10 @@
   min-height: 0;
 }
 
-/* All three panes get the cream wash by default; properties stays white. */
-.preset-pane { background: var(--color-bg-app); }
+/* Editor pages use neutral grey #F5F5F5 instead of the brand cream;
+   the left list pane picks that up explicitly so it doesn't bleed
+   the warm tone from --color-bg-app onto an editor surface. */
+.preset-pane { background: #F5F5F5; }
 .preset-pane--properties { background: var(--color-bg-surface); }
 .preset-pane--map        { background: var(--color-bg-surface); }
 
@@ -100,6 +123,27 @@
   transition: transform var(--duration-fast) var(--ease-out);
 }
 .preset-section[open] .preset-section__chev { transform: rotate(180deg); }
+
+/* Coming-soon variant: not a <details>, so it can't expand. Same
+   header shell but muted text + a small purple pill on the right
+   matching the Chart designer 'Coming soon' badge on the hub. */
+.preset-section--coming-soon { opacity: 0.85; }
+.preset-section--coming-soon .preset-section__head {
+  cursor: default;
+}
+.preset-section--coming-soon .preset-section__title {
+  color: var(--color-text-muted);
+}
+.preset-section__badge {
+  font-size: 10px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--color-brand-purple-soft);
+  color: var(--color-text-primary);
+}
 
 .preset-items {
   list-style: none;
@@ -227,7 +271,9 @@
   align-items: center;
 }
 .preset-pane--properties .prop-row--inline {
-  background: var(--color-bg-app);
+  /* Cream tone reads warm against the editor's neutral grey body;
+     use the same grey as the rest of the editor for cohesion. */
+  background: #F5F5F5;
   border-radius: var(--radius-sm);
   padding: var(--space-3) var(--space-4);
   gap: var(--space-3);
@@ -424,10 +470,10 @@
 }
 
 /* Label boxes on the preview — small text chip with a soft shadow,
-   centered on the marker point. Background and text inherit from
-   the live values in the Label style textarea (future hookup —
-   for the prototype the chip uses a neutral white-on-dark look). */
-.preset-map__label {
+   centered on the marker point. Renamed from .preset-map__label
+   to avoid colliding with the 'Base map style' heading text in
+   the right-pane head. */
+.preset-map__textlabel {
   position: absolute;
   transform: translate(-50%, -50%);
   background: #FFFFFF;

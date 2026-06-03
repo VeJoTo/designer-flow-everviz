@@ -12,10 +12,17 @@
   <link rel="stylesheet" href="assets/css/pages/editor.css" />
   <link rel="stylesheet" href="assets/css/pages/preset-editor.css" />
 </head>
-<body data-screen="designer-tools" data-screen-title="Preset editor" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]' data-save-toast="Preset saved">
+<body data-screen="designer-tools" data-screen-title="Preset editor" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]' data-page-mode="editor" data-save-toast="Preset saved">
   <div class="app app--editor">
     <div id="chrome" class="chrome-mount"></div>
     <main>
+      <!-- 'Back to Map designer' link below the topbar breadcrumb,
+           matching the library / basemap-editor pattern. -->
+      <a class="preset-back-link" href="pages/map-designer.html">
+        <img src="assets/icons/arrow-long-left.svg" alt="" width="18" height="18" />
+        Back to Map designer
+      </a>
+
       <!-- Editor-level filter bar (sits above the 3-pane body) -->
       <div class="preset-filter-bar">
         <div class="filter-bar__field">
@@ -90,12 +97,12 @@
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <ul class="preset-items">
-                <li class="preset-item" data-preset-item data-kind="icon" data-icon="restaurant"
+                <li class="preset-item preset-item--hidden" data-preset-item data-kind="icon" data-icon="restaurant"
                     data-pin-color="#FF4D5F" data-pin-x="42" data-pin-y="48" style="--icon-tint:#FF4D5F">
                   <span class="preset-item__icon"></span>
                   <span class="preset-item__name">Restaurant</span>
-                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Hide" data-tooltip="Hide">
-                    <img src="assets/icons/eye.svg" alt="" width="18" height="18" />
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
+                    <img src="assets/icons/eye-slash.svg" alt="" width="18" height="18" />
                   </button>
                   <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
                     <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
@@ -132,12 +139,12 @@
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <ul class="preset-items">
-                <li class="preset-item" data-preset-item data-kind="label"
+                <li class="preset-item preset-item--hidden" data-preset-item data-kind="label"
                     data-pin-color="#28277E" data-pin-x="36" data-pin-y="38">
                   <span class="preset-item__dot" style="background:#28277E"></span>
                   <span class="preset-item__name">Default label</span>
-                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Hide" data-tooltip="Hide">
-                    <img src="assets/icons/eye.svg" alt="" width="18" height="18" />
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
+                    <img src="assets/icons/eye-slash.svg" alt="" width="18" height="18" />
                   </button>
                   <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
                     <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
@@ -174,12 +181,12 @@
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <ul class="preset-items">
-                <li class="preset-item" data-preset-item data-kind="region"
+                <li class="preset-item preset-item--hidden" data-preset-item data-kind="region"
                     data-pin-color="#BC094A" data-pin-x="55" data-pin-y="58" data-pin-w="22" data-pin-h="22">
                   <span class="preset-item__dot" style="background:#BC094A"></span>
                   <span class="preset-item__name">Mediterranean</span>
-                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Hide" data-tooltip="Hide">
-                    <img src="assets/icons/eye.svg" alt="" width="18" height="18" />
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
+                    <img src="assets/icons/eye-slash.svg" alt="" width="18" height="18" />
                   </button>
                   <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
                     <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
@@ -210,21 +217,19 @@
               </ul>
             </details>
 
-            <details class="preset-section" data-preset-section>
-              <summary class="preset-section__head">
+            <div class="preset-section preset-section--coming-soon" aria-disabled="true">
+              <div class="preset-section__head">
                 <span class="preset-section__title">Shapes</span>
-                <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
-              </summary>
-              <ul class="preset-items"></ul>
-            </details>
+                <span class="preset-section__badge">Coming soon</span>
+              </div>
+            </div>
 
-            <details class="preset-section" data-preset-section>
-              <summary class="preset-section__head">
+            <div class="preset-section preset-section--coming-soon" aria-disabled="true">
+              <div class="preset-section__head">
                 <span class="preset-section__title">Zoom</span>
-                <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
-              </summary>
-              <ul class="preset-items"></ul>
-            </details>
+                <span class="preset-section__badge">Coming soon</span>
+              </div>
+            </div>
           </div>
         </aside>
 
@@ -688,7 +693,7 @@
       const renderPins = () => {
         if (!previewArea) return;
         previewArea
-          .querySelectorAll(".preset-map__pin, .preset-map__icon, .preset-map__label, .preset-map__region")
+          .querySelectorAll(".preset-map__pin, .preset-map__icon, .preset-map__textlabel, .preset-map__region")
           .forEach((p) => p.remove());
         // Regions render first so pins/labels/icons appear on top.
         const items = [...document.querySelectorAll(".preset-item:not(.preset-item--hidden)")];
@@ -704,7 +709,7 @@
             el.className = "preset-map__icon";
             applyIconMask(el, getIconSrc(item));
           } else if (kind === "label") {
-            el.className = "preset-map__label";
+            el.className = "preset-map__textlabel";
             el.textContent = item.querySelector(".preset-item__name")?.textContent.trim() || "";
           } else if (kind === "region") {
             el.className = "preset-map__region";
