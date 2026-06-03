@@ -16,6 +16,14 @@
   <div class="app app--editor">
     <div id="chrome" class="chrome-mount"></div>
     <main>
+      <!-- Back link sits at the very top of the editor body so the user
+           has a clear way back to Map designer, regardless of whether
+           the topbar breadcrumb is visible. -->
+      <a class="preset-back-link" href="pages/map-designer.html">
+        <img src="assets/icons/arrow-long-left.svg" alt="" width="18" height="18" />
+        Back to Map designer
+      </a>
+
       <!-- Editor-level filter bar (sits above the 3-pane body) -->
       <div class="preset-filter-bar">
         <div class="filter-bar__field">
