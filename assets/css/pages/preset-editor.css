@@ -135,20 +135,30 @@
   border-radius: 50%;
 }
 /* Icon items render a Heroicons glyph in place of the colored dot.
-   The glyph is set via --icon-glyph (inline style on the row) and
-   tinted via --icon-tint. Same mask-image trick as the preview pins. */
+   Glyph is picked via the row's [data-icon] attribute; tint via the
+   row's inline --icon-tint. Same mask-image trick as the preview pins. */
 .preset-item__icon {
   width: 18px;
   height: 18px;
   background-color: var(--icon-tint, var(--color-text-primary));
-  -webkit-mask-image: var(--icon-glyph);
-          mask-image: var(--icon-glyph);
   -webkit-mask-repeat: no-repeat;
           mask-repeat: no-repeat;
   -webkit-mask-position: center;
           mask-position: center;
   -webkit-mask-size: contain;
           mask-size: contain;
+}
+.preset-item[data-icon="restaurant"] .preset-item__icon {
+  -webkit-mask-image: url("../../icons/fire-solid.svg");
+          mask-image: url("../../icons/fire-solid.svg");
+}
+.preset-item[data-icon="shopping"] .preset-item__icon {
+  -webkit-mask-image: url("../../icons/shopping-bag-solid.svg");
+          mask-image: url("../../icons/shopping-bag-solid.svg");
+}
+.preset-item[data-icon="info"] .preset-item__icon {
+  -webkit-mask-image: url("../../icons/information-circle-solid.svg");
+          mask-image: url("../../icons/information-circle-solid.svg");
 }
 .preset-item--selected .preset-item__icon {
   background-color: var(--color-text-on-dark);
