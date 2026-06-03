@@ -131,7 +131,41 @@
                 <span class="preset-section__title">Labels</span>
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
-              <ul class="preset-items"></ul>
+              <ul class="preset-items">
+                <li class="preset-item" data-preset-item data-kind="label"
+                    data-pin-color="#28277E" data-pin-x="36" data-pin-y="38">
+                  <span class="preset-item__dot" style="background:#28277E"></span>
+                  <span class="preset-item__name">Default label</span>
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Hide" data-tooltip="Hide">
+                    <img src="assets/icons/eye.svg" alt="" width="18" height="18" />
+                  </button>
+                  <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
+                    <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
+                  </button>
+                </li>
+                <li class="preset-item preset-item--hidden" data-preset-item data-kind="label"
+                    data-pin-color="#172B4C" data-pin-x="55" data-pin-y="62">
+                  <span class="preset-item__dot" style="background:#172B4C"></span>
+                  <span class="preset-item__name">Bold label</span>
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
+                    <img src="assets/icons/eye-slash.svg" alt="" width="18" height="18" />
+                  </button>
+                  <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
+                    <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
+                  </button>
+                </li>
+                <li class="preset-item preset-item--hidden" data-preset-item data-kind="label"
+                    data-pin-color="#5B5BFF" data-pin-x="72" data-pin-y="44">
+                  <span class="preset-item__dot" style="background:#5B5BFF"></span>
+                  <span class="preset-item__name">Small caption</span>
+                  <button class="preset-item__toggle" data-action="toggle-visible" aria-label="Show" data-tooltip="Show">
+                    <img src="assets/icons/eye-slash.svg" alt="" width="18" height="18" />
+                  </button>
+                  <button class="preset-item__menu" aria-label="More options" data-tooltip="More options">
+                    <img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" />
+                  </button>
+                </li>
+              </ul>
             </details>
 
             <details class="preset-section" data-preset-section>
@@ -308,6 +342,58 @@
               </ul>
             </div>
           </div>
+
+          <!-- Label properties (shown when a Label item is selected) -->
+          <div class="props-panel" data-panel="label" hidden>
+            <details class="prop-section" open>
+              <summary class="prop-section__head">
+                <span class="prop-section__title">General</span>
+                <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <div class="prop-section__body">
+                <div class="prop-row prop-row--stacked">
+                  <label class="prop-label prop-label--title" for="label-name">Name</label>
+                  <input id="label-name" type="text" class="prop-input" placeholder="Name" data-prop="label-name" />
+                </div>
+                <div class="prop-row prop-row--stacked">
+                  <label class="prop-label prop-label--title" for="label-style">Label style</label>
+                  <textarea id="label-style" class="prop-code-input" rows="6" spellcheck="false" data-prop="label-style">{
+  "backgroundColor": "white",
+  "color": "black",
+  "padding": "4px"
+}</textarea>
+                </div>
+              </div>
+            </details>
+
+            <details class="prop-section" open>
+              <summary class="prop-section__head">
+                <span class="prop-section__title">Connector Style</span>
+                <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <div class="prop-section__body">
+                <div class="prop-row prop-row--inline">
+                  <label class="prop-label">Stroke Width</label>
+                  <div class="prop-stepper">
+                    <input type="number" class="prop-stepper__input" value="3" min="0" max="20" data-prop="connector-stroke-width" />
+                    <span class="prop-stepper__spinners">
+                      <button type="button" aria-label="Increment" data-stepper="up">▲</button>
+                      <button type="button" aria-label="Decrement" data-stepper="down">▼</button>
+                    </span>
+                  </div>
+                </div>
+                <div class="prop-row prop-row--inline">
+                  <label class="prop-label">Line Color</label>
+                  <div class="color-input">
+                    <input type="text" class="color-input__hex" value="#28277E" data-prop="connector-color-hex" maxlength="7" />
+                    <label class="color-input__swatch" style="background:#28277E">
+                      <input type="color" data-prop="connector-color" value="#28277E" aria-label="Pick line color" />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
           </div><!-- /.preset-pane__scroll -->
 
           <!-- Action bar — lives at the bottom of the middle pane (per Figma),
@@ -369,7 +455,10 @@
       const itemsRoot = document.querySelector(".preset-pane--list");
       const nameInput = document.querySelector('[data-prop="preset-name"]');
       const iconNameInput = document.querySelector('[data-prop="icon-name"]');
+      const labelNameInput = document.querySelector('[data-prop="label-name"]');
       const previewArea = document.querySelector("[data-preview]");
+
+      const NAME_INPUT_BY_KIND = { marker: nameInput, icon: iconNameInput, label: labelNameInput };
 
       // ---- Icon glyph plumbing ----
       // Built-in icons map a data-icon value to an SVG path. A user
@@ -406,7 +495,9 @@
       // selecting a different row doesn't touch any other pin.
       const renderPins = () => {
         if (!previewArea) return;
-        previewArea.querySelectorAll(".preset-map__pin, .preset-map__icon").forEach((p) => p.remove());
+        previewArea
+          .querySelectorAll(".preset-map__pin, .preset-map__icon, .preset-map__label")
+          .forEach((p) => p.remove());
         document.querySelectorAll(".preset-item:not(.preset-item--hidden)").forEach((item) => {
           const kind = item.dataset.kind || "marker";
           const el = document.createElement("span");
@@ -417,6 +508,9 @@
           if (kind === "icon") {
             el.className = "preset-map__icon";
             applyIconMask(el, getIconSrc(item));
+          } else if (kind === "label") {
+            el.className = "preset-map__label";
+            el.textContent = item.querySelector(".preset-item__name")?.textContent.trim() || "";
           } else {
             el.className = "preset-map__pin";
           }
@@ -430,7 +524,7 @@
         const kind = li.dataset.kind || "marker";
         showPanel(kind);
         // Drop the row's name into whichever panel's name field is active.
-        const target = kind === "icon" ? iconNameInput : nameInput;
+        const target = NAME_INPUT_BY_KIND[kind] || nameInput;
         if (target && name) target.value = name;
         // Selecting a hidden marker auto-shows it — the user clearly wants
         // to work with it, so the eye flips back to visible and the pin
@@ -552,6 +646,31 @@
             if (label) label.textContent = file.name;
           };
           reader.readAsDataURL(file);
+        });
+      });
+
+      // --- Color swatch + hex pairs (Connector Style → Line Color, etc.) ---
+      // Native <input type='color'> sits inside the swatch (transparent
+      // overlay). Editing either side mirrors to the other; the swatch
+      // background tracks the picked color.
+      document.querySelectorAll(".color-input").forEach((wrap) => {
+        const picker = wrap.querySelector('input[type="color"]');
+        const hex = wrap.querySelector(".color-input__hex");
+        const swatch = wrap.querySelector(".color-input__swatch");
+        if (!picker || !hex || !swatch) return;
+        picker.addEventListener("input", () => {
+          const c = picker.value.toUpperCase();
+          hex.value = c;
+          swatch.style.background = c;
+        });
+        hex.addEventListener("change", () => {
+          const c = hex.value.trim().toUpperCase();
+          if (/^#[0-9A-F]{6}$/.test(c)) {
+            picker.value = c;
+            swatch.style.background = c;
+          } else {
+            hex.value = picker.value.toUpperCase();
+          }
         });
       });
 
