@@ -158,10 +158,8 @@
 .preset-item__menu:hover { background: rgba(91, 91, 255, 0.10); }
 .preset-item--selected .preset-item__toggle:hover,
 .preset-item--selected .preset-item__menu:hover { background: rgba(255, 255, 255, 0.10); }
-.preset-item--hidden .preset-item__name { color: var(--color-text-muted); }
-/* When a hidden row is also selected, the navy bg needs light text —
-   the hidden muted color would otherwise win on source order. */
-.preset-item--selected.preset-item--hidden .preset-item__name { color: var(--color-text-on-dark); }
+/* Hidden state is communicated by the eye-slash icon alone; the text
+   stays the regular dark navy so hidden items don't read as disabled. */
 
 /* ──────────────────────────────────────────────────────────────
    MIDDLE PANE — properties of the selected item
