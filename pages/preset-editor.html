@@ -139,18 +139,54 @@
 
           <details class="prop-section" open>
             <summary class="prop-section__head">
-              <span class="prop-section__title">Icons</span>
+              <span class="prop-section__title">Marker style</span>
+              <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+            </summary>
+            <div class="prop-section__body">
+              <div class="prop-row prop-row--stacked">
+                <label class="prop-label">Shape</label>
+                <div class="seg-control" role="radiogroup" data-prop-group="shape">
+                  <button type="button" class="seg-control__btn seg-control__btn--active" role="radio" aria-checked="true" data-value="pin">Pin</button>
+                  <button type="button" class="seg-control__btn" role="radio" aria-checked="false" data-value="circle">Circle</button>
+                  <button type="button" class="seg-control__btn" role="radio" aria-checked="false" data-value="square">Square</button>
+                  <button type="button" class="seg-control__btn" role="radio" aria-checked="false" data-value="tag">Tag</button>
+                </div>
+              </div>
+
+              <div class="prop-row prop-row--inline">
+                <label class="prop-label">Color</label>
+                <div class="color-input">
+                  <label class="color-input__swatch" style="background:#FF4D5F">
+                    <input type="color" data-prop="color" value="#FF4D5F" aria-label="Pick color" />
+                  </label>
+                  <input type="text" class="color-input__hex" value="#FF4D5F" data-prop="color-hex" maxlength="7" />
+                </div>
+              </div>
+
+              <div class="prop-row prop-row--inline">
+                <label class="prop-label">Size</label>
+                <div class="size-slider">
+                  <input type="range" min="16" max="72" value="32" data-prop="size" class="size-slider__range" />
+                  <span class="size-slider__value"><span data-size-value>32</span> px</span>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="prop-section">
+            <summary class="prop-section__head">
+              <span class="prop-section__title">Icon inside</span>
               <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
             </summary>
             <div class="prop-section__body">
               <button type="button" class="prop-add">
-                Add Icons
+                Add Icon
                 <span class="prop-add__plus"><img src="assets/icons/plus.svg" alt="" width="12" height="12" /></span>
               </button>
               <div class="prop-row prop-row--inline">
                 <label class="prop-label">Icon Size</label>
                 <div class="prop-stepper">
-                  <input type="number" class="prop-stepper__input" value="0" min="0" data-prop="icon-size" />
+                  <input type="number" class="prop-stepper__input" value="14" min="0" max="40" data-prop="icon-size" />
                   <span class="prop-stepper__spinners">
                     <button type="button" aria-label="Increment" data-stepper="up">▲</button>
                     <button type="button" aria-label="Decrement" data-stepper="down">▼</button>
@@ -316,6 +352,60 @@
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && !menuEl.hidden) closeMenu();
       });
+
+      // --- Marker style controls: shape segmented control, color, size ---
+      const pin = document.querySelector(".preset-map__pin");
+      const swatch = document.querySelector(".color-input__swatch");
+      const colorPicker = document.querySelector('[data-prop="color"]');
+      const colorHex = document.querySelector('[data-prop="color-hex"]');
+      const sizeRange = document.querySelector('[data-prop="size"]');
+      const sizeValue = document.querySelector("[data-size-value]");
+
+      function applyPin({ color, size, shape } = {}) {
+        if (!pin) return;
+        if (color) {
+          pin.style.setProperty("--pin-color", color);
+          if (swatch) swatch.style.background = color;
+        }
+        if (size) {
+          pin.style.setProperty("--pin-size", `${size}px`);
+          if (sizeValue) sizeValue.textContent = size;
+        }
+        if (shape) {
+          ["pin", "circle", "square", "tag"].forEach((s) =>
+            pin.classList.toggle(`preset-map__pin--${s}`, s === shape && s !== "pin")
+          );
+        }
+      }
+
+      document.querySelectorAll('[data-prop-group="shape"]').forEach((group) => {
+        group.addEventListener("click", (e) => {
+          const btn = e.target.closest(".seg-control__btn");
+          if (!btn) return;
+          group.querySelectorAll(".seg-control__btn").forEach((b) => {
+            b.classList.toggle("seg-control__btn--active", b === btn);
+            b.setAttribute("aria-checked", b === btn ? "true" : "false");
+          });
+          applyPin({ shape: btn.dataset.value });
+        });
+      });
+
+      colorPicker?.addEventListener("input", (e) => {
+        const c = e.target.value.toUpperCase();
+        if (colorHex) colorHex.value = c;
+        applyPin({ color: c });
+      });
+      colorHex?.addEventListener("change", (e) => {
+        const c = e.target.value.trim().toUpperCase();
+        if (/^#[0-9A-F]{6}$/.test(c)) {
+          if (colorPicker) colorPicker.value = c;
+          applyPin({ color: c });
+        } else if (colorPicker) {
+          colorHex.value = colorPicker.value.toUpperCase();
+        }
+      });
+
+      sizeRange?.addEventListener("input", () => applyPin({ size: sizeRange.value }));
 
       // --- Base map style toggle (Satellite / Globe) ---
       document.querySelectorAll("[data-style-group] [data-style]").forEach((btn) => {

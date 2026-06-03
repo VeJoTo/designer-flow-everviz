@@ -325,20 +325,130 @@
   filter: saturate(0.6) brightness(1.1) contrast(0.95);
 }
 
-/* Centered marker pin over the preview */
+/* Centered marker pin over the preview — driven by CSS vars so the
+   Marker style controls can update color / size / shape live. */
 .preset-map__pin {
+  --pin-color: #FF4D5F;
+  --pin-size: 32px;
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 18px;
-  height: 26px;
+  width: calc(var(--pin-size) * 0.7);
+  height: var(--pin-size);
   transform: translate(-50%, -100%);
   background:
-    radial-gradient(circle at 50% 35%, #fff 0 4px, transparent 5px),
-    linear-gradient(to bottom, #FF4D5F 0%, #C0392B 100%);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    radial-gradient(circle at 50% 35%, #fff 0 14%, transparent 18%),
+    var(--pin-color);
   clip-path: polygon(50% 100%, 0 35%, 0 0, 100% 0, 100% 35%);
   filter: drop-shadow(0 4px 8px rgba(16, 21, 61, 0.45));
+  transition: width var(--duration-fast) var(--ease-out),
+              height var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out);
+}
+/* Shape variants — explicit class so the pin can switch geometry. */
+.preset-map__pin--circle {
+  width: var(--pin-size);
+  height: var(--pin-size);
+  clip-path: none;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.preset-map__pin--square {
+  width: var(--pin-size);
+  height: var(--pin-size);
+  clip-path: none;
+  border-radius: var(--radius-sm);
+  transform: translate(-50%, -50%);
+}
+.preset-map__pin--tag {
+  width: var(--pin-size);
+  height: calc(var(--pin-size) * 1.2);
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+  border-radius: 0;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   MARKER STYLE CONTROLS — segmented control, color, slider
+   ────────────────────────────────────────────────────────────── */
+
+/* Pill-shaped segmented control (Shape: Pin / Circle / Square / Tag) */
+.seg-control {
+  display: flex;
+  background: var(--color-bg-app);
+  border-radius: 999px;
+  padding: 4px;
+  width: 100%;
+}
+.seg-control__btn {
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: 999px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  background: transparent;
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+.seg-control__btn:hover { color: var(--color-text-primary); }
+.seg-control__btn--active {
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+}
+
+/* Color swatch + hex input pair */
+.color-input {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.color-input__swatch {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border-subtle);
+  cursor: pointer;
+  overflow: hidden;
+}
+.color-input__swatch input[type="color"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.color-input__hex {
+  width: 100px;
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: var(--fs-small);
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  outline: none;
+}
+.color-input__hex:focus { border-color: var(--color-text-primary); }
+
+/* Range slider with px readout */
+.size-slider {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.size-slider__range {
+  width: 140px;
+  accent-color: var(--color-text-primary);
+}
+.size-slider__value {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  min-width: 50px;
+  text-align: right;
 }
 
 /* ──────────────────────────────────────────────────────────────
