@@ -4,35 +4,182 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=1280" />
   <base href="../" />
-  <title>Template creator · everviz prototype</title>
+  <title>Template wizard · Map · everviz prototype</title>
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/chrome.css" />
-  <style>
-    /* Fill the viewport so the cross-document view-transition crossfade
-       doesn't reveal the previous page's content through empty space. */
-    main { display: flex; }
-    .placeholder {
-      flex: 1;
-      padding: var(--space-10);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .placeholder a { display: inline-block; margin-top: var(--space-4); }
-  </style>
+  <link rel="stylesheet" href="assets/css/pages/template-wizard.css" />
 </head>
-<body data-screen="designer-tools" data-screen-title="Template creator" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]'>
+<body data-screen="designer-tools" data-screen-title="Template wizard" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]' data-page-mode="wizard">
   <div class="app">
     <div id="chrome" class="chrome-mount"></div>
     <main>
-      <section class="placeholder">
-        <h1>Template creator</h1>
-        <p>This screen will be built in the next iteration. Vera will send the screenshot next.</p>
-        <a href="pages/map-designer.html">← Back to Map designer</a>
-      </section>
+      <!-- Wizard bar — project title + global actions; sits below the
+           topbar (which carries the breadcrumb). -->
+      <header class="wizard-bar">
+        <div class="wizard-bar__left">
+          <span class="wizard-bar__kicker">Template wizard</span>
+          <span class="wizard-bar__sep" aria-hidden="true">|</span>
+          <span class="wizard-bar__title" data-wizard-title contenteditable="true" spellcheck="false">Untitled project</span>
+        </div>
+        <div class="wizard-bar__actions">
+          <button type="button" class="wizard-action" data-action="save-wizard">Save</button>
+          <a class="wizard-exit" href="pages/map-designer.html" aria-label="Exit wizard" data-tooltip="Exit wizard">
+            <img src="assets/icons/arrow-right-on-rectangle.svg" alt="" width="22" height="22" />
+          </a>
+        </div>
+      </header>
+
+      <!-- Step tabs — Map (active), Presets, Customize, Enabled controls,
+           Publish & Export. Right-aligned 'Open map editor' jump link. -->
+      <nav class="wizard-steps" aria-label="Wizard steps">
+        <ol class="wizard-steps__list">
+          <li><a href="pages/template-creator.html" class="wizard-step wizard-step--active" aria-current="step">Map</a></li>
+          <li><a href="#" class="wizard-step">Presets</a></li>
+          <li><a href="#" class="wizard-step">Customize</a></li>
+          <li><a href="#" class="wizard-step">Enabled controls</a></li>
+          <li><a href="#" class="wizard-step">Publish &amp; Export</a></li>
+        </ol>
+        <a class="wizard-steps__jump" href="pages/base-map-editor.html">Open map editor</a>
+      </nav>
+
+      <!-- Two-pane body — left: maps grid, right: preview. -->
+      <div class="wizard-body">
+        <aside class="wizard-pane wizard-pane--list">
+          <ul class="map-pick-grid" data-map-pick-grid>
+            <li>
+              <a class="map-pick map-pick--create" href="pages/base-map-editor.html">
+                <span class="map-pick__icon"><img src="assets/icons/plus.svg" alt="" width="20" height="20" /></span>
+                <span class="map-pick__title">Create map</span>
+                <span class="map-pick__sub">Open map editor</span>
+              </a>
+            </li>
+            <li>
+              <button type="button" class="map-pick map-pick--selected" data-map-pick data-thumb="globe">
+                <span class="map-pick__thumb map-pick__thumb--globe"></span>
+                <span class="map-pick__body">
+                  <span class="map-pick__kind">Map</span>
+                  <span class="map-pick__title">Globe</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="map-pick" data-map-pick data-thumb="evening-news">
+                <span class="map-pick__thumb map-pick__thumb--north-europe"></span>
+                <span class="map-pick__body">
+                  <span class="map-pick__kind">Map</span>
+                  <span class="map-pick__title">Evening News</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="map-pick" data-map-pick data-thumb="satellite">
+                <span class="map-pick__thumb map-pick__thumb--world"></span>
+                <span class="map-pick__body">
+                  <span class="map-pick__kind">Map</span>
+                  <span class="map-pick__title">Satellite</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="map-pick" data-map-pick data-thumb="untitled-base">
+                <span class="map-pick__thumb map-pick__thumb--bars"></span>
+                <span class="map-pick__body">
+                  <span class="map-pick__kind">Map</span>
+                  <span class="map-pick__title">Untitled Base…</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="map-pick" data-map-pick data-thumb="nrk-nyheter">
+                <span class="map-pick__thumb map-pick__thumb--scandinavia"></span>
+                <span class="map-pick__body">
+                  <span class="map-pick__kind">Map</span>
+                  <span class="map-pick__title">NRK Nyheter</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="map-pick" data-map-pick data-thumb="anwar">
+                <span class="map-pick__thumb map-pick__thumb--europe"></span>
+                <span class="map-pick__body">
+                  <span class="map-pick__kind">Map</span>
+                  <span class="map-pick__title">Anwar Test</span>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="map-pick" data-map-pick data-thumb="olympics">
+                <span class="map-pick__thumb map-pick__thumb--world"></span>
+                <span class="map-pick__body">
+                  <span class="map-pick__kind">Map</span>
+                  <span class="map-pick__title">Olympics test</span>
+                </span>
+              </button>
+            </li>
+          </ul>
+        </aside>
+
+        <aside class="wizard-pane wizard-pane--preview">
+          <div class="wizard-preview" data-wizard-preview>
+            <button type="button" class="wizard-preview__fullscreen" aria-label="Fullscreen preview" data-tooltip="Fullscreen">
+              <img src="assets/icons/expand-collapse.svg" alt="" width="20" height="20" />
+            </button>
+            <div class="wizard-preview__stage" data-preview-stage data-stage="globe"></div>
+            <div class="wizard-preview__attr">everviz | © Stadia Maps © OpenMapTiles © OpenStreetMap</div>
+          </div>
+          <button class="wizard-help-fab" aria-label="Help" data-tooltip="Help">
+            <img src="assets/icons/question-mark-circle.svg" alt="" width="20" height="20" />
+          </button>
+        </aside>
+      </div>
     </main>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Card selection — clicking a map tile moves the navy highlight
+      // and updates the preview stage's data-stage so the right pane
+      // swaps to that map's preview.
+      const grid = document.querySelector("[data-map-pick-grid]");
+      const stage = document.querySelector("[data-preview-stage]");
+      grid?.addEventListener("click", (e) => {
+        const card = e.target.closest("[data-map-pick]");
+        if (!card) return;
+        grid.querySelectorAll(".map-pick--selected").forEach((c) =>
+          c.classList.remove("map-pick--selected")
+        );
+        card.classList.add("map-pick--selected");
+        if (stage) stage.dataset.stage = card.dataset.thumb || "globe";
+      });
+
+      // Inline-edit the project title (same pattern as the editor title).
+      const title = document.querySelector("[data-wizard-title]");
+      if (title) {
+        let before = "";
+        title.addEventListener("focus", () => {
+          before = title.textContent;
+          const range = document.createRange();
+          range.selectNodeContents(title);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        });
+        title.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") { e.preventDefault(); title.blur(); }
+          else if (e.key === "Escape") {
+            e.preventDefault();
+            title.textContent = before;
+            title.blur();
+          }
+        });
+        title.addEventListener("blur", () => {
+          const v = (title.textContent || "").replace(/\s+/g, " ").trim();
+          title.textContent = v || "Untitled project";
+        });
+      }
+    });
+  </script>
   <script src="assets/js/tooltip.js" defer></script>
   <script src="assets/js/chrome.js" defer></script>
   <script src="assets/js/prefetch.js" defer></script>

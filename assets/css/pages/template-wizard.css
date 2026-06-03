@@ -1,0 +1,333 @@
+/* Template wizard — Step 1 (Map).
+   Layout: existing global topbar / sidebar from chrome.js,
+   then a wizard-bar (project title + Save + Exit),
+   then a step tabs row,
+   then a two-pane body (map picker on the left, big preview on the right). */
+
+body[data-page-mode="wizard"] { background: var(--color-bg-app); }
+body[data-page-mode="wizard"] main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Wizard bar — project title + global actions
+   ────────────────────────────────────────────────────────────── */
+.wizard-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.wizard-bar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.wizard-bar__kicker {
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+}
+.wizard-bar__sep {
+  color: var(--color-border-subtle);
+  font-weight: var(--fw-regular);
+}
+.wizard-bar__title {
+  color: var(--color-text-primary);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+.wizard-bar__title:focus { background: var(--color-brand-purple-soft); }
+
+.wizard-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.wizard-action {
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  padding: 6px 4px;
+}
+.wizard-action:hover { text-decoration: underline; }
+.wizard-exit {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+}
+.wizard-exit:hover { background: var(--color-brand-purple-soft); }
+.wizard-exit img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Step tabs row
+   ────────────────────────────────────────────────────────────── */
+.wizard-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6) var(--space-3);
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.wizard-steps__list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.wizard-step {
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  padding: var(--space-2) 0;
+  border-bottom: 2px solid transparent;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1.5px;
+}
+.wizard-step--active {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  border-bottom-color: var(--color-text-primary);
+}
+.wizard-step:hover { text-decoration-thickness: 2px; }
+.wizard-steps__jump {
+  color: var(--color-text-primary);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+}
+.wizard-steps__jump:hover { color: var(--color-text-link); }
+
+/* ──────────────────────────────────────────────────────────────
+   Two-pane body — left list, right preview
+   ────────────────────────────────────────────────────────────── */
+.wizard-body {
+  display: grid;
+  grid-template-columns: 540px 1fr;
+  flex: 1;
+  min-height: 0;
+  background: var(--color-bg-app);
+}
+.wizard-pane { min-width: 0; min-height: 0; overflow: auto; }
+.wizard-pane--list {
+  padding: var(--space-5) var(--space-5) var(--space-8);
+  background: var(--color-bg-surface);
+  border-right: 4px solid var(--color-brand-purple);
+}
+.wizard-pane--preview {
+  padding: var(--space-6);
+  position: relative;
+}
+
+/* Map picker grid */
+.map-pick-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.map-pick {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  border: 1.5px solid var(--color-border-subtle);
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--duration-base) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+.map-pick:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-text-primary);
+  box-shadow: var(--shadow-card-hover);
+}
+.map-pick__thumb {
+  height: 110px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-bg-app);
+  position: relative;
+}
+.map-pick__thumb--globe       { background-color: #FFFFFF; }
+.map-pick__thumb--globe::after {
+  content: "";
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent-dot);
+}
+.map-pick__thumb--world        { background-image: url("../../img/maps/world.png"); }
+.map-pick__thumb--europe       { background-image: url("../../img/maps/europe.png"); }
+.map-pick__thumb--north-europe { background-image: url("../../img/maps/north-europe.png"); }
+.map-pick__thumb--scandinavia  { background-image: url("../../img/maps/scandinavia.png"); }
+.map-pick__thumb--bars {
+  background:
+    repeating-linear-gradient(90deg, #5B5BFF 0 14px, transparent 14px 18px) 14px 8px / auto 6px no-repeat,
+    repeating-linear-gradient(90deg, #FF4D5F 0 22px, transparent 22px 26px) 14px 18px / auto 6px no-repeat,
+    repeating-linear-gradient(90deg, #28277E 0 10px, transparent 10px 14px) 14px 28px / auto 6px no-repeat,
+    repeating-linear-gradient(90deg, #5B5BFF 0 30px, transparent 30px 34px) 14px 38px / auto 6px no-repeat,
+    var(--color-bg-surface);
+}
+
+.map-pick__body {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.map-pick__kind {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  font-weight: var(--fw-semibold);
+}
+.map-pick__title {
+  color: var(--color-text-primary);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Selected map: navy bg + white text */
+.map-pick--selected {
+  background: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+}
+.map-pick--selected .map-pick__title,
+.map-pick--selected .map-pick__kind { color: var(--color-text-on-dark); }
+
+/* 'Create map' tile — purple plus circle, centered */
+.map-pick--create {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: var(--space-6);
+  gap: var(--space-3);
+}
+.map-pick--create .map-pick__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-text-primary);
+  display: grid;
+  place-items: center;
+}
+.map-pick--create .map-pick__icon img { filter: brightness(0) invert(1); }
+.map-pick--create .map-pick__title {
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+.map-pick--create .map-pick__sub {
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-small);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Right pane — preview stage
+   ────────────────────────────────────────────────────────────── */
+.wizard-preview {
+  position: relative;
+  background:
+    repeating-conic-gradient(#FFFFFF 0 25%, #EEEEEE 0 50%) 0 0 / 24px 24px;
+  border-radius: var(--radius-md);
+  min-height: 520px;
+  height: 100%;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.wizard-preview__fullscreen {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+}
+.wizard-preview__fullscreen img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
+.wizard-preview__stage {
+  flex: 1;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+/* Preview stages — swapped via data-stage on click. */
+.wizard-preview__stage[data-stage="globe"]::after {
+  content: "";
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, #B6D9E0 0%, transparent 55%),
+    url("../../img/maps/world.png") center/cover;
+  box-shadow: inset -32px -24px 60px rgba(16, 21, 61, 0.25);
+}
+.wizard-preview__stage[data-stage="satellite"] { background-image: url("../../img/maps/world.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="evening-news"] { background-image: url("../../img/maps/north-europe.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="nrk-nyheter"] { background-image: url("../../img/maps/scandinavia.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="anwar"] { background-image: url("../../img/maps/europe.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="olympics"] { background-image: url("../../img/maps/world.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="untitled-base"] { background: var(--color-bg-surface); }
+
+.wizard-preview__attr {
+  position: absolute;
+  bottom: var(--space-3);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+/* Floating help button bottom-right */
+.wizard-help-fab {
+  position: absolute;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 18px rgba(16, 21, 61, 0.25);
+}
+.wizard-help-fab img { filter: brightness(0) invert(1); }
