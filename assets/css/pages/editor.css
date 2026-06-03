@@ -3,7 +3,6 @@
    Override the global cream background to a neutral white so the editor
    reads as a tooling surface rather than the marketing-y cream tone. */
 body[data-page-mode="editor"] { background: var(--color-bg-surface); }
-body[data-page-mode="editor"] .topbar__crumb { display: none; }
 
 .app--editor > main {
   display: grid;
