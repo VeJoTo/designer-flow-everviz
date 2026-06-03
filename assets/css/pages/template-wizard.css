@@ -145,6 +145,7 @@ body[data-page-mode="wizard"] main {
 .map-pick {
   display: flex;
   flex-direction: column;
+  height: 156px;
   border-radius: var(--radius-md);
   background: var(--color-bg-surface);
   border: 1.5px solid var(--color-border-subtle);
@@ -195,8 +196,9 @@ body[data-page-mode="wizard"] main {
   padding: var(--space-3) var(--space-4);
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 2px;
-  min-height: 56px;
+  flex: 1;
 }
 .map-pick__kind {
   font-size: var(--fs-small);
