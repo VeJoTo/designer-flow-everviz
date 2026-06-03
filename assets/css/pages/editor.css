@@ -87,6 +87,53 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   color: var(--color-text-primary);
 }
 
+/* Overflow trigger — purple-soft circle housing the ellipsis icon.
+   Popover drops below it with Sources / Settings / Global state / Export. */
+.editor-overflow { position: relative; }
+.editor-overflow__btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-brand-purple-soft);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.editor-overflow__btn:hover { background: #D6D6FF; }
+.editor-overflow__btn img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
+
+.editor-overflow__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+  margin: 0;
+  padding: var(--space-2);
+  list-style: none;
+  min-width: 200px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 24px rgba(16, 21, 61, 0.15);
+}
+.editor-overflow__menu[hidden] { display: none; }
+.editor-overflow__menu li { margin: 0; }
+.editor-overflow__item {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  font-size: var(--fs-body);
+  color: var(--color-text-primary);
+  background: transparent;
+  cursor: pointer;
+}
+.editor-overflow__item:hover { background: var(--color-brand-purple-soft); }
+
 /* 3-column body */
 .editor-grid {
   display: grid;
