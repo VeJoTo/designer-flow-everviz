@@ -1,5 +1,9 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Reserve scrollbar gutter so navigating between scrollable and
+   non-scrollable pages doesn't shift the layout horizontally — the
+   topbar/sidebar would otherwise appear to bounce on each transition. */
+html { scrollbar-gutter: stable; }
 body {
   font-family: var(--font-sans);
   font-size: var(--fs-body);
@@ -12,7 +16,8 @@ body {
 img, svg { display: block; max-width: 100%; }
 button { font: inherit; cursor: pointer; background: none; border: none; padding: 0; color: inherit; }
 a { color: var(--color-text-link); text-decoration: none; }
-h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight); margin: 0; }
+h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight); margin: 0; font-family: var(--font-display); }
+h1 { line-height: var(--lh-display); } /* Spec: 40px / 40px */
 
 /* Shared button — pill-shaped, used across every screen.
    align-self prevents the button from stretching when its parent is a

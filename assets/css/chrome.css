@@ -50,6 +50,9 @@
 .topbar__brand img {
   height: 28px;
   width: auto;
+  /* Lock the rendered width from first paint so it doesn't flash from
+     0 → 121px while the image decodes. Source asset is 347x80. */
+  aspect-ratio: 347 / 80;
   display: block;
 }
 .topbar__crumb {
