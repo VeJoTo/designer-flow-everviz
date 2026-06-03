@@ -341,44 +341,8 @@
 }
 
 /* ──────────────────────────────────────────────────────────────
-   LABELS — anchor-point picker, XY offset pair
+   LABELS — XY offset pair + Connector switch
    ────────────────────────────────────────────────────────────── */
-
-/* 3×3 anchor-point picker. Cells are tiny circles; the active one
-   fills with brand navy. The middle cell is disabled (the marker
-   itself isn't a valid label anchor target). */
-.anchor-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 28px);
-  grid-template-rows: repeat(3, 28px);
-  gap: var(--space-2);
-  padding: var(--space-2);
-  background: var(--color-bg-app);
-  border-radius: var(--radius-sm);
-  width: fit-content;
-}
-.anchor-grid__cell {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--color-bg-surface);
-  border: 1.5px solid var(--color-border-subtle);
-  transition: background var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out);
-}
-.anchor-grid__cell:hover:not(.anchor-grid__cell--disabled):not(.anchor-grid__cell--active) {
-  border-color: var(--color-text-primary);
-}
-.anchor-grid__cell--active {
-  background: var(--color-text-primary);
-  border-color: var(--color-text-primary);
-}
-.anchor-grid__cell--disabled {
-  background: transparent;
-  border: 1.5px dashed var(--color-border-subtle);
-  cursor: default;
-  opacity: 0.6;
-}
 
 /* XY numeric pair (Anchor offset) */
 .xy-input {

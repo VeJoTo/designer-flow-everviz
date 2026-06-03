@@ -179,21 +179,12 @@
                 </button>
               </div>
 
-              <div class="prop-row prop-row--stacked">
+              <div class="prop-row prop-row--inline">
                 <label class="prop-label">Default anchor point</label>
-                <!-- 3×3 grid picker; the center cell is disabled (anchoring
-                     to the marker itself isn't meaningful for labels). -->
-                <div class="anchor-grid" data-anchor-grid>
-                  <button type="button" class="anchor-grid__cell" data-anchor="top-left" aria-label="Top left"></button>
-                  <button type="button" class="anchor-grid__cell" data-anchor="top" aria-label="Top"></button>
-                  <button type="button" class="anchor-grid__cell" data-anchor="top-right" aria-label="Top right"></button>
-                  <button type="button" class="anchor-grid__cell" data-anchor="left" aria-label="Left"></button>
-                  <button type="button" class="anchor-grid__cell anchor-grid__cell--disabled" tabindex="-1" aria-hidden="true"></button>
-                  <button type="button" class="anchor-grid__cell" data-anchor="right" aria-label="Right"></button>
-                  <button type="button" class="anchor-grid__cell" data-anchor="bottom-left" aria-label="Bottom left"></button>
-                  <button type="button" class="anchor-grid__cell anchor-grid__cell--active" data-anchor="bottom" aria-label="Bottom"></button>
-                  <button type="button" class="anchor-grid__cell" data-anchor="bottom-right" aria-label="Bottom right"></button>
-                </div>
+                <button type="button" class="prop-select" data-select="anchor-point">
+                  <span data-select-value>Bottom</span>
+                  <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                </button>
               </div>
 
               <div class="prop-row prop-row--stacked">
@@ -366,27 +357,6 @@
       });
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && !menuEl.hidden) closeMenu();
-      });
-
-      // --- Labels: default anchor point (3x3 picker) ---
-      document.querySelectorAll("[data-anchor-grid]").forEach((grid) => {
-        grid.addEventListener("click", (e) => {
-          const cell = e.target.closest(".anchor-grid__cell:not(.anchor-grid__cell--disabled)");
-          if (!cell) return;
-          grid.querySelectorAll(".anchor-grid__cell").forEach((c) =>
-            c.classList.remove("anchor-grid__cell--active")
-          );
-          cell.classList.add("anchor-grid__cell--active");
-          // Mirror the choice into the Placement select for consistency.
-          const select = document.querySelector('[data-select="placement"] [data-select-value]');
-          if (select) {
-            const anchor = cell.dataset.anchor || "";
-            select.textContent = anchor
-              .split("-")
-              .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-              .join(" ");
-          }
-        });
       });
 
       // --- Base map style toggle (Satellite / Globe) ---
