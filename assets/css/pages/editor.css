@@ -63,7 +63,7 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
 .editor-bar__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--space-3);
 }
 .editor-action {
   font-size: var(--fs-body);
@@ -79,7 +79,6 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   padding: 8px 22px;
   border-radius: 999px;
   font-weight: var(--fw-semibold);
-  margin-left: var(--space-3);
   transition: opacity var(--duration-fast) var(--ease-out);
 }
 .editor-action--save:hover {
