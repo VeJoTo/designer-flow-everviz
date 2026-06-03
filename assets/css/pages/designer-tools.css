@@ -35,6 +35,22 @@
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
 }
+.card {
+  position: relative;
+}
+.card__badge {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--color-brand-purple-soft);
+  color: var(--color-text-primary);
+}
 .card--disabled {
   cursor: not-allowed;
   background: #F3F1EC;
