@@ -180,10 +180,36 @@
   flex-direction: column;
   gap: var(--space-2);
 }
+/* Inline prop rows in the preset editor render as soft cream bars
+   with the label on the left and the value/control on the right.
+   The whole row uses the brand cream so it reads as a property
+   chip rather than a bare text row. Scoped to .preset-pane--properties
+   to avoid touching the basemap editor's properties pane. */
 .prop-row--inline {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
+}
+.preset-pane--properties .prop-row--inline {
+  background: var(--color-bg-app);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  gap: var(--space-3);
+}
+/* The dropdown/select inside the bar already carries its own
+   chevron + value, so it sits flush right with no border. */
+.preset-pane--properties .prop-row--inline .prop-select {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.preset-pane--properties .prop-row--inline .prop-select img {
+  filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%);
 }
 .prop-label--title {
   font-size: var(--fs-body);
