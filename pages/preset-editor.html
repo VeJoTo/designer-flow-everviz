@@ -211,20 +211,36 @@
                 <span class="prop-add__plus"><img src="assets/icons/plus.svg" alt="" width="12" height="12" /></span>
               </button>
 
-              <div class="prop-row prop-row--inline">
+              <div class="prop-row prop-row--inline prop-select-wrap" data-select-root>
                 <label class="prop-label">Placement</label>
-                <button type="button" class="prop-select" data-select="placement">
-                  <span data-select-value>Bottom</span>
+                <button type="button" class="prop-select" data-select-trigger>
+                  <span data-select-value>Top</span>
                   <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
                 </button>
+                <ul class="prop-select-menu" hidden role="listbox">
+                  <li><button type="button" role="option" class="prop-select-option is-selected" data-value="Top">Top</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Right">Right</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Bottom">Bottom</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Left">Left</button></li>
+                </ul>
               </div>
 
-              <div class="prop-row prop-row--inline">
+              <div class="prop-row prop-row--inline prop-select-wrap" data-select-root>
                 <label class="prop-label">Default anchor point</label>
-                <button type="button" class="prop-select" data-select="anchor-point">
-                  <span data-select-value>Bottom</span>
+                <button type="button" class="prop-select" data-select-trigger>
+                  <span data-select-value>Top</span>
                   <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
                 </button>
+                <ul class="prop-select-menu" hidden role="listbox">
+                  <li><button type="button" role="option" class="prop-select-option is-selected" data-value="Top">Top</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Top right">Top right</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Right">Right</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Bottom right">Bottom right</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Bottom">Bottom</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Bottom left">Bottom left</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Left">Left</button></li>
+                  <li><button type="button" role="option" class="prop-select-option" data-value="Top left">Top left</button></li>
+                </ul>
               </div>
 
               <div class="prop-row prop-row--stacked">
@@ -279,12 +295,17 @@
               </label>
             </div>
 
-            <div class="prop-row prop-row--inline">
+            <div class="prop-row prop-row--inline prop-select-wrap" data-select-root>
               <label class="prop-label">Center</label>
-              <button type="button" class="prop-select" data-select="icon-center">
-                <span data-select-value>Bottom</span>
+              <button type="button" class="prop-select" data-select-trigger>
+                <span data-select-value>Top</span>
                 <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
               </button>
+              <ul class="prop-select-menu" hidden role="listbox">
+                <li><button type="button" role="option" class="prop-select-option is-selected" data-value="Top">Top</button></li>
+                <li><button type="button" role="option" class="prop-select-option" data-value="Center">Center</button></li>
+                <li><button type="button" role="option" class="prop-select-option" data-value="Bottom">Bottom</button></li>
+              </ul>
             </div>
           </div>
           </div><!-- /.preset-pane__scroll -->
@@ -532,6 +553,45 @@
           };
           reader.readAsDataURL(file);
         });
+      });
+
+      // --- Generic dropdowns (Placement / Default anchor point / Center) ---
+      // Click trigger toggles its own popover (and closes any others).
+      // Clicking an option updates the trigger label, moves the .is-selected
+      // highlight, and closes the popover. Outside click + Escape close.
+      const closeAllSelects = () => {
+        document.querySelectorAll(".prop-select-wrap.is-open").forEach((w) => {
+          w.classList.remove("is-open");
+          const menu = w.querySelector(".prop-select-menu");
+          if (menu) menu.hidden = true;
+        });
+      };
+      document.querySelectorAll("[data-select-root]").forEach((wrap) => {
+        const trigger = wrap.querySelector("[data-select-trigger]");
+        const menu = wrap.querySelector(".prop-select-menu");
+        const valueEl = wrap.querySelector("[data-select-value]");
+        if (!trigger || !menu) return;
+        trigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const willOpen = !wrap.classList.contains("is-open");
+          closeAllSelects();
+          if (willOpen) { wrap.classList.add("is-open"); menu.hidden = false; }
+        });
+        menu.addEventListener("click", (e) => {
+          const opt = e.target.closest(".prop-select-option");
+          if (!opt) return;
+          if (valueEl) valueEl.textContent = opt.dataset.value || opt.textContent;
+          menu.querySelectorAll(".prop-select-option").forEach((o) =>
+            o.classList.toggle("is-selected", o === opt)
+          );
+          closeAllSelects();
+        });
+      });
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest("[data-select-root]")) closeAllSelects();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeAllSelects();
       });
 
       // --- Base map style toggle (Satellite / Globe) ---
