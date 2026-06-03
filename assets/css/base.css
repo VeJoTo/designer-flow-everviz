@@ -1,5 +1,9 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Reserve scrollbar gutter so navigating between scrollable and
+   non-scrollable pages doesn't shift the layout horizontally — the
+   topbar/sidebar would otherwise appear to bounce on each transition. */
+html { scrollbar-gutter: stable; }
 body {
   font-family: var(--font-sans);
   font-size: var(--fs-body);
