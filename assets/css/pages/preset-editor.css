@@ -409,6 +409,25 @@
 /* .preset-map__icon mask-image is set inline by renderPins(), matching
    the source the row uses (built-in glyph path or uploaded data URL). */
 
+/* Label boxes on the preview — small text chip with a soft shadow,
+   centered on the marker point. Background and text inherit from
+   the live values in the Label style textarea (future hookup —
+   for the prototype the chip uses a neutral white-on-dark look). */
+.preset-map__label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: #FFFFFF;
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(16, 21, 61, 0.25);
+  /* Subtle navy connector outline to mirror the everviz reference */
+  border: 1px solid color-mix(in srgb, var(--pin-tint) 70%, transparent);
+}
+
 /* Marker pins on the preview — Heroicons solid map-pin used as a
    CSS mask so each pin can be tinted to its marker's color via
    --pin-tint. One pin per non-hidden marker; positions are set
@@ -515,6 +534,65 @@
 /* Trigger chevron flips when the popover is open. */
 .prop-select-wrap.is-open .prop-select img { transform: rotate(180deg); }
 .prop-select img { transition: transform var(--duration-fast) var(--ease-out); }
+
+/* Code-style textarea for the Label style JSON snippet — dark navy
+   surface, monospace, syntax-tinted text. Sits in a stacked row so
+   the label hangs above. */
+.prop-code-input {
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-sidebar);
+  color: var(--color-text-on-dark);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  padding: var(--space-3) var(--space-4);
+  resize: vertical;
+  min-height: 110px;
+  outline: none;
+  tab-size: 2;
+}
+.prop-code-input:focus { box-shadow: inset 0 0 0 1.5px var(--color-text-link); }
+
+/* Color swatch + hex input. The swatch wraps a transparent native
+   <input type='color'> so clicking it opens the OS picker. */
+.color-input {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.color-input__hex {
+  width: 96px;
+  border: 0;
+  background: transparent;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--color-text-primary);
+  outline: none;
+}
+.color-input__swatch {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border-subtle);
+  cursor: pointer;
+  overflow: hidden;
+}
+.color-input__swatch input[type="color"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
 
 /* Upload SVG bar — sits inside a cream chip like the dropdowns. The
    purple 'Select file' label + upload icon overlay a hidden file input. */
