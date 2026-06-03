@@ -53,8 +53,10 @@
   min-height: 0;
 }
 
-/* All three panes get the cream wash by default; properties stays white. */
-.preset-pane { background: var(--color-bg-app); }
+/* Editor pages use neutral grey #F5F5F5 instead of the brand cream;
+   the left list pane picks that up explicitly so it doesn't bleed
+   the warm tone from --color-bg-app onto an editor surface. */
+.preset-pane { background: #F5F5F5; }
 .preset-pane--properties { background: var(--color-bg-surface); }
 .preset-pane--map        { background: var(--color-bg-surface); }
 
@@ -248,7 +250,9 @@
   align-items: center;
 }
 .preset-pane--properties .prop-row--inline {
-  background: var(--color-bg-app);
+  /* Cream tone reads warm against the editor's neutral grey body;
+     use the same grey as the rest of the editor for cohesion. */
+  background: #F5F5F5;
   border-radius: var(--radius-sm);
   padding: var(--space-3) var(--space-4);
   gap: var(--space-3);
