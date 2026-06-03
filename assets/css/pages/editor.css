@@ -133,6 +133,12 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
   cursor: pointer;
 }
 .editor-overflow__item:hover { background: var(--color-brand-purple-soft); }
+.editor-overflow__sep {
+  height: 1px;
+  margin: var(--space-2) var(--space-3);
+  background: var(--color-border-subtle);
+  list-style: none;
+}
 
 /* 3-column body */
 .editor-grid {
