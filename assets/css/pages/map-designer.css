@@ -7,7 +7,7 @@
   margin-bottom: var(--space-3);
 }
 .screen__head p {
-  color: var(--color-text-primary);
+  color: var(--color-text-body);
   max-width: 640px;
   margin: 0 0 var(--space-10);
 }
@@ -22,7 +22,7 @@
   margin: 0 0 var(--space-4);
 }
 .md-section__desc {
-  color: var(--color-text-primary);
+  color: var(--color-text-body);
   margin: 0 0 var(--space-6);
   max-width: 640px;
 }
