@@ -26,10 +26,21 @@
           </div>
         </div>
         <div class="editor-bar__actions">
-          <button class="editor-action">Open</button>
-          <button class="editor-action">Layer groups</button>
-          <button class="editor-action">Sources</button>
-          <button class="editor-action">Settings</button>
+          <div class="editor-overflow" data-editor-overflow>
+            <button class="editor-overflow__btn" data-editor-overflow-trigger aria-label="More options" data-tooltip="More options">
+              <img src="assets/icons/ellipsis-horizontal.svg" alt="" width="22" height="22" />
+            </button>
+            <ul class="editor-overflow__menu" hidden role="menu">
+              <li><button type="button" class="editor-overflow__item" role="menuitem">Open</button></li>
+              <li><button type="button" class="editor-overflow__item" role="menuitem">Layer groups</button></li>
+              <li><button type="button" class="editor-overflow__item" role="menuitem">Code editor</button></li>
+              <li class="editor-overflow__sep" role="separator" aria-hidden="true"></li>
+              <li><button type="button" class="editor-overflow__item" role="menuitem">Sources</button></li>
+              <li><button type="button" class="editor-overflow__item" role="menuitem">Settings</button></li>
+              <li><button type="button" class="editor-overflow__item" role="menuitem">Global state</button></li>
+              <li><button type="button" class="editor-overflow__item" role="menuitem">Export</button></li>
+            </ul>
+          </div>
           <button class="editor-action editor-action--save" data-action="open-save-modal">Save</button>
         </div>
       </header>
@@ -478,6 +489,29 @@
           btn.setAttribute("data-tooltip", label);
         });
       });
+
+      // Editor topbar overflow menu (Sources / Settings / Global state /
+      // Export). Click trigger toggles the popover; outside click + Esc
+      // close it; menu items just close for now (no actions wired yet).
+      const overflow = document.querySelector("[data-editor-overflow]");
+      const overflowTrigger = overflow?.querySelector("[data-editor-overflow-trigger]");
+      const overflowMenu = overflow?.querySelector(".editor-overflow__menu");
+      const closeOverflow = () => { if (overflowMenu) overflowMenu.hidden = true; };
+      if (overflowTrigger && overflowMenu) {
+        overflowTrigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          overflowMenu.hidden = !overflowMenu.hidden;
+        });
+        overflowMenu.addEventListener("click", (e) => {
+          if (e.target.closest(".editor-overflow__item")) closeOverflow();
+        });
+        document.addEventListener("click", (e) => {
+          if (!overflow.contains(e.target)) closeOverflow();
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeOverflow();
+        });
+      }
 
       // Per-layer context menu (Hide / Duplicate / Delete)
       const layerMenu = document.querySelector("[data-layer-menu]");
