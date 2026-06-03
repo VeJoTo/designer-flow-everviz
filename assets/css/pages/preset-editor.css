@@ -1,0 +1,362 @@
+/* Preset editor — three-pane editor with a top filter bar and a
+   bottom action bar. Reuses .editor-pane, .prop-row, .prop-section
+   from editor.css; adds preset-specific styling for the left list
+   (sections + items with colored dots and per-item visibility) and
+   the right pane's base-style toggle + map preview. */
+
+/* Lock main to exactly the viewport minus the topbar. Without this,
+   the editor body grows to fit its tallest pane and the WHOLE page
+   scrolls — which means overflow:auto on the pane never triggers,
+   and the sticky action bar at the bottom of the middle pane has
+   nothing to stick to. Constraining main → grid flex-fills → panes
+   overflow internally → sticky bottom works. */
+.app--editor main {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--topbar-height));
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Top filter bar — sits above the 3-pane body, full-bleed white. */
+.preset-filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-5);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.preset-filter-bar .filter-bar__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 200px;
+}
+.preset-filter-bar .field-label {
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+}
+.preset-filter-bar__clear {
+  margin-bottom: 10px;
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+}
+.preset-filter-bar__clear:hover { text-decoration: underline; }
+
+/* Three-pane grid (override editor.css proportions for this screen) */
+.preset-editor-grid {
+  grid-template-columns: 280px 1fr 1fr;
+  flex: 1;
+  min-height: 0;
+}
+
+/* All three panes get the cream wash by default; properties stays white. */
+.preset-pane { background: var(--color-bg-app); }
+.preset-pane--properties { background: var(--color-bg-surface); }
+.preset-pane--map        { background: var(--color-bg-surface); }
+
+/* ──────────────────────────────────────────────────────────────
+   LEFT PANE — Create new + collapsible sections of preset items
+   ────────────────────────────────────────────────────────────── */
+.preset-pane--list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+.preset-create-new {
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 18px;
+}
+
+.preset-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.preset-section { background: transparent; }
+.preset-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  list-style: none;
+  cursor: pointer;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-sm);
+}
+.preset-section__head::-webkit-details-marker { display: none; }
+.preset-section__title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+.preset-section__chev {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+.preset-section[open] .preset-section__chev { transform: rotate(180deg); }
+
+.preset-items {
+  list-style: none;
+  margin: var(--space-2) 0 var(--space-3);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.preset-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.preset-item:hover { background: var(--color-brand-purple-soft); }
+.preset-item--selected {
+  background: var(--color-text-primary);
+}
+.preset-item--selected .preset-item__name { color: var(--color-text-on-dark); }
+.preset-item--selected .preset-item__toggle img,
+.preset-item--selected .preset-item__menu img { filter: brightness(0) invert(1); opacity: 0.85; }
+.preset-item__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.preset-item__name {
+  font-size: var(--fs-body);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.preset-item__toggle,
+.preset-item__menu {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+}
+.preset-item__toggle img,
+.preset-item__menu img { opacity: 0.65; }
+.preset-item__toggle:hover,
+.preset-item__menu:hover { background: rgba(91, 91, 255, 0.10); }
+.preset-item--selected .preset-item__toggle:hover,
+.preset-item--selected .preset-item__menu:hover { background: rgba(255, 255, 255, 0.10); }
+.preset-item--hidden .preset-item__name { color: var(--color-text-muted); }
+
+/* ──────────────────────────────────────────────────────────────
+   MIDDLE PANE — properties of the selected item
+   ────────────────────────────────────────────────────────────── */
+.preset-pane--properties {
+  padding: var(--space-5) var(--space-5) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+/* Drop the editor's all-caps + tracking on prop labels for this screen
+   — the design uses Title Case throughout. */
+.preset-pane--properties .prop-label {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+}
+.prop-row--stacked {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.prop-row--inline {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+.prop-label--title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-text-primary);
+}
+.prop-input--area {
+  min-height: 80px;
+  resize: vertical;
+  font: inherit;
+}
+.prop-add {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  margin-bottom: var(--space-3);
+}
+.prop-add__plus {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-text-link);
+}
+.prop-add__plus img { filter: brightness(0) invert(1); }
+.prop-add:hover { text-decoration: underline; }
+
+.prop-stepper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-bg-surface);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+}
+.prop-stepper__input {
+  width: 48px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  text-align: right;
+  font: inherit;
+  color: var(--color-text-primary);
+  /* hide native spinners — we render our own */
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+}
+.prop-stepper__input::-webkit-outer-spin-button,
+.prop-stepper__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.prop-stepper__spinners {
+  display: flex;
+  flex-direction: column;
+  margin-left: 4px;
+}
+.prop-stepper__spinners button {
+  font-size: 8px;
+  line-height: 1;
+  color: var(--color-text-link);
+  padding: 1px 4px;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   RIGHT PANE — map preview with base-style switcher
+   ────────────────────────────────────────────────────────────── */
+.preset-pane--map {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  gap: var(--space-3);
+}
+.preset-map__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.preset-map__label {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+}
+.preset-style-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.preset-style-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-small);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+.preset-style-btn:hover { background: var(--color-bg-app); }
+.preset-style-btn--active {
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  border-color: var(--color-text-primary);
+}
+.preset-style-btn--add {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-brand-purple-soft);
+  border-color: transparent;
+}
+.preset-style-btn--add img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
+
+.preset-map__preview {
+  flex: 1;
+  position: relative;
+  border-radius: var(--radius-md);
+  background-image: url("../../img/maps/europe.png");
+  background-size: cover;
+  background-position: center;
+  background-color: #1B2845;
+  filter: saturate(1.15) brightness(0.9);
+  overflow: hidden;
+}
+/* Satellite vs Globe — toggle a subtle tint to fake the style switch. */
+.preset-map__preview[data-style="globe"] {
+  filter: saturate(0.6) brightness(1.1) contrast(0.95);
+}
+
+/* Centered marker pin over the preview */
+.preset-map__pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 26px;
+  transform: translate(-50%, -100%);
+  background:
+    radial-gradient(circle at 50% 35%, #fff 0 4px, transparent 5px),
+    linear-gradient(to bottom, #FF4D5F 0%, #C0392B 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  clip-path: polygon(50% 100%, 0 35%, 0 0, 100% 0, 100% 35%);
+  filter: drop-shadow(0 4px 8px rgba(16, 21, 61, 0.45));
+}
+
+/* ──────────────────────────────────────────────────────────────
+   ACTION BAR — lives at the bottom of the middle (properties) pane.
+   Sticks to the bottom so it stays visible when the pane scrolls;
+   matches the Figma which keeps the map preview full-height on
+   the right and only puts Cancel / Save Preset under the form.
+   ────────────────────────────────────────────────────────────── */
+.preset-actions {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  background: var(--color-bg-surface);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.preset-actions .btn { align-self: auto; }
