@@ -18,11 +18,6 @@
   overflow: hidden;
 }
 
-/* The basemap/minimap editors use an .editor-bar header so they hide
-   the topbar breadcrumb (editor.css). The preset editor has no such
-   header, so re-show the topbar breadcrumb here. */
-body[data-page-mode="editor"] .topbar__crumb { display: flex; }
-
 /* Back link sits above the filter bar, same purple link + arrow style
    as the libraries (.back-link in base.css). */
 .preset-back-link {
