@@ -147,14 +147,14 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
   animation-duration: 220ms;
   animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-/* Named chrome doesn't crossfade — they persist as the same element
-   across pages. A tiny duration keeps any layout-shift settling. */
+/* Named chrome is stationary — no animation. Any layout delta between
+   pages would otherwise be visible as a width/size bounce on the topbar
+   or sidebar. Setting duration to 0 makes the swap instant. */
 ::view-transition-old(app-sidebar),
 ::view-transition-new(app-sidebar),
 ::view-transition-old(app-topbar),
 ::view-transition-new(app-topbar) {
-  animation-duration: 120ms;
-  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-duration: 0s;
 }
 
 /* Layout shell: sidebar | (topbar / main) */
@@ -164,10 +164,13 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
   grid-template-rows: var(--topbar-height) 1fr;
   min-height: 100vh;
 }
-/* The chrome mount is a wrapper around sidebar + topbar — make its
-   children participate directly in the .app grid. */
+/* The chrome mount is a wrapper around sidebar + topbar — `display: contents`
+   makes the sidebar/topbar participate visually in the .app grid even though
+   their DOM parent is #chrome. Note: CSS selectors still walk the real DOM
+   tree, so we use descendant combinators (`.app .sidebar`) — `.app > .sidebar`
+   would NOT match because #chrome is the actual DOM parent. */
 #chrome { display: contents; }
-.app > .sidebar {
+.app .sidebar {
   grid-column: 1;
   grid-row: 1 / -1;
   position: sticky;
@@ -176,14 +179,14 @@ h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight);
   height: 100vh;
   z-index: 4;
 }
-.app > .topbar  {
+.app .topbar  {
   grid-column: 2;
   grid-row: 1;
   position: sticky;
   top: 0;
   z-index: 3;
 }
-.app > main     { grid-column: 2; grid-row: 2; }
+.app main     { grid-column: 2; grid-row: 2; }
 
 /* Tooltip (used by tooltip.js) — speech-bubble style with arrow on top */
 .proto-tooltip {
