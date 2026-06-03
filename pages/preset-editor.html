@@ -350,6 +350,28 @@
       const iconNameInput = document.querySelector('[data-prop="icon-name"]');
       const previewArea = document.querySelector("[data-preview]");
 
+      // ---- Icon glyph plumbing ----
+      // Built-in icons map a data-icon value to an SVG path. A user
+      // upload writes the data URL to data-icon-src; that wins over
+      // the built-in lookup.
+      const ICON_GLYPHS = {
+        restaurant: "assets/icons/fire-solid.svg",
+        shopping:   "assets/icons/shopping-bag-solid.svg",
+        info:       "assets/icons/information-circle-solid.svg",
+      };
+      const getIconSrc = (item) =>
+        item.dataset.iconSrc || ICON_GLYPHS[item.dataset.icon] || null;
+      const applyIconMask = (el, src) => {
+        if (!el || !src) return;
+        const v = `url("${src}")`;
+        el.style.maskImage = v;
+        el.style.webkitMaskImage = v;
+      };
+      // Paint built-in glyphs on initial render.
+      document.querySelectorAll('.preset-item[data-kind="icon"]').forEach((item) => {
+        applyIconMask(item.querySelector(".preset-item__icon"), getIconSrc(item));
+      });
+
       // Swap the middle-pane panel based on the selected item's kind
       // (marker / icon / future: label, region, …).
       const showPanel = (kind) => {
@@ -373,8 +395,7 @@
           el.setAttribute("aria-hidden", "true");
           if (kind === "icon") {
             el.className = "preset-map__icon";
-            // Picks the correct mask-image via CSS [data-icon] selector.
-            if (item.dataset.icon) el.dataset.icon = item.dataset.icon;
+            applyIconMask(el, getIconSrc(item));
           } else {
             el.className = "preset-map__pin";
           }
@@ -481,12 +502,35 @@
         if (e.key === "Escape" && !menuEl.hidden) closeMenu();
       });
 
-      // --- Upload SVG: reflect chosen filename in the bar ---
+      // --- Upload SVG: replace the selected icon's glyph live ---
+      // The chosen file is read as a data URL and written to the row's
+      // data-icon-src; getIconSrc() picks that up over the built-in
+      // mapping so both the left-pane icon and the preview update.
       document.querySelectorAll('[data-prop="icon-svg"]').forEach((input) => {
         input.addEventListener("change", () => {
+          const file = input.files?.[0];
           const label = input.closest(".prop-upload")?.querySelector("span");
-          if (!label) return;
-          label.textContent = input.files?.[0]?.name || "Select file";
+          if (!file) {
+            if (label) label.textContent = "Select file";
+            return;
+          }
+          // Only accept SVG, since mask-image needs vector input.
+          if (!/\.svg$|svg\+xml/i.test(file.type || file.name)) {
+            alert("Please pick an .svg file.");
+            input.value = "";
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            const selected = document.querySelector('.preset-item--selected[data-kind="icon"]');
+            if (!selected) return;
+            selected.dataset.iconSrc = dataUrl;
+            applyIconMask(selected.querySelector(".preset-item__icon"), dataUrl);
+            renderPins(); // pick up the new glyph on the map preview
+            if (label) label.textContent = file.name;
+          };
+          reader.readAsDataURL(file);
         });
       });
 

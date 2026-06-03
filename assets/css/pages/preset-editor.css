@@ -148,18 +148,9 @@
   -webkit-mask-size: contain;
           mask-size: contain;
 }
-.preset-item[data-icon="restaurant"] .preset-item__icon {
-  -webkit-mask-image: url("../../icons/fire-solid.svg");
-          mask-image: url("../../icons/fire-solid.svg");
-}
-.preset-item[data-icon="shopping"] .preset-item__icon {
-  -webkit-mask-image: url("../../icons/shopping-bag-solid.svg");
-          mask-image: url("../../icons/shopping-bag-solid.svg");
-}
-.preset-item[data-icon="info"] .preset-item__icon {
-  -webkit-mask-image: url("../../icons/information-circle-solid.svg");
-          mask-image: url("../../icons/information-circle-solid.svg");
-}
+/* mask-image is set inline by JS so that uploaded user SVGs (as
+   data URLs) work the same way as the built-in glyphs without
+   running into CSS url() resolution quirks. */
 .preset-item--selected .preset-item__icon {
   background-color: var(--color-text-on-dark);
 }
@@ -415,18 +406,8 @@
           mask-size: contain;
   filter: drop-shadow(0 2px 6px rgba(16, 21, 61, 0.4));
 }
-.preset-map__icon[data-icon="restaurant"] {
-  -webkit-mask-image: url("../../icons/fire-solid.svg");
-          mask-image: url("../../icons/fire-solid.svg");
-}
-.preset-map__icon[data-icon="shopping"] {
-  -webkit-mask-image: url("../../icons/shopping-bag-solid.svg");
-          mask-image: url("../../icons/shopping-bag-solid.svg");
-}
-.preset-map__icon[data-icon="info"] {
-  -webkit-mask-image: url("../../icons/information-circle-solid.svg");
-          mask-image: url("../../icons/information-circle-solid.svg");
-}
+/* .preset-map__icon mask-image is set inline by renderPins(), matching
+   the source the row uses (built-in glyph path or uploaded data URL). */
 
 /* Marker pins on the preview — Heroicons solid map-pin used as a
    CSS mask so each pin can be tinted to its marker's color via
