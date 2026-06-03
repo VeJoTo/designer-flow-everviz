@@ -119,7 +119,10 @@
   background: var(--color-bg-surface);
   transition: background var(--duration-fast) var(--ease-out);
 }
-.preset-item:hover { background: var(--color-brand-purple-soft); }
+/* Hover only applies to non-selected rows; otherwise the soft-purple
+   hover bg overrides the selected navy bg and the white text becomes
+   unreadable on light purple. */
+.preset-item:not(.preset-item--selected):hover { background: var(--color-brand-purple-soft); }
 .preset-item--selected {
   background: var(--color-text-primary);
 }
