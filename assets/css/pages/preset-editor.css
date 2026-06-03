@@ -101,6 +101,27 @@
 }
 .preset-section[open] .preset-section__chev { transform: rotate(180deg); }
 
+/* Coming-soon variant: not a <details>, so it can't expand. Same
+   header shell but muted text + a small purple pill on the right
+   matching the Chart designer 'Coming soon' badge on the hub. */
+.preset-section--coming-soon { opacity: 0.85; }
+.preset-section--coming-soon .preset-section__head {
+  cursor: default;
+}
+.preset-section--coming-soon .preset-section__title {
+  color: var(--color-text-muted);
+}
+.preset-section__badge {
+  font-size: 10px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--color-brand-purple-soft);
+  color: var(--color-text-primary);
+}
+
 .preset-items {
   list-style: none;
   margin: var(--space-2) 0 var(--space-3);
