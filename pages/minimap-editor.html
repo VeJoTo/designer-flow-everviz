@@ -307,14 +307,43 @@
       const idInput = document.querySelector('[data-prop="layer-id"]');
       const layersList = document.querySelector(".layers-list");
       const layerFoot = document.querySelector(".layers-pane__foot");
+      const layerSearch = document.querySelector(".layers-pane__search-input");
       const updateLayerCount = () => {
         if (!layerFoot) return;
         const all = layersList.querySelectorAll(".layer-item");
+        const filterHidden = layersList.querySelectorAll(".layer-item--filter-hidden");
         const visible = layersList.querySelectorAll(
-          ".layer-item:not(.layer-item--hidden)"
+          ".layer-item:not(.layer-item--hidden):not(.layer-item--filter-hidden)"
         );
-        layerFoot.textContent = `${all.length} layers · ${visible.length} visible`;
+        // When filtering, show match counts; otherwise the normal layer summary.
+        if (filterHidden.length > 0) {
+          const matches = all.length - filterHidden.length;
+          layerFoot.textContent = `${matches} of ${all.length} match`;
+        } else {
+          layerFoot.textContent = `${all.length} layers · ${visible.length} visible`;
+        }
       };
+      // Layer search: case-insensitive substring match on name + meta text.
+      const filterLayers = (raw) => {
+        const q = (raw || "").trim().toLowerCase();
+        layersList.querySelectorAll(".layer-item").forEach((li) => {
+          if (!q) { li.classList.remove("layer-item--filter-hidden"); return; }
+          const name = li.querySelector(".layer-item__name")?.textContent.toLowerCase() || "";
+          const meta = li.querySelector(".layer-item__meta")?.textContent.toLowerCase() || "";
+          li.classList.toggle("layer-item--filter-hidden", !(name.includes(q) || meta.includes(q)));
+        });
+        updateLayerCount();
+      };
+      if (layerSearch) {
+        layerSearch.addEventListener("input", () => filterLayers(layerSearch.value));
+        layerSearch.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && layerSearch.value) {
+            layerSearch.value = "";
+            filterLayers("");
+            e.preventDefault();
+          }
+        });
+      }
       const selectLayer = (li) => {
         layersList
           .querySelectorAll(".layer-item--selected")
