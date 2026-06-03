@@ -67,7 +67,7 @@ body[data-page-mode="editor"] .topbar__crumb { display: none; }
 }
 .editor-action {
   font-size: var(--fs-body);
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-bold);
   color: var(--color-text-primary);
   padding: 6px 0;
   white-space: nowrap;
