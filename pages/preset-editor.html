@@ -249,7 +249,7 @@
             </div>
           </div>
           <div class="preset-map__preview" data-preview>
-            <span class="preset-map__pin" aria-hidden="true"></span>
+            <img class="preset-map__pin" src="assets/icons/map-pin-solid.svg" alt="" aria-hidden="true" />
           </div>
         </aside>
       </div>
@@ -284,12 +284,22 @@
       // --- Item selection in the left pane ---
       const itemsRoot = document.querySelector(".preset-pane--list");
       const nameInput = document.querySelector('[data-prop="preset-name"]');
+      // Pin reflects the currently-selected marker. When the selected
+      // marker is hidden (eye-slash), the pin disappears from the map.
+      const previewPin = document.querySelector(".preset-map__pin");
+      const syncPinVisibility = () => {
+        if (!previewPin) return;
+        const sel = document.querySelector(".preset-item--selected");
+        previewPin.hidden = !!sel?.classList.contains("preset-item--hidden");
+      };
       const selectItem = (li) => {
         document.querySelectorAll(".preset-item--selected").forEach((s) => s.classList.remove("preset-item--selected"));
         li.classList.add("preset-item--selected");
         const name = li.querySelector(".preset-item__name")?.textContent.trim();
         if (nameInput && name) nameInput.value = name;
+        syncPinVisibility();
       };
+      syncPinVisibility();
       itemsRoot.addEventListener("click", (e) => {
         const toggle = e.target.closest("[data-action='toggle-visible']");
         const menu = e.target.closest(".preset-item__menu");
@@ -309,6 +319,7 @@
         img.src = isHidden ? "assets/icons/eye-slash.svg" : "assets/icons/eye.svg";
         btn.setAttribute("aria-label", isHidden ? "Show" : "Hide");
         btn.setAttribute("data-tooltip", isHidden ? "Show" : "Hide");
+        syncPinVisibility();
       });
 
       // --- Item context menu (Hide / Duplicate / Delete) ---

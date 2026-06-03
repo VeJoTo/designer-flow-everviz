@@ -369,20 +369,21 @@
   filter: saturate(0.6) brightness(1.1) contrast(0.95);
 }
 
-/* Centered marker pin over the preview */
+/* Centered marker pin over the preview — Heroicons solid map-pin,
+   color via a CSS filter so the same source SVG can be re-tinted later. */
 .preset-map__pin {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 18px;
-  height: 26px;
+  width: 36px;
+  height: 36px;
   transform: translate(-50%, -100%);
-  background:
-    radial-gradient(circle at 50% 35%, #fff 0 4px, transparent 5px),
-    linear-gradient(to bottom, #FF4D5F 0%, #C0392B 100%);
-  clip-path: polygon(50% 100%, 0 35%, 0 0, 100% 0, 100% 35%);
-  filter: drop-shadow(0 4px 8px rgba(16, 21, 61, 0.45));
+  /* tint to brand red #FF4D5F */
+  filter:
+    invert(34%) sepia(94%) saturate(1750%) hue-rotate(330deg) brightness(101%) contrast(101%)
+    drop-shadow(0 4px 8px rgba(16, 21, 61, 0.45));
 }
+.preset-map__pin[hidden] { display: none; }
 
 /* ──────────────────────────────────────────────────────────────
    LABELS — XY offset pair + Connector switch
