@@ -308,6 +308,19 @@
         li.classList.add("preset-item--selected");
         const name = li.querySelector(".preset-item__name")?.textContent.trim();
         if (nameInput && name) nameInput.value = name;
+        // Selecting a hidden marker auto-shows it — the user clearly wants
+        // to work with it, so the eye flips back to visible and the pin
+        // appears in the preview.
+        if (li.classList.contains("preset-item--hidden")) {
+          li.classList.remove("preset-item--hidden");
+          const toggle = li.querySelector("[data-action='toggle-visible']");
+          if (toggle) {
+            toggle.querySelector("img").src = "assets/icons/eye.svg";
+            toggle.setAttribute("aria-label", "Hide");
+            toggle.setAttribute("data-tooltip", "Hide");
+          }
+          renderPins();
+        }
       };
       renderPins();
       itemsRoot.addEventListener("click", (e) => {
