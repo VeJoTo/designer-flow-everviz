@@ -409,6 +409,20 @@
 /* .preset-map__icon mask-image is set inline by renderPins(), matching
    the source the row uses (built-in glyph path or uploaded data URL). */
 
+/* Region blobs on the preview — translucent fill + brand-tinted
+   stroke. Organic border-radius makes the shape feel less like a
+   button. Size is set inline from data-pin-w/h, position from
+   data-pin-x/y. Rendered first in renderPins() so markers/icons
+   sit on top. */
+.preset-map__region {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background-color: color-mix(in srgb, var(--pin-tint) 45%, transparent);
+  border: 2px solid var(--pin-tint);
+  border-radius: 38% 62% 60% 40% / 50% 58% 42% 50%;
+  pointer-events: none;
+}
+
 /* Label boxes on the preview — small text chip with a soft shadow,
    centered on the marker point. Background and text inherit from
    the live values in the Label style textarea (future hookup —
