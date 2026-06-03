@@ -18,22 +18,27 @@
   overflow: hidden;
 }
 
-/* Back link sits above the filter bar so the user has a clear way
-   back to Map designer. Matches the existing .back-link aesthetic
-   used by the library pages and the basemap editor. */
-.preset-back-link {
-  display: inline-flex;
+/* Visible breadcrumb across the top of the editor body. Same purple-
+   link aesthetic as the topbar breadcrumb (which doesn't render
+   reliably in editor mode). */
+.preset-crumb {
+  display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--color-text-link);
-  font-weight: var(--fw-semibold);
   padding: var(--space-3) var(--space-6);
   background: var(--color-bg-surface);
   border-bottom: 1px solid var(--color-border-subtle);
+  font-size: var(--fs-body);
 }
-.preset-back-link:hover { text-decoration: underline; }
-.preset-back-link img {
-  filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%);
+.preset-crumb__link {
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+}
+.preset-crumb__link:hover { text-decoration: underline; }
+.preset-crumb__sep { color: var(--color-text-muted); }
+.preset-crumb__leaf {
+  color: var(--color-text-primary);
+  font-weight: var(--fw-semibold);
 }
 
 /* Top filter bar — sits above the 3-pane body, full-bleed white. */
