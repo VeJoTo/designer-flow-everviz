@@ -4,7 +4,9 @@
    then a step tabs row,
    then a two-pane body (map picker on the left, big preview on the right). */
 
-body[data-page-mode="wizard"] { background: var(--color-bg-app); }
+/* Template wizard is an editor surface — uses the editor grey (#F5F5F5),
+   not the cream app background, to match preset-editor / base-map-editor. */
+body[data-page-mode="wizard"] { background: #F5F5F5; }
 body[data-page-mode="wizard"] main {
   display: flex;
   flex-direction: column;
@@ -120,7 +122,7 @@ body[data-page-mode="wizard"] main {
   grid-template-columns: 400px 1fr;
   flex: 1;
   min-height: 0;
-  background: var(--color-bg-app);
+  background: #F5F5F5;
 }
 .wizard-pane { min-width: 0; min-height: 0; overflow: auto; }
 .wizard-pane--list {
@@ -403,7 +405,9 @@ body[data-page-mode="wizard"] main {
 }
 .wiz-row:first-child { border-top: 0; }
 .wiz-row__label { font-size: var(--fs-body); font-weight: var(--fw-semibold); color: var(--color-text-primary); }
-.wiz-row .select { width: auto; min-width: 96px; }
+/* Editor grey, not the brand cream the shared .select defaults to —
+   matches the preset-editor filter-bar treatment (#121). */
+.wiz-row .select { width: auto; min-width: 96px; background: #F5F5F5; }
 .wiz-row__value { color: var(--color-text-link); font-weight: var(--fw-semibold); }
 
 /* Square checkbox (matches the customize reference for Mini-Map enable) */
