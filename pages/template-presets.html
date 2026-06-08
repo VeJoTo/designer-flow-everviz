@@ -107,8 +107,53 @@
           title.textContent = v || "Untitled project";
         });
       }
+
+      // Preset pickers — clicking "Add preset" opens the Choose Marker /
+      // Choose Region modal; selecting a card adds a preset row above the
+      // button. The × on a row removes it.
+      const PRESETS = {
+        markers: {
+          title: "Choose Marker",
+          items: [
+            { name: "Red marker" }, { name: "Blue marker" }, { name: "Darkmode marker" },
+            { name: "Custom font" }, { name: "Darkmode" }, { name: "Darkmode Country Labels" },
+            { name: "Star marker" }, { name: "Flag marker" }, { name: "Dot marker" },
+          ],
+        },
+        regions: {
+          title: "Choose Region",
+          items: [
+            { name: "Filled regions" }, { name: "Outline regions" }, { name: "Choropleth" },
+            { name: "Darkmode regions" }, { name: "Highlight regions" }, { name: "Bubble regions" },
+          ],
+        },
+      };
+
+      document.querySelectorAll("[data-add-preset]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const cfg = PRESETS[btn.dataset.addPreset];
+          if (!cfg || !window.pickerModal) return;
+          const choice = await window.pickerModal(cfg);
+          if (!choice) return;
+          const item = document.createElement("div");
+          item.className = "wiz-preset-item";
+          item.innerHTML =
+            '<span class="wiz-preset-item__thumb" aria-hidden="true"></span>' +
+            '<span class="wiz-preset-item__name"></span>' +
+            '<button type="button" class="wiz-preset-item__remove" aria-label="Remove preset">' +
+            '<img src="assets/icons/x-mark.svg" alt="" width="14" height="14" /></button>';
+          item.querySelector(".wiz-preset-item__name").textContent = choice.name;
+          btn.parentElement.insertBefore(item, btn);
+        });
+      });
+
+      document.querySelector(".wiz-sections")?.addEventListener("click", (e) => {
+        const rm = e.target.closest(".wiz-preset-item__remove");
+        if (rm) rm.closest(".wiz-preset-item").remove();
+      });
     });
   </script>
+  <script src="assets/js/picker-modal.js" defer></script>
   <script src="assets/js/tooltip.js" defer></script>
   <script src="assets/js/chrome.js" defer></script>
   <script src="assets/js/prefetch.js" defer></script>

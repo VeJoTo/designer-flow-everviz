@@ -523,3 +523,154 @@ body[data-page-mode="wizard"] main {
   padding: 2px 10px; border-radius: 999px;
 }
 .wiz-stub__sub { font-size: var(--fs-small); color: var(--color-text-muted); max-width: 240px; }
+
+/* ──────────────────────────────────────────────────────────────
+   Preset picker modal (Choose Marker / Choose Region)
+   Navy header + cream panel + scrollable card grid — matches the
+   confirm-dialog aesthetic (base.css) at a larger size.
+   ────────────────────────────────────────────────────────────── */
+.picker-modal[hidden] { display: none; }
+.picker-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 11000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+.picker-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 21, 61, 0.55);
+  backdrop-filter: blur(2px);
+}
+.picker-modal__panel {
+  position: relative;
+  width: min(760px, 100%);
+  max-height: min(80vh, 760px);
+  background: var(--color-bg-app);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(16, 21, 61, 0.35);
+  display: flex;
+  flex-direction: column;
+  animation: picker-pop var(--duration-base) var(--ease-out);
+}
+@keyframes picker-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .picker-modal__panel { animation: none; }
+}
+.picker-modal__head {
+  flex-shrink: 0;
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.picker-modal__title {
+  color: var(--color-text-on-dark);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  margin: 0;
+}
+.picker-modal__close {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.picker-modal__close img { filter: brightness(0) invert(1); }
+.picker-modal__close:hover { background: rgba(255, 255, 255, 0.1); }
+.picker-modal__body { padding: var(--space-5); overflow: auto; }
+
+.picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+.picker-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-surface);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  transition: transform var(--duration-base) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+.picker-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-text-primary);
+  box-shadow: var(--shadow-card-hover);
+}
+.picker-card:focus-visible {
+  outline: 2px solid var(--color-text-link);
+  outline-offset: 2px;
+}
+.picker-card__thumb {
+  height: 168px;
+  background: repeating-conic-gradient(#FFFFFF 0 25%, #EEEEEE 0 50%) 0 0 / 22px 22px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.picker-card__name {
+  padding: var(--space-4);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  color: var(--color-text-primary);
+}
+
+/* Selected preset rows — added under a section when a marker/region is
+   chosen. Sit above the "Add preset" button, indented with the body. */
+.wiz-preset-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--color-bg-surface);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+}
+.wiz-preset-item__thumb {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: repeating-conic-gradient(#FFFFFF 0 25%, #EEEEEE 0 50%) 0 0 / 10px 10px;
+  border: 1px solid var(--color-border-subtle);
+}
+.wiz-preset-item__name {
+  flex: 1;
+  min-width: 0;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-small);
+  color: var(--color-text-primary);
+}
+.wiz-preset-item__remove {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.wiz-preset-item__remove:hover { background: var(--color-brand-purple-soft); }
+.wiz-preset-item__remove img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
