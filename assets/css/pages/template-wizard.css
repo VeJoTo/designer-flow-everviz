@@ -136,12 +136,6 @@ body[data-page-mode="wizard"] main {
 }
 .wizard-step--active:hover { text-decoration: none; }
 .wizard-step:not(.wizard-step--active):hover { text-decoration-thickness: 2px; }
-.wizard-steps__jump {
-  color: var(--color-text-primary);
-  font-weight: var(--fw-bold);
-  font-size: var(--fs-body);
-}
-.wizard-steps__jump:hover { color: var(--color-text-link); }
 
 /* ──────────────────────────────────────────────────────────────
    Two-pane body — left list, right preview
