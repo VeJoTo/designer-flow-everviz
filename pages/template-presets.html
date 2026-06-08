@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1280" />
+  <base href="../" />
+  <title>Template wizard · Presets · everviz prototype</title>
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/chrome.css" />
+  <link rel="stylesheet" href="assets/css/filters.css" />
+  <link rel="stylesheet" href="assets/css/pages/template-wizard.css" />
+</head>
+<body data-screen="designer-tools" data-screen-title="Template wizard"
+      data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]'
+      data-page-mode="wizard">
+  <div class="app">
+    <div id="chrome" class="chrome-mount"></div>
+    <main>
+      <header class="wizard-bar">
+        <div class="wizard-bar__left">
+          <span class="wizard-bar__kicker">Template wizard</span>
+          <span class="wizard-bar__sep" aria-hidden="true">|</span>
+          <span class="wizard-bar__title" data-wizard-title contenteditable="true" spellcheck="false">Untitled project</span>
+        </div>
+        <div class="wizard-bar__actions">
+          <button type="button" class="wizard-action" data-action="save-wizard">Save</button>
+          <a class="wizard-exit" href="pages/map-designer.html" aria-label="Exit wizard" data-tooltip="Exit wizard">
+            <img src="assets/icons/arrow-right-on-rectangle.svg" alt="" width="22" height="22" />
+          </a>
+        </div>
+      </header>
+
+      <nav class="wizard-steps" aria-label="Wizard steps">
+        <ol class="wizard-steps__list">
+          <li><a href="pages/template-creator.html"  class="wizard-step">Map</a></li>
+          <li><a href="pages/template-presets.html"   class="wizard-step wizard-step--active" aria-current="step">Presets</a></li>
+          <li><a href="pages/template-customize.html" class="wizard-step">Customize</a></li>
+          <li><a href="pages/template-controls.html"  class="wizard-step">Enabled controls</a></li>
+          <li><a href="pages/template-publish.html"   class="wizard-step">Publish &amp; Export</a></li>
+        </ol>
+        <a class="wizard-steps__jump" href="pages/preset-editor.html">Open preset editor</a>
+      </nav>
+
+      <div class="wizard-body">
+        <aside class="wizard-pane wizard-pane--list">
+          <div class="wiz-sections">
+            <details class="wiz-section" open>
+              <summary class="wiz-section__head">
+                <span class="wiz-section__title">Markers</span>
+                <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <div class="wiz-section__body">
+                <button type="button" class="wiz-add" data-add-preset="markers">
+                  <img src="assets/icons/plus.svg" alt="" width="18" height="18" /> Add preset
+                </button>
+              </div>
+            </details>
+
+            <details class="wiz-section" open>
+              <summary class="wiz-section__head">
+                <span class="wiz-section__title">Regions</span>
+                <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <div class="wiz-section__body">
+                <button type="button" class="wiz-add" data-add-preset="regions">
+                  <img src="assets/icons/plus.svg" alt="" width="18" height="18" /> Add preset
+                </button>
+              </div>
+            </details>
+          </div>
+        </aside>
+
+        <aside class="wizard-pane wizard-pane--preview">
+          <div class="wizard-preview" data-wizard-preview>
+            <button type="button" class="wizard-preview__fullscreen" aria-label="Fullscreen preview" data-tooltip="Fullscreen">
+              <img src="assets/icons/expand-collapse.svg" alt="" width="20" height="20" />
+            </button>
+            <div class="wizard-preview__stage" data-preview-stage data-stage="globe"></div>
+            <div class="wizard-preview__attr">everviz | © Stadia Maps © OpenMapTiles © OpenStreetMap</div>
+          </div>
+          <button class="wizard-help-fab" aria-label="Help" data-tooltip="Help">
+            <img src="assets/icons/question-mark-circle.svg" alt="" width="20" height="20" />
+          </button>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Inline-edit the project title (same pattern as the Map tab).
+      const title = document.querySelector("[data-wizard-title]");
+      if (title) {
+        let before = "";
+        title.addEventListener("focus", () => {
+          before = title.textContent;
+          const range = document.createRange();
+          range.selectNodeContents(title);
+          const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        });
+        title.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") { e.preventDefault(); title.blur(); }
+          else if (e.key === "Escape") { e.preventDefault(); title.textContent = before; title.blur(); }
+        });
+        title.addEventListener("blur", () => {
+          const v = (title.textContent || "").replace(/\s+/g, " ").trim();
+          title.textContent = v || "Untitled project";
+        });
+      }
+    });
+  </script>
+  <script src="assets/js/tooltip.js" defer></script>
+  <script src="assets/js/chrome.js" defer></script>
+  <script src="assets/js/prefetch.js" defer></script>
+</body>
+</html>

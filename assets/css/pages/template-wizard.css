@@ -334,3 +334,58 @@ body[data-page-mode="wizard"] main {
   box-shadow: 0 6px 18px rgba(16, 21, 61, 0.25);
 }
 .wizard-help-fab img { filter: brightness(0) invert(1); }
+
+/* ──────────────────────────────────────────────────────────────
+   Wizard left-pane accordions (Presets + Customize tabs)
+   Native <details>; chevron rotates when open. Mirrors the
+   preset-editor section pattern so the two read as one system.
+   ────────────────────────────────────────────────────────────── */
+.wiz-sections { display: flex; flex-direction: column; gap: var(--space-3); }
+.wiz-section { background: transparent; }
+.wiz-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  list-style: none;
+  cursor: pointer;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-sm);
+}
+.wiz-section__head::-webkit-details-marker { display: none; }
+.wiz-section__title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+.wiz-section__chev {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+.wiz-section[open] .wiz-section__chev { transform: rotate(180deg); }
+.wiz-section__body { padding: var(--space-3) var(--space-4) var(--space-4); }
+.wiz-section__placeholder {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+/* "+ Add preset" full-width button */
+.wiz-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 12px 18px;
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-link);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out);
+}
+.wiz-add:hover { border-color: var(--color-text-link); background: var(--color-brand-purple-soft); }
+.wiz-add img { filter: invert(34%) sepia(86%) saturate(1500%) hue-rotate(228deg) brightness(95%) contrast(95%); }
