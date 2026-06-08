@@ -101,12 +101,29 @@ body[data-page-mode="wizard"] main {
   text-underline-offset: 6px;
   text-decoration-thickness: 1.5px;
 }
+/* Active step is a navy speech-bubble pill with a downward tail
+   (white text), not an underline. */
 .wizard-step--active {
-  color: var(--color-text-primary);
+  position: relative;
+  color: var(--color-text-on-dark);
+  background: var(--color-text-primary);
+  border: 0;
   text-decoration: none;
-  border-bottom-color: var(--color-text-primary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
 }
-.wizard-step:hover { text-decoration-thickness: 2px; }
+.wizard-step--active::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid var(--color-text-primary);
+}
+.wizard-step--active:hover { text-decoration: none; }
+.wizard-step:not(.wizard-step--active):hover { text-decoration-thickness: 2px; }
 .wizard-steps__jump {
   color: var(--color-text-primary);
   font-weight: var(--fw-bold);
