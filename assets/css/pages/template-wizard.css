@@ -481,3 +481,16 @@ body[data-page-mode="wizard"] main {
 }
 .minimap-overlay.is-on { display: block; }
 .minimap-overlay[data-border="on"] { border: 2px solid var(--minimap-border-color, #123456); }
+
+/* Stub tabs — Enabled controls / Publish & Export (not yet designed) */
+.wiz-stub {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--space-2); height: 100%; text-align: center; padding: var(--space-8) var(--space-4);
+}
+.wiz-stub__title { font-size: var(--fs-body); font-weight: var(--fw-bold); color: var(--color-text-primary); }
+.wiz-stub__badge {
+  font-size: var(--fs-small); font-weight: var(--fw-semibold);
+  color: var(--color-text-link); background: var(--color-brand-purple-soft);
+  padding: 2px 10px; border-radius: 999px;
+}
+.wiz-stub__sub { font-size: var(--fs-small); color: var(--color-text-muted); max-width: 240px; }
