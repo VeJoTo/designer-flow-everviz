@@ -115,16 +115,26 @@
         markers: {
           title: "Choose Marker",
           items: [
-            { name: "Red marker" }, { name: "Blue marker" }, { name: "Darkmode marker" },
-            { name: "Custom font" }, { name: "Darkmode" }, { name: "Darkmode Country Labels" },
-            { name: "Star marker" }, { name: "Flag marker" }, { name: "Dot marker" },
+            { name: "Red marker",            thumb: { map: "north-europe",   kind: "pin",  color: "#FF4D5F" } },
+            { name: "Blue marker",           thumb: { map: "europe",         kind: "pin",  color: "#5B5BFF" } },
+            { name: "Darkmode marker",       thumb: { map: "scandinavia",    kind: "pin",  color: "#FFFFFF", dark: true } },
+            { name: "Custom font",           thumb: { map: "central-europe", kind: "pin",  color: "#28277E" } },
+            { name: "Darkmode",              thumb: { map: "world",          dark: true } },
+            { name: "Darkmode Country Labels", thumb: { map: "north-america", dark: true } },
+            { name: "Star marker",           thumb: { map: "mediterranean",  kind: "star", color: "#FFB020" } },
+            { name: "Flag marker",           thumb: { map: "uk",             kind: "pin",  color: "#28277E" } },
+            { name: "Dot marker",            thumb: { map: "scandinavia",    kind: "dot",  color: "#5B5BFF" } },
           ],
         },
         regions: {
           title: "Choose Region",
           items: [
-            { name: "Filled regions" }, { name: "Outline regions" }, { name: "Choropleth" },
-            { name: "Darkmode regions" }, { name: "Highlight regions" }, { name: "Bubble regions" },
+            { name: "Filled regions",   thumb: { map: "europe",         kind: "region-fill",    color: "#5B5BFF" } },
+            { name: "Outline regions",  thumb: { map: "scandinavia",    kind: "region-outline", color: "#28277E" } },
+            { name: "Choropleth",       thumb: { map: "world",          kind: "choropleth" } },
+            { name: "Darkmode regions", thumb: { map: "north-europe",   kind: "region-fill",    color: "#5B5BFF", dark: true } },
+            { name: "Highlight regions",thumb: { map: "central-europe", kind: "region-fill",    color: "#FFB020" } },
+            { name: "Bubble regions",   thumb: { map: "world",          kind: "bubble",         color: "#5B5BFF" } },
           ],
         },
       };

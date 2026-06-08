@@ -45,9 +45,15 @@
         .map((it) => {
           const name = String(it.name);
           const esc = name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+          const t = it.thumb || {};
+          const mapStyle = t.map ? ` style="background-image:url('assets/img/maps/${t.map}.png')"` : "";
+          const darkCls = t.dark ? " picker-card__thumb--dark" : "";
+          const mark = t.kind
+            ? `<span class="picker-card__mark picker-card__mark--${t.kind}"${t.color ? ` style="--mark:${t.color}"` : ""}></span>`
+            : "";
           return `
         <button type="button" class="picker-card" data-pick="${esc}">
-          <span class="picker-card__thumb" aria-hidden="true"></span>
+          <span class="picker-card__thumb${darkCls}"${mapStyle} aria-hidden="true">${mark}</span>
           <span class="picker-card__name">${esc}</span>
         </button>`;
         })

@@ -621,9 +621,80 @@ body[data-page-mode="wizard"] main {
   outline-offset: 2px;
 }
 .picker-card__thumb {
+  position: relative;
   height: 168px;
-  background: repeating-conic-gradient(#FFFFFF 0 25%, #EEEEEE 0 50%) 0 0 / 22px 22px;
+  background-color: #DCE6EC;
+  background-size: cover;
+  background-position: center;
   border-bottom: 1px solid var(--color-border-subtle);
+  overflow: hidden;
+}
+/* Darkmode preset preview — dark scrim over the map. */
+.picker-card__thumb--dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 21, 61, 0.8);
+}
+/* Overlay marks drawn on top of the map preview. --mark = accent color. */
+.picker-card__mark { position: absolute; z-index: 2; }
+.picker-card__mark--pin,
+.picker-card__mark--star {
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -55%);
+  background: var(--mark, var(--color-text-primary));
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
+  filter: drop-shadow(0 2px 3px rgba(16, 21, 61, 0.35));
+}
+.picker-card__mark--pin {
+  -webkit-mask-image: url("../../icons/map-pin-solid.svg");
+  mask-image: url("../../icons/map-pin-solid.svg");
+}
+.picker-card__mark--star {
+  -webkit-mask-image: url("../../icons/star-solid.svg");
+  mask-image: url("../../icons/star-solid.svg");
+}
+.picker-card__mark--dot {
+  top: 50%;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--mark, var(--color-text-primary));
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.7), 0 2px 4px rgba(16, 21, 61, 0.3);
+}
+.picker-card__mark--region-fill {
+  inset: 24px;
+  border-radius: var(--radius-sm);
+  background: var(--mark, var(--color-brand-purple));
+  border: 2px solid var(--mark, var(--color-brand-purple));
+  opacity: 0.5;
+}
+.picker-card__mark--region-outline {
+  inset: 24px;
+  border-radius: var(--radius-sm);
+  border: 3px solid var(--mark, var(--color-text-primary));
+}
+.picker-card__mark--bubble {
+  inset: 0;
+  background:
+    radial-gradient(circle at 34% 46%, var(--mark, #5B5BFF) 0 18px, transparent 19px),
+    radial-gradient(circle at 60% 62%, var(--mark, #5B5BFF) 0 26px, transparent 27px),
+    radial-gradient(circle at 72% 34%, var(--mark, #5B5BFF) 0 13px, transparent 14px);
+  opacity: 0.72;
+}
+.picker-card__mark--choropleth {
+  inset: 0;
+  background: linear-gradient(120deg,
+    rgba(91, 91, 255, 0.6) 0 33%,
+    rgba(255, 77, 95, 0.6) 33% 66%,
+    rgba(255, 176, 32, 0.65) 66% 100%);
+  mix-blend-mode: multiply;
 }
 .picker-card__name {
   padding: var(--space-4);
