@@ -7,10 +7,15 @@
 /* Template wizard is an editor surface — uses the editor grey (#F5F5F5),
    not the cream app background, to match preset-editor / base-map-editor. */
 body[data-page-mode="wizard"] { background: #F5F5F5; }
+/* Lock the wizard to the viewport (like the editors) so the left pane
+   scrolls internally — otherwise focusing a control near the bottom
+   scrolls the whole window and the preview map appears to jump. */
 body[data-page-mode="wizard"] main {
   display: flex;
   flex-direction: column;
+  height: calc(100vh - var(--topbar-height));
   min-height: 0;
+  overflow: hidden;
 }
 
 /* ──────────────────────────────────────────────────────────────
