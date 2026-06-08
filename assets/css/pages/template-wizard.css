@@ -394,7 +394,9 @@ body[data-page-mode="wizard"] main {
   transition: transform var(--duration-fast) var(--ease-out);
 }
 .wiz-section[open] .wiz-section__chev { transform: rotate(180deg); }
-.wiz-section__body { padding: var(--space-3) var(--space-4) var(--space-4); }
+/* Indent the body relative to the section header title so the options
+   read as nested under the section (e.g. the Mini-Map controls). */
+.wiz-section__body { padding: var(--space-3) var(--space-4) var(--space-4) var(--space-6); }
 .wiz-section__placeholder {
   font-size: var(--fs-small);
   color: var(--color-text-muted);
