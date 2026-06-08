@@ -4,6 +4,13 @@
    then a step tabs row,
    then a two-pane body (map picker on the left, big preview on the right). */
 
+/* Smooth cross-document navigation between wizard tabs. With prefetch.js
+   the next page is already fetched on hover; this makes the swap a quick
+   crossfade instead of a white flash on full reload. (Chrome/Edge.) */
+@view-transition { navigation: auto; }
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 160ms; }
+
 /* Template wizard is an editor surface — uses the editor grey (#F5F5F5),
    not the cream app background, to match preset-editor / base-map-editor. */
 body[data-page-mode="wizard"] { background: #F5F5F5; }
@@ -91,7 +98,7 @@ body[data-page-mode="wizard"] main {
 .wizard-steps__list {
   display: flex;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--space-5);
   list-style: none;
   margin: 0;
   padding: 0;
