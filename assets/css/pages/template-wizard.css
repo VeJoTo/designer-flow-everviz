@@ -389,3 +389,95 @@ body[data-page-mode="wizard"] main {
 }
 .wiz-add:hover { border-color: var(--color-text-link); background: var(--color-brand-purple-soft); }
 .wiz-add img { filter: invert(34%) sepia(86%) saturate(1500%) hue-rotate(228deg) brightness(95%) contrast(95%); }
+
+/* ──────────────────────────────────────────────────────────────
+   Customize tab — labeled control rows
+   ────────────────────────────────────────────────────────────── */
+.wiz-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-border-subtle);
+}
+.wiz-row:first-child { border-top: 0; }
+.wiz-row__label { font-size: var(--fs-body); font-weight: var(--fw-semibold); color: var(--color-text-primary); }
+.wiz-row .select { width: auto; min-width: 96px; }
+.wiz-row__value { color: var(--color-text-link); font-weight: var(--fw-semibold); }
+
+/* Square checkbox (matches the customize reference for Mini-Map enable) */
+.wiz-checkbox { position: relative; width: 22px; height: 22px; cursor: pointer; display: inline-block; }
+.wiz-checkbox input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.wiz-checkbox__box {
+  position: absolute; inset: 0;
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  display: grid; place-items: center;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+}
+.wiz-checkbox input:checked + .wiz-checkbox__box {
+  background: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+}
+.wiz-checkbox__box::after {
+  content: "";
+  width: 6px; height: 11px;
+  border: solid var(--color-text-on-dark);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translateY(-1px);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+.wiz-checkbox input:checked + .wiz-checkbox__box::after { opacity: 1; }
+.wiz-checkbox input:focus-visible + .wiz-checkbox__box { outline: 2px solid var(--color-text-link); outline-offset: 2px; }
+
+/* --- Control mirrors (verbatim from preset-editor.css; wizard pages don't load that file) --- */
+.color-input { display: inline-flex; align-items: center; gap: var(--space-2); }
+.color-input__hex {
+  width: 96px; border: 0; background: transparent;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: var(--fs-small); font-weight: var(--fw-semibold);
+  text-transform: uppercase; text-align: right;
+  color: var(--color-text-link); outline: none;
+}
+.color-input__swatch {
+  position: relative; width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid var(--color-border-subtle); cursor: pointer; overflow: hidden;
+}
+.color-input__swatch input[type="color"] {
+  position: absolute; inset: 0; width: 100%; height: 100%; border: 0; padding: 0; opacity: 0; cursor: pointer;
+}
+.prop-stepper {
+  position: relative; display: inline-flex; align-items: center;
+  background: var(--color-bg-surface); border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm); padding: 4px 8px;
+}
+.prop-stepper__input {
+  width: 48px; border: 0; outline: none; background: transparent;
+  text-align: right; font: inherit; color: var(--color-text-primary);
+  -webkit-appearance: textfield; -moz-appearance: textfield;
+}
+.prop-stepper__input::-webkit-outer-spin-button,
+.prop-stepper__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.prop-stepper__spinners { display: flex; flex-direction: column; margin-left: 4px; }
+.prop-stepper__spinners button { font-size: 8px; line-height: 1; color: var(--color-text-link); padding: 1px 4px; cursor: pointer; background: none; border: 0; }
+
+/* --- Minimap overlay in the preview (shown when Mini-Map enabled) --- */
+.minimap-overlay {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25) 0%, transparent 55%),
+    url("../../img/maps/world.png") center/cover;
+  filter: grayscale(1) contrast(1.15) brightness(0.9);
+  box-shadow: inset -10px -8px 24px rgba(16, 21, 61, 0.35);
+  display: none;
+}
+.minimap-overlay.is-on { display: block; }
+.minimap-overlay[data-border="on"] { border: 2px solid var(--minimap-border-color, #123456); }

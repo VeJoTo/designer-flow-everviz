@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1280" />
+  <base href="../" />
+  <title>Template wizard · Customize · everviz prototype</title>
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/chrome.css" />
+  <link rel="stylesheet" href="assets/css/filters.css" />
+  <link rel="stylesheet" href="assets/css/pages/template-wizard.css" />
+</head>
+<body data-screen="designer-tools" data-screen-title="Template wizard"
+      data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"}]'
+      data-page-mode="wizard">
+  <div class="app">
+    <div id="chrome" class="chrome-mount"></div>
+    <main>
+      <header class="wizard-bar">
+        <div class="wizard-bar__left">
+          <span class="wizard-bar__kicker">Template wizard</span>
+          <span class="wizard-bar__sep" aria-hidden="true">|</span>
+          <span class="wizard-bar__title" data-wizard-title contenteditable="true" spellcheck="false">Untitled project</span>
+        </div>
+        <div class="wizard-bar__actions">
+          <button type="button" class="wizard-action" data-action="save-wizard">Save</button>
+          <a class="wizard-exit" href="pages/map-designer.html" aria-label="Exit wizard" data-tooltip="Exit wizard">
+            <img src="assets/icons/arrow-right-on-rectangle.svg" alt="" width="22" height="22" />
+          </a>
+        </div>
+      </header>
+
+      <nav class="wizard-steps" aria-label="Wizard steps">
+        <ol class="wizard-steps__list">
+          <li><a href="pages/template-creator.html"  class="wizard-step">Map</a></li>
+          <li><a href="pages/template-presets.html"   class="wizard-step">Presets</a></li>
+          <li><a href="pages/template-customize.html" class="wizard-step wizard-step--active" aria-current="step">Customize</a></li>
+          <li><a href="pages/template-controls.html"  class="wizard-step">Enabled controls</a></li>
+          <li><a href="pages/template-publish.html"   class="wizard-step">Publish &amp; Export</a></li>
+        </ol>
+        <a class="wizard-steps__jump" href="pages/base-map-editor.html">Open map editor</a>
+      </nav>
+
+      <div class="wizard-body">
+        <aside class="wizard-pane wizard-pane--list">
+          <div class="wiz-sections">
+            <details class="wiz-section">
+              <summary class="wiz-section__head">
+                <span class="wiz-section__title">Text</span>
+                <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <div class="wiz-section__body"><p class="wiz-section__placeholder">No options yet.</p></div>
+            </details>
+            <details class="wiz-section">
+              <summary class="wiz-section__head">
+                <span class="wiz-section__title">Interactivity</span>
+                <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <div class="wiz-section__body"><p class="wiz-section__placeholder">No options yet.</p></div>
+            </details>
+            <details class="wiz-section">
+              <summary class="wiz-section__head">
+                <span class="wiz-section__title">Appearance</span>
+                <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <div class="wiz-section__body"><p class="wiz-section__placeholder">No options yet.</p></div>
+            </details>
+            <details class="wiz-section">
+              <summary class="wiz-section__head">
+                <span class="wiz-section__title">Map layers</span>
+                <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <div class="wiz-section__body"><p class="wiz-section__placeholder">No options yet.</p></div>
+            </details>
+
+            <details class="wiz-section" open>
+              <summary class="wiz-section__head">
+                <span class="wiz-section__title">Mini-Map</span>
+                <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+              </summary>
+              <div class="wiz-section__body">
+                <div class="wiz-row">
+                  <span class="wiz-row__label">Minimap</span>
+                  <label class="wiz-checkbox">
+                    <input type="checkbox" data-minimap-enable />
+                    <span class="wiz-checkbox__box" aria-hidden="true"></span>
+                  </label>
+                </div>
+                <div class="wiz-row">
+                  <span class="wiz-row__label">Border</span>
+                  <button class="select" data-minimap-border type="button">
+                    <span class="select__value">Off</span>
+                    <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                  </button>
+                </div>
+                <div class="wiz-row">
+                  <span class="wiz-row__label">Border color</span>
+                  <div class="color-input">
+                    <input type="text" class="color-input__hex" value="#123456" maxlength="7" data-minimap-color-hex />
+                    <label class="color-input__swatch" style="background:#123456">
+                      <input type="color" value="#123456" aria-label="Minimap border color" data-minimap-color />
+                    </label>
+                  </div>
+                </div>
+                <div class="wiz-row">
+                  <span class="wiz-row__label">Minimap size</span>
+                  <div class="prop-stepper">
+                    <input type="number" class="prop-stepper__input" value="0" min="0" max="100" data-minimap-size />
+                    <span class="prop-stepper__spinners">
+                      <button type="button" aria-label="Increment" data-stepper="up">▲</button>
+                      <button type="button" aria-label="Decrement" data-stepper="down">▼</button>
+                    </span>
+                  </div>
+                </div>
+                <div class="wiz-row">
+                  <span class="wiz-row__label">Icon</span>
+                  <button class="select" data-minimap-icon type="button">
+                    <span class="select__value">None</span>
+                    <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                  </button>
+                </div>
+              </div>
+            </details>
+          </div>
+        </aside>
+
+        <aside class="wizard-pane wizard-pane--preview">
+          <div class="wizard-preview" data-wizard-preview>
+            <button type="button" class="wizard-preview__fullscreen" aria-label="Fullscreen preview" data-tooltip="Fullscreen">
+              <img src="assets/icons/expand-collapse.svg" alt="" width="20" height="20" />
+            </button>
+            <div class="wizard-preview__stage" data-preview-stage data-stage="globe">
+              <div class="minimap-overlay" data-minimap-overlay data-border="off"></div>
+            </div>
+            <div class="wizard-preview__attr">everviz | © Stadia Maps © OpenMapTiles © OpenStreetMap</div>
+          </div>
+          <button class="wizard-help-fab" aria-label="Help" data-tooltip="Help">
+            <img src="assets/icons/question-mark-circle.svg" alt="" width="20" height="20" />
+          </button>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Project-title inline edit (same as the other tabs)
+      const title = document.querySelector("[data-wizard-title]");
+      if (title) {
+        let before = "";
+        title.addEventListener("focus", () => {
+          before = title.textContent;
+          const range = document.createRange();
+          range.selectNodeContents(title);
+          const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        });
+        title.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") { e.preventDefault(); title.blur(); }
+          else if (e.key === "Escape") { e.preventDefault(); title.textContent = before; title.blur(); }
+        });
+        title.addEventListener("blur", () => {
+          const v = (title.textContent || "").replace(/\s+/g, " ").trim();
+          title.textContent = v || "Untitled project";
+        });
+      }
+
+      const overlay = document.querySelector("[data-minimap-overlay]");
+
+      // Enable → show/hide minimap overlay
+      document.querySelector("[data-minimap-enable]")?.addEventListener("change", (e) => {
+        overlay?.classList.toggle("is-on", e.target.checked);
+      });
+
+      // Border select → cycle Off/On, toggle ring on overlay
+      const borderBtn = document.querySelector("[data-minimap-border]");
+      borderBtn?.addEventListener("click", () => {
+        const val = borderBtn.querySelector(".select__value");
+        const on = val.textContent.trim() === "Off";
+        val.textContent = on ? "On" : "Off";
+        overlay?.setAttribute("data-border", on ? "on" : "off");
+      });
+
+      // Border color → sync hex + swatch + overlay ring color
+      const hex = document.querySelector("[data-minimap-color-hex]");
+      const color = document.querySelector("[data-minimap-color]");
+      const swatch = color?.closest(".color-input__swatch");
+      const applyColor = (v) => {
+        if (!/^#[0-9a-fA-F]{6}$/.test(v)) return;
+        if (hex) hex.value = v.toUpperCase();
+        if (color) color.value = v;
+        if (swatch) swatch.style.background = v;
+        overlay?.style.setProperty("--minimap-border-color", v);
+      };
+      color?.addEventListener("input", (e) => applyColor(e.target.value));
+      hex?.addEventListener("change", (e) => applyColor(e.target.value.trim()));
+
+      // Size stepper → scale overlay (each unit = 2px over a 132px base)
+      const size = document.querySelector("[data-minimap-size]");
+      const applySize = () => {
+        const px = 132 + Number(size.value || 0) * 2;
+        if (overlay) { overlay.style.width = px + "px"; overlay.style.height = px + "px"; }
+      };
+      document.querySelectorAll("[data-stepper]").forEach((b) => {
+        b.addEventListener("click", () => {
+          const dir = b.dataset.stepper === "up" ? 1 : -1;
+          const min = Number(size.min || 0), max = Number(size.max || 100);
+          size.value = Math.max(min, Math.min(max, Number(size.value || 0) + dir));
+          applySize();
+        });
+      });
+      size?.addEventListener("change", applySize);
+
+      // Icon select → cycle None / Pin
+      const iconBtn = document.querySelector("[data-minimap-icon]");
+      iconBtn?.addEventListener("click", () => {
+        const val = iconBtn.querySelector(".select__value");
+        val.textContent = val.textContent.trim() === "None" ? "Pin" : "None";
+      });
+    });
+  </script>
+  <script src="assets/js/tooltip.js" defer></script>
+  <script src="assets/js/chrome.js" defer></script>
+  <script src="assets/js/prefetch.js" defer></script>
+</body>
+</html>
