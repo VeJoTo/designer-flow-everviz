@@ -745,3 +745,6 @@ body[data-page-mode="wizard"] main {
 .wiz-preset-item__remove img {
   filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
 }
+
+/* Single-page wizard: only the active tab panel shows. */
+.wizard-panel[hidden] { display: none; }
