@@ -1,0 +1,747 @@
+/* Template wizard — Step 1 (Map).
+   Layout: existing global topbar / sidebar from chrome.js,
+   then a wizard-bar (project title + Save + Exit),
+   then a step tabs row,
+   then a two-pane body (map picker on the left, big preview on the right). */
+
+/* Smooth cross-document navigation between wizard tabs. With prefetch.js
+   the next page is already fetched on hover; this makes the swap a quick
+   crossfade instead of a white flash on full reload. (Chrome/Edge.) */
+@view-transition { navigation: auto; }
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 160ms; }
+
+/* Template wizard is an editor surface — uses the editor grey (#F5F5F5),
+   not the cream app background, to match preset-editor / base-map-editor. */
+body[data-page-mode="wizard"] { background: #F5F5F5; }
+/* Lock the wizard to the viewport (like the editors) so the left pane
+   scrolls internally — otherwise focusing a control near the bottom
+   scrolls the whole window and the preview map appears to jump. */
+body[data-page-mode="wizard"] main {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--topbar-height));
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Wizard bar — project title + global actions
+   ────────────────────────────────────────────────────────────── */
+.wizard-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.wizard-bar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.wizard-bar__kicker {
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+}
+.wizard-bar__sep {
+  color: var(--color-border-subtle);
+  font-weight: var(--fw-regular);
+}
+.wizard-bar__title {
+  color: var(--color-text-primary);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+.wizard-bar__title:focus { background: var(--color-brand-purple-soft); }
+
+.wizard-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.wizard-action {
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  padding: 6px 4px;
+}
+.wizard-action:hover { text-decoration: underline; }
+.wizard-exit {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+}
+.wizard-exit:hover { background: var(--color-brand-purple-soft); }
+.wizard-exit img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Step tabs row
+   ────────────────────────────────────────────────────────────── */
+.wizard-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6) var(--space-3);
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.wizard-steps__list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.wizard-step {
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  padding: var(--space-2) 0;
+  border-bottom: 2px solid transparent;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1.5px;
+}
+/* Active step is a navy speech-bubble pill with a downward tail
+   (white text), not an underline. */
+.wizard-step--active {
+  position: relative;
+  color: var(--color-text-on-dark);
+  background: var(--color-text-primary);
+  border: 0;
+  text-decoration: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+}
+.wizard-step--active::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid var(--color-text-primary);
+}
+.wizard-step--active:hover { text-decoration: none; }
+.wizard-step:not(.wizard-step--active):hover { text-decoration-thickness: 2px; }
+
+/* ──────────────────────────────────────────────────────────────
+   Two-pane body — left list, right preview
+   ────────────────────────────────────────────────────────────── */
+.wizard-body {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  flex: 1;
+  min-height: 0;
+  background: #F5F5F5;
+}
+.wizard-pane { min-width: 0; min-height: 0; overflow: auto; }
+.wizard-pane--list {
+  padding: var(--space-4) var(--space-4) var(--space-8);
+  background: var(--color-bg-surface);
+  border-right: 4px solid var(--color-brand-purple);
+}
+.wizard-pane--preview {
+  padding: var(--space-6);
+  position: relative;
+}
+
+/* Map picker grid */
+.map-pick-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.map-pick {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 156px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  border: 1.5px solid var(--color-border-subtle);
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--duration-base) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+.map-pick:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-text-primary);
+  box-shadow: var(--shadow-card-hover);
+}
+.map-pick__thumb {
+  height: 76px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-bg-surface);
+  position: relative;
+}
+.map-pick__thumb--globe       { background-color: #FFFFFF; }
+.map-pick__thumb--globe::after {
+  content: "";
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent-dot);
+}
+.map-pick__thumb--world        { background-image: url("../../img/maps/world.png"); }
+.map-pick__thumb--europe       { background-image: url("../../img/maps/europe.png"); }
+.map-pick__thumb--north-europe { background-image: url("../../img/maps/north-europe.png"); }
+.map-pick__thumb--scandinavia  { background-image: url("../../img/maps/scandinavia.png"); }
+.map-pick__thumb--bars {
+  background:
+    repeating-linear-gradient(90deg, #5B5BFF 0 14px, transparent 14px 18px) 14px 8px / auto 6px no-repeat,
+    repeating-linear-gradient(90deg, #FF4D5F 0 22px, transparent 22px 26px) 14px 18px / auto 6px no-repeat,
+    repeating-linear-gradient(90deg, #28277E 0 10px, transparent 10px 14px) 14px 28px / auto 6px no-repeat,
+    repeating-linear-gradient(90deg, #5B5BFF 0 30px, transparent 30px 34px) 14px 38px / auto 6px no-repeat,
+    var(--color-bg-surface);
+}
+
+.map-pick__body {
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+}
+.map-pick__kind {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  font-weight: var(--fw-semibold);
+}
+.map-pick__title {
+  color: var(--color-text-primary);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Selected map: only the label bar (bottom) turns navy. The thumbnail
+   on top keeps its own color so the red accent dot stays visible. */
+.map-pick--selected { border-color: var(--color-text-primary); }
+.map-pick--selected .map-pick__body { background: var(--color-text-primary); }
+.map-pick--selected .map-pick__title,
+.map-pick--selected .map-pick__kind { color: var(--color-text-on-dark); }
+
+/* 'Create map' tile — purple plus circle, centered */
+.map-pick--create {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  gap: var(--space-2);
+}
+.map-pick--create .map-pick__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-text-primary);
+  display: grid;
+  place-items: center;
+}
+.map-pick--create .map-pick__icon img { filter: brightness(0) invert(1); }
+.map-pick--create .map-pick__title {
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+.map-pick--create .map-pick__sub {
+  color: var(--color-text-link);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-small);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Right pane — preview stage
+   ────────────────────────────────────────────────────────────── */
+.wizard-preview {
+  position: relative;
+  background:
+    repeating-conic-gradient(#FFFFFF 0 25%, #EEEEEE 0 50%) 0 0 / 24px 24px;
+  border-radius: var(--radius-md);
+  min-height: 520px;
+  height: 100%;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.wizard-preview__fullscreen {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+}
+.wizard-preview__fullscreen img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
+.wizard-preview__stage {
+  flex: 1;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+/* Preview stages — swapped via data-stage on click. */
+.wizard-preview__stage[data-stage="globe"]::after {
+  content: "";
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, #B6D9E0 0%, transparent 55%),
+    url("../../img/maps/world.png") center/cover;
+  box-shadow: inset -32px -24px 60px rgba(16, 21, 61, 0.25);
+}
+.wizard-preview__stage[data-stage="satellite"] { background-image: url("../../img/maps/world.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="evening-news"] { background-image: url("../../img/maps/north-europe.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="nrk-nyheter"] { background-image: url("../../img/maps/scandinavia.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="anwar"] { background-image: url("../../img/maps/europe.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="olympics"] { background-image: url("../../img/maps/world.png"); background-size: cover; background-position: center; }
+.wizard-preview__stage[data-stage="untitled-base"] { background: var(--color-bg-surface); }
+
+.wizard-preview__attr {
+  position: absolute;
+  bottom: var(--space-3);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+/* Floating help button bottom-right */
+.wizard-help-fab {
+  position: absolute;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 18px rgba(16, 21, 61, 0.25);
+}
+.wizard-help-fab img { filter: brightness(0) invert(1); }
+
+/* ──────────────────────────────────────────────────────────────
+   Wizard left-pane accordions (Presets + Customize tabs)
+   Native <details>; chevron rotates when open. Mirrors the
+   preset-editor section pattern so the two read as one system.
+   ────────────────────────────────────────────────────────────── */
+.wiz-sections { display: flex; flex-direction: column; gap: var(--space-3); }
+.wiz-section { background: transparent; }
+.wiz-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  list-style: none;
+  cursor: pointer;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-sm);
+}
+.wiz-section__head::-webkit-details-marker { display: none; }
+.wiz-section__title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+.wiz-section__chev {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+.wiz-section[open] .wiz-section__chev { transform: rotate(180deg); }
+/* Indent the body relative to the section header title so the options
+   read as nested under the section (e.g. the Mini-Map controls). */
+.wiz-section__body { padding: var(--space-3) var(--space-4) var(--space-4) var(--space-6); }
+.wiz-section__placeholder {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+/* "+ Add preset" full-width button */
+.wiz-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 12px 18px;
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-link);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out);
+}
+.wiz-add:hover { border-color: var(--color-text-link); background: var(--color-brand-purple-soft); }
+.wiz-add img { filter: invert(34%) sepia(86%) saturate(1500%) hue-rotate(228deg) brightness(95%) contrast(95%); }
+
+/* ──────────────────────────────────────────────────────────────
+   Customize tab — labeled control rows
+   ────────────────────────────────────────────────────────────── */
+.wiz-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-border-subtle);
+}
+.wiz-row:first-child { border-top: 0; }
+.wiz-row__label { font-size: var(--fs-body); font-weight: var(--fw-semibold); color: var(--color-text-primary); }
+/* Editor grey, not the brand cream the shared .select defaults to —
+   matches the preset-editor filter-bar treatment (#121). */
+.wiz-row .select { width: auto; min-width: 96px; background: #F5F5F5; }
+.wiz-row__value { color: var(--color-text-link); font-weight: var(--fw-semibold); }
+
+/* Square checkbox (matches the customize reference for Mini-Map enable) */
+.wiz-checkbox { position: relative; width: 22px; height: 22px; cursor: pointer; display: inline-block; }
+.wiz-checkbox input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.wiz-checkbox__box {
+  position: absolute; inset: 0;
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  display: grid; place-items: center;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+}
+.wiz-checkbox input:checked + .wiz-checkbox__box {
+  background: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+}
+.wiz-checkbox__box::after {
+  content: "";
+  width: 6px; height: 11px;
+  border: solid var(--color-text-on-dark);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translateY(-1px);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+.wiz-checkbox input:checked + .wiz-checkbox__box::after { opacity: 1; }
+.wiz-checkbox input:focus-visible + .wiz-checkbox__box { outline: 2px solid var(--color-text-link); outline-offset: 2px; }
+
+/* --- Control mirrors (verbatim from preset-editor.css; wizard pages don't load that file) --- */
+.color-input { display: inline-flex; align-items: center; gap: var(--space-2); }
+.color-input__hex {
+  width: 96px; border: 0; background: transparent;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: var(--fs-small); font-weight: var(--fw-semibold);
+  text-transform: uppercase; text-align: right;
+  color: var(--color-text-link); outline: none;
+}
+.color-input__swatch {
+  position: relative; width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid var(--color-border-subtle); cursor: pointer; overflow: hidden;
+}
+.color-input__swatch input[type="color"] {
+  position: absolute; inset: 0; width: 100%; height: 100%; border: 0; padding: 0; opacity: 0; cursor: pointer;
+}
+.prop-stepper {
+  position: relative; display: inline-flex; align-items: center;
+  background: var(--color-bg-surface); border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm); padding: 4px 8px;
+}
+.prop-stepper__input {
+  width: 48px; border: 0; outline: none; background: transparent;
+  text-align: right; font: inherit; color: var(--color-text-primary);
+  -webkit-appearance: textfield; -moz-appearance: textfield;
+}
+.prop-stepper__input::-webkit-outer-spin-button,
+.prop-stepper__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.prop-stepper__spinners { display: flex; flex-direction: column; margin-left: 4px; }
+.prop-stepper__spinners button { font-size: 8px; line-height: 1; color: var(--color-text-link); padding: 1px 4px; cursor: pointer; background: none; border: 0; }
+
+/* --- Minimap overlay in the preview (shown when Mini-Map enabled) --- */
+.minimap-overlay {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25) 0%, transparent 55%),
+    url("../../img/maps/world.png") center/cover;
+  filter: grayscale(1) contrast(1.15) brightness(0.9);
+  box-shadow: inset -10px -8px 24px rgba(16, 21, 61, 0.35);
+  display: none;
+}
+.minimap-overlay.is-on { display: block; }
+.minimap-overlay[data-border="on"] { border: 2px solid var(--minimap-border-color, #123456); }
+
+/* Stub tabs — Enabled controls / Publish & Export (not yet designed) */
+.wiz-stub {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--space-2); height: 100%; text-align: center; padding: var(--space-8) var(--space-4);
+}
+.wiz-stub__title { font-size: var(--fs-body); font-weight: var(--fw-bold); color: var(--color-text-primary); }
+.wiz-stub__badge {
+  font-size: var(--fs-small); font-weight: var(--fw-semibold);
+  color: var(--color-text-link); background: var(--color-brand-purple-soft);
+  padding: 2px 10px; border-radius: 999px;
+}
+.wiz-stub__sub { font-size: var(--fs-small); color: var(--color-text-muted); max-width: 240px; }
+
+/* ──────────────────────────────────────────────────────────────
+   Preset picker modal (Choose Marker / Choose Region)
+   Navy header + cream panel + scrollable card grid — matches the
+   confirm-dialog aesthetic (base.css) at a larger size.
+   ────────────────────────────────────────────────────────────── */
+.picker-modal[hidden] { display: none; }
+.picker-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 11000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+.picker-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 21, 61, 0.55);
+  backdrop-filter: blur(2px);
+}
+.picker-modal__panel {
+  position: relative;
+  width: min(760px, 100%);
+  max-height: min(80vh, 760px);
+  background: var(--color-bg-app);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(16, 21, 61, 0.35);
+  display: flex;
+  flex-direction: column;
+  animation: picker-pop var(--duration-base) var(--ease-out);
+}
+@keyframes picker-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .picker-modal__panel { animation: none; }
+}
+.picker-modal__head {
+  flex-shrink: 0;
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.picker-modal__title {
+  color: var(--color-text-on-dark);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  margin: 0;
+}
+.picker-modal__close {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.picker-modal__close img { filter: brightness(0) invert(1); }
+.picker-modal__close:hover { background: rgba(255, 255, 255, 0.1); }
+.picker-modal__body { padding: var(--space-5); overflow: auto; }
+
+.picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+.picker-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-surface);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  transition: transform var(--duration-base) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+.picker-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-text-primary);
+  box-shadow: var(--shadow-card-hover);
+}
+.picker-card:focus-visible {
+  outline: 2px solid var(--color-text-link);
+  outline-offset: 2px;
+}
+.picker-card__thumb {
+  position: relative;
+  height: 168px;
+  background-color: #DCE6EC;
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--color-border-subtle);
+  overflow: hidden;
+}
+/* Darkmode preset preview — dark scrim over the map. */
+.picker-card__thumb--dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 21, 61, 0.8);
+}
+/* Overlay marks drawn on top of the map preview. --mark = accent color. */
+.picker-card__mark { position: absolute; z-index: 2; }
+.picker-card__mark--pin,
+.picker-card__mark--star {
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -55%);
+  background: var(--mark, var(--color-text-primary));
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
+  filter: drop-shadow(0 2px 3px rgba(16, 21, 61, 0.35));
+}
+.picker-card__mark--pin {
+  -webkit-mask-image: url("../../icons/map-pin-solid.svg");
+  mask-image: url("../../icons/map-pin-solid.svg");
+}
+.picker-card__mark--star {
+  -webkit-mask-image: url("../../icons/star-solid.svg");
+  mask-image: url("../../icons/star-solid.svg");
+}
+.picker-card__mark--dot {
+  top: 50%;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--mark, var(--color-text-primary));
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.7), 0 2px 4px rgba(16, 21, 61, 0.3);
+}
+.picker-card__mark--region-fill {
+  inset: 24px;
+  border-radius: var(--radius-sm);
+  background: var(--mark, var(--color-brand-purple));
+  border: 2px solid var(--mark, var(--color-brand-purple));
+  opacity: 0.5;
+}
+.picker-card__mark--region-outline {
+  inset: 24px;
+  border-radius: var(--radius-sm);
+  border: 3px solid var(--mark, var(--color-text-primary));
+}
+.picker-card__mark--bubble {
+  inset: 0;
+  background:
+    radial-gradient(circle at 34% 46%, var(--mark, #5B5BFF) 0 18px, transparent 19px),
+    radial-gradient(circle at 60% 62%, var(--mark, #5B5BFF) 0 26px, transparent 27px),
+    radial-gradient(circle at 72% 34%, var(--mark, #5B5BFF) 0 13px, transparent 14px);
+  opacity: 0.72;
+}
+.picker-card__mark--choropleth {
+  inset: 0;
+  background: linear-gradient(120deg,
+    rgba(91, 91, 255, 0.6) 0 33%,
+    rgba(255, 77, 95, 0.6) 33% 66%,
+    rgba(255, 176, 32, 0.65) 66% 100%);
+  mix-blend-mode: multiply;
+}
+.picker-card__name {
+  padding: var(--space-4);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  color: var(--color-text-primary);
+}
+
+/* Selected preset rows — added under a section when a marker/region is
+   chosen. Sit above the "Add preset" button, indented with the body. */
+.wiz-preset-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--color-bg-surface);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+}
+.wiz-preset-item__thumb {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: repeating-conic-gradient(#FFFFFF 0 25%, #EEEEEE 0 50%) 0 0 / 10px 10px;
+  border: 1px solid var(--color-border-subtle);
+}
+.wiz-preset-item__name {
+  flex: 1;
+  min-width: 0;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-small);
+  color: var(--color-text-primary);
+}
+.wiz-preset-item__remove {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.wiz-preset-item__remove:hover { background: var(--color-brand-purple-soft); }
+.wiz-preset-item__remove img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
