@@ -185,14 +185,18 @@ h1 { line-height: var(--lh-display); } /* Spec: 40px / 40px */
   animation-duration: 220ms;
   animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-/* Named chrome is stationary — no animation. Any layout delta between
-   pages would otherwise be visible as a width/size bounce on the topbar
-   or sidebar. Setting duration to 0 makes the swap instant. */
+/* Named chrome is stationary — no animation whatsoever. The sidebar and
+   topbar must never move or fade between page navigations. We disable BOTH
+   the opacity cross-fade (old/new) AND the group size/position morph —
+   zeroing only old/new (as before) still let the ::view-transition-group
+   tween any layout delta, which showed up as the nav bouncing/sliding. */
+::view-transition-group(app-sidebar),
+::view-transition-group(app-topbar),
 ::view-transition-old(app-sidebar),
 ::view-transition-new(app-sidebar),
 ::view-transition-old(app-topbar),
 ::view-transition-new(app-topbar) {
-  animation-duration: 0s;
+  animation: none;
 }
 
 /* Layout shell: sidebar | (topbar / main) */
