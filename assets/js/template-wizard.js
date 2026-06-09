@@ -54,6 +54,18 @@
     window.addEventListener("hashchange", () => activateTab(fromHash()));
     activateTab(fromHash());
 
+    // Switch tabs by setting the fragment on the CURRENT document. The page
+    // sets <base href="../">, so a plain href="#tab" would resolve against
+    // the base (site root) and navigate away — intercept and drive the hash.
+    tabLinks.forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const name = a.dataset.tab;
+        if (location.hash.slice(1) === name) activateTab(name);
+        else location.hash = name;
+      });
+    });
+
     // ── Project title inline edit ───────────────────────────────────
     const title = document.querySelector("[data-wizard-title]");
     if (title) {
