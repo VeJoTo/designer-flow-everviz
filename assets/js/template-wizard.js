@@ -187,5 +187,77 @@
         syncBody(input);
       });
     }
+
+    // ── Save template: modal + persist + flag for the templates page ──
+    // "Save" persists and shows a toast (stay in the wizard); "Save & view
+    // templates" persists and follows its link to the template page, where
+    // the freshly-saved card is highlighted as new (see saved-templates.js).
+    const saveModal = document.querySelector("[data-save-modal]");
+    if (saveModal) {
+      const titleEl = document.querySelector("[data-wizard-title]");
+      const nameInput = saveModal.querySelector("#save-template-name");
+      const openSave = () => {
+        if (nameInput && titleEl) nameInput.value = (titleEl.textContent || "").trim() || "Untitled project";
+        saveModal.hidden = false;
+        saveModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        nameInput?.focus();
+        nameInput?.select();
+      };
+      const closeSave = () => {
+        saveModal.hidden = true;
+        saveModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      };
+      document.querySelectorAll('[data-action="save-wizard"]').forEach((b) =>
+        b.addEventListener("click", openSave)
+      );
+      saveModal.querySelectorAll("[data-save-modal-close]").forEach((el) =>
+        el.addEventListener("click", closeSave)
+      );
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !saveModal.hidden) closeSave();
+      });
+
+      const persistSave = () => {
+        const name = (nameInput?.value || "").trim() || "Untitled project";
+        if (titleEl) titleEl.textContent = name; // reflect rename on the bar
+        const entry = window.SavedMaps?.save("template", {
+          name,
+          thumb: 'url("assets/img/maps/north-europe.png")',
+        });
+        // Tell the templates page which card to highlight as newly created.
+        if (entry) {
+          try { sessionStorage.setItem("everviz-new-template", entry.id); } catch (e) {}
+        }
+        return entry;
+      };
+
+      // Toast (shown for the stay-in-wizard "Save").
+      const toast = document.querySelector("[data-save-toast-el]");
+      const toastText = toast?.querySelector("[data-save-toast-text]");
+      const toastMsg = document.body.dataset.saveToast || "Saved";
+      let toastTimer;
+      const showToast = () => {
+        if (!toast) return;
+        if (toastText) toastText.textContent = toastMsg;
+        toast.hidden = false;
+        requestAnimationFrame(() => toast.classList.add("is-visible"));
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("is-visible");
+          setTimeout(() => { toast.hidden = true; }, 220);
+        }, 2400);
+      };
+
+      saveModal.querySelector('[data-action="save-template-stay"]')?.addEventListener("click", () => {
+        persistSave();
+        showToast();
+      });
+      // "Save & view templates" — persist, then let the anchor navigate.
+      saveModal.querySelector('[data-action="save-template-go"]')?.addEventListener("click", () => {
+        persistSave();
+      });
+    }
   });
 })();

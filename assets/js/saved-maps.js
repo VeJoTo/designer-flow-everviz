@@ -12,6 +12,7 @@
   const KEYS = {
     minimap: "everviz-saved-minimaps",
     basemap: "everviz-saved-basemaps",
+    template: "everviz-saved-templates",
   };
 
   function read(kind) {
