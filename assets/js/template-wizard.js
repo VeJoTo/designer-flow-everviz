@@ -99,9 +99,18 @@
 
     // ── Mini-Map controls (Customize tab) → preview overlay ─────────
     const overlay = document.querySelector("[data-minimap-overlay]");
-    document.querySelector("[data-minimap-enable]")?.addEventListener("change", (e) => {
+    // Every Mini-Map option except the on/off toggle is only relevant once
+    // the minimap is on — collapse them while it's off (progressive reveal).
+    const minimapEnable = document.querySelector("[data-minimap-enable]");
+    const minimapRows = document.querySelectorAll("[data-minimap-dependent]");
+    const setMinimapRowsShown = (on) => {
+      minimapRows.forEach((row) => { row.hidden = !on; });
+    };
+    minimapEnable?.addEventListener("change", (e) => {
       overlay?.classList.toggle("is-on", e.target.checked);
+      setMinimapRowsShown(e.target.checked);
     });
+    setMinimapRowsShown(!!minimapEnable?.checked); // default: off → collapsed
     // Reusable wizard dropdown: a .select trigger + a .filter-popover menu
     // of [optionAttr] options. Opens on click, single-selects (✓ on the
     // chosen row), closes on outside-click / Escape, and calls onChange.

@@ -443,6 +443,8 @@ body[data-page-mode="wizard"] main {
 /* A control that doesn't apply yet (e.g. border colour/thickness while the
    border is Off) reads as disabled: dimmed and non-interactive. */
 .wiz-row.is-disabled { opacity: 0.45; pointer-events: none; }
+/* Rows hidden until the minimap is toggled on (beats .wiz-row's grid). */
+.wiz-row[hidden] { display: none; }
 .wiz-row__label { font-size: var(--fs-body); font-weight: var(--fw-semibold); color: var(--color-text-primary); }
 /* Editor grey, not the brand cream the shared .select defaults to —
    matches the preset-editor filter-bar treatment (#121). */

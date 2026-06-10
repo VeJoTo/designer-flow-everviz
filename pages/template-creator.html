@@ -167,7 +167,7 @@
                       <span class="wiz-switch__track" aria-hidden="true"><span class="wiz-switch__thumb"></span></span>
                     </label>
                   </div>
-                  <div class="wiz-row">
+                  <div class="wiz-row" data-minimap-dependent>
                     <span class="wiz-row__label">Border</span>
                     <div class="wiz-select">
                       <button class="select" type="button" data-minimap-border-trigger aria-haspopup="listbox" aria-expanded="false">
@@ -182,7 +182,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="wiz-row" data-border-dependent>
+                  <div class="wiz-row" data-border-dependent data-minimap-dependent>
                     <span class="wiz-row__label">Border color</span>
                     <div class="color-input">
                       <input type="text" class="color-input__hex" value="#123456" maxlength="7" data-minimap-color-hex />
@@ -191,7 +191,7 @@
                       </label>
                     </div>
                   </div>
-                  <div class="wiz-row" data-border-dependent>
+                  <div class="wiz-row" data-border-dependent data-minimap-dependent>
                     <span class="wiz-row__label">Border thickness</span>
                     <div class="prop-stepper">
                       <input type="number" class="prop-stepper__input" value="2" min="1" max="8" data-minimap-border-width />
@@ -201,7 +201,7 @@
                       </span>
                     </div>
                   </div>
-                  <div class="wiz-row">
+                  <div class="wiz-row" data-minimap-dependent>
                     <span class="wiz-row__label">Minimap size</span>
                     <div class="prop-stepper">
                       <input type="number" class="prop-stepper__input" value="0" min="0" max="100" data-minimap-size />
@@ -211,7 +211,7 @@
                       </span>
                     </div>
                   </div>
-                  <div class="wiz-row">
+                  <div class="wiz-row" data-minimap-dependent>
                     <span class="wiz-row__label">Icon</span>
                     <div class="wiz-select">
                       <button class="select" type="button" data-minimap-icon-trigger aria-haspopup="listbox" aria-expanded="false">
