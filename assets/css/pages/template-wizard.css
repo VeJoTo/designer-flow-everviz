@@ -395,6 +395,17 @@ body[data-page-mode="wizard"] main {
   font-size: var(--fs-small);
   color: var(--color-text-muted);
 }
+/* Controls tab: checkbox + chevron grouped on the right of a section head.
+   The checkbox toggles whether the whole category is offered to the
+   journalist; when off, its sub-options read as unavailable. */
+.wiz-section__head-controls { display: flex; align-items: center; gap: var(--space-3); }
+.wiz-section__body.is-disabled { opacity: 0.45; pointer-events: none; }
+.wiz-panel__intro {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-3);
+  line-height: 1.5;
+}
 
 /* "+ Add preset" full-width button */
 .wiz-add {

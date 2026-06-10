@@ -165,5 +165,27 @@
         if (rm) rm.closest(".wiz-preset-item").remove();
       });
     });
+
+    // ── Controls tab: per-category availability checkboxes ──────────
+    // Each category's header checkbox decides whether the journalist gets
+    // that control at all. The checkbox sits inside the <summary>, so a
+    // raw click would also expand the section — we cancel that, flip the
+    // box ourselves, and dim the sub-options when the category is off.
+    const controlsPanel = document.querySelector("[data-controls]");
+    if (controlsPanel) {
+      const syncBody = (toggle) => {
+        const body = toggle.closest(".wiz-section")?.querySelector(".wiz-section__body");
+        if (body) body.classList.toggle("is-disabled", !toggle.checked);
+      };
+      controlsPanel.querySelectorAll("[data-control-toggle]").forEach(syncBody);
+      controlsPanel.addEventListener("click", (e) => {
+        const box = e.target.closest(".wiz-checkbox");
+        if (!box || !box.closest(".wiz-section__head")) return; // sub-rows toggle natively
+        e.preventDefault(); // keep the <details> from opening/closing
+        const input = box.querySelector("input");
+        input.checked = !input.checked;
+        syncBody(input);
+      });
+    }
   });
 })();
