@@ -72,8 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
       badge.className = "template-card__new-badge";
       badge.textContent = "New";
       card.prepend(badge);
-      // Bring it into view and let the highlight fade after a moment.
-      requestAnimationFrame(() => card.scrollIntoView({ behavior: "smooth", block: "center" }));
+      // Scroll down to the Templates section so the user lands looking at
+      // their freshly-saved template (it sits at the top of the grid).
+      requestAnimationFrame(() => {
+        (root || card).scrollIntoView({ behavior: "smooth", block: "start" });
+      });
       setTimeout(() => card.classList.remove("template-card--new"), 6000);
     }
   }
