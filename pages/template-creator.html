@@ -333,13 +333,67 @@
             </div>
           </section>
 
-          <!-- Publish & Export tab — stub -->
-          <section class="wizard-panel" data-panel="publish" hidden>
-            <div class="wiz-stub">
-              <span class="wiz-stub__badge">Coming soon</span>
-              <span class="wiz-stub__title">Publish &amp; Export</span>
-              <span class="wiz-stub__sub">Publish your template or export it as code, image, or data.</span>
+          <!-- Publish & Export tab — export presets -->
+          <section class="wizard-panel" data-panel="publish" data-export-root hidden>
+            <h2 class="export-title">Export Presets</h2>
+
+            <div class="export-default">
+              <span class="export-default__label">Default Export Preset</span>
+              <div class="wiz-select export-select">
+                <button class="select" type="button" data-default-trigger aria-haspopup="listbox" aria-expanded="false">
+                  <span class="select__value export-default__value" data-default-value>Desktop</span>
+                  <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                </button>
+                <div class="filter-popover wiz-select-menu" data-default-menu hidden role="listbox"></div>
+              </div>
             </div>
+
+            <div class="export-presets" data-export-list>
+              <!-- preset card template is cloned here by JS for "Add" -->
+              <div class="export-preset" data-export-preset>
+                <input type="text" class="export-preset__name" value="Desktop" aria-label="Preset name" />
+                <div class="export-preset__rows">
+                  <div class="export-row">
+                    <span class="export-row__label">Platform</span>
+                    <div class="wiz-select export-select">
+                      <button class="select" type="button" data-platform-trigger aria-haspopup="listbox" aria-expanded="false">
+                        <span class="select__value export-row__value" data-platform-value>Multi Platform</span>
+                        <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                      </button>
+                      <div class="filter-popover wiz-select-menu" data-platform-menu hidden role="listbox">
+                        <button type="button" class="sort-option is-selected" role="option" data-platform="multi">Multi Platform</button>
+                        <button type="button" class="sort-option" role="option" data-platform="video">Video</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="export-row">
+                    <span class="export-row__label" data-dim-label="w">Preview Width</span>
+                    <div class="prop-stepper">
+                      <input type="number" class="prop-stepper__input" value="1440" min="0" max="9999" data-export-w />
+                      <span class="prop-stepper__spinners">
+                        <button type="button" aria-label="Increase width" data-estep="up">▲</button>
+                        <button type="button" aria-label="Decrease width" data-estep="down">▼</button>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="export-row">
+                    <span class="export-row__label" data-dim-label="h">Preview Height</span>
+                    <div class="prop-stepper">
+                      <input type="number" class="prop-stepper__input" value="1024" min="0" max="9999" data-export-h />
+                      <span class="prop-stepper__spinners">
+                        <button type="button" aria-label="Increase height" data-estep="up">▲</button>
+                        <button type="button" aria-label="Decrease height" data-estep="down">▼</button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="export-preset__delete" aria-label="Delete preset" data-export-delete data-tooltip="Delete">
+                  <img src="assets/icons/trash.svg" alt="" width="18" height="18" />
+                </button>
+              </div>
+            </div>
+
+            <button type="button" class="export-add" data-export-add>+ Add Export Preset</button>
           </section>
         </aside>
 
