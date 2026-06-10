@@ -312,6 +312,12 @@
     if (saveModal) {
       const titleEl = document.querySelector("[data-wizard-title]");
       const nameInput = saveModal.querySelector("#save-template-name");
+      // Editing an existing template? Start from its name (passed in the URL)
+      // so it feels like editing — and Save updates that template, not a copy.
+      const editParams = new URLSearchParams(location.search);
+      const editingId = editParams.get("id");
+      const editingName = editParams.get("name");
+      if (editingName && titleEl) titleEl.textContent = editingName;
       const openSave = () => {
         if (nameInput && titleEl) nameInput.value = (titleEl.textContent || "").trim() || "Untitled project";
         saveModal.hidden = false;
@@ -339,6 +345,7 @@
         const name = (nameInput?.value || "").trim() || "Untitled project";
         if (titleEl) titleEl.textContent = name; // reflect rename on the bar
         const entry = window.SavedMaps?.save("template", {
+          id: editingId || undefined, // update the edited template instead of duplicating
           name,
           thumb: 'url("assets/img/maps/north-europe.png")',
         });

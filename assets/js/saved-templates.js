@@ -80,4 +80,53 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => card.classList.remove("template-card--new"), 6000);
     }
   }
+
+  // ── Edit any template in the wizard, pre-filled with its name (and id
+  //    for saved ones), and give every card a delete button. ───────────
+  grid.querySelectorAll(".template-card").forEach((card) => {
+    const name =
+      card.dataset.name || card.querySelector(".template-card__title")?.textContent.trim() || "";
+    const id = card.dataset.savedId;
+    const url =
+      "pages/template-creator.html?" +
+      (id ? `id=${encodeURIComponent(id)}&` : "") +
+      `name=${encodeURIComponent(name)}`;
+    card
+      .querySelectorAll('.template-card__hit, .icon-btn[aria-label="Edit"]')
+      .forEach((a) => a.setAttribute("href", url));
+    const actions = card.querySelector(".template-card__actions");
+    if (actions && !actions.querySelector("[data-template-delete]")) {
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "icon-btn icon-btn--danger";
+      del.setAttribute("aria-label", "Delete");
+      del.setAttribute("data-tooltip", "Delete");
+      del.setAttribute("data-template-delete", "");
+      del.innerHTML = '<img src="assets/icons/trash.svg" alt="" width="16" height="16" />';
+      actions.appendChild(del);
+    }
+  });
+
+  // Delete a template, with a confirmation. Saved templates also clear from
+  // localStorage; static demo cards just disappear from the DOM.
+  grid.addEventListener("click", async (e) => {
+    const del = e.target.closest("[data-template-delete]");
+    if (!del) return;
+    e.preventDefault();
+    const card = del.closest(".template-card");
+    const name =
+      card?.dataset.name ||
+      card?.querySelector(".template-card__title")?.textContent.trim() ||
+      "this template";
+    const ok = await window.confirmDialog?.({
+      title: "Delete template",
+      message: `Are you sure you want to delete <strong>${escapeHTML(name)}</strong>?`,
+      confirmLabel: "Delete",
+      destructive: true,
+    });
+    if (!ok) return;
+    const id = card.dataset.savedId;
+    if (id && window.SavedMaps) window.SavedMaps.delete("template", id);
+    card.remove();
+  });
 });
