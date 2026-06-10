@@ -27,15 +27,8 @@
       <div class="preset-filter-bar">
         <div class="filter-bar__field">
           <label class="field-label">Filter by type</label>
-          <button class="select" data-tooltip="Filter by preset type">
-            <span class="select__value">All</span>
-            <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
-          </button>
-        </div>
-        <div class="filter-bar__field">
-          <label class="field-label">Select tags</label>
-          <button class="select">
-            <span class="select__value select__value--placeholder">Select tags</span>
+          <button class="select" data-type-filter-trigger data-tooltip="Filter by preset type">
+            <span class="select__value" data-type-filter-value>All</span>
             <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
           </button>
         </div>
@@ -640,6 +633,45 @@
     </button>
   </div>
 
+  <!-- "Create new" type picker (New marker / icon / label / region) -->
+  <div class="layer-menu" data-create-menu hidden role="menu">
+    <button class="layer-menu__item" role="menuitem" data-create-kind="marker">
+      <img src="assets/icons/map-pin-solid.svg" alt="" width="16" height="16" />
+      <span>New marker</span>
+    </button>
+    <button class="layer-menu__item" role="menuitem" data-create-kind="icon">
+      <img src="assets/icons/star.svg" alt="" width="16" height="16" />
+      <span>New icon</span>
+    </button>
+    <button class="layer-menu__item" role="menuitem" data-create-kind="label">
+      <img src="assets/icons/bars-3-bottom-left.svg" alt="" width="16" height="16" />
+      <span>New label</span>
+    </button>
+    <button class="layer-menu__item" role="menuitem" data-create-kind="region">
+      <img src="assets/icons/map.svg" alt="" width="16" height="16" />
+      <span>New region</span>
+    </button>
+  </div>
+
+  <!-- "Filter by type": show only one preset section (or all) -->
+  <div class="layer-menu" data-type-filter-menu hidden role="menu">
+    <button class="layer-menu__item is-selected" role="menuitemradio" aria-checked="true" data-type-value="all">
+      <span>All</span>
+    </button>
+    <button class="layer-menu__item" role="menuitemradio" aria-checked="false" data-type-value="Markers">
+      <span>Markers</span>
+    </button>
+    <button class="layer-menu__item" role="menuitemradio" aria-checked="false" data-type-value="Icons">
+      <span>Icons</span>
+    </button>
+    <button class="layer-menu__item" role="menuitemradio" aria-checked="false" data-type-value="Labels">
+      <span>Labels</span>
+    </button>
+    <button class="layer-menu__item" role="menuitemradio" aria-checked="false" data-type-value="Regions">
+      <span>Regions</span>
+    </button>
+  </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // --- Item selection in the left pane ---
@@ -821,6 +853,152 @@
         if (e.key === "Escape" && !menuEl.hidden) closeMenu();
       });
 
+      // --- "Create new": pick a type, then add a fresh preset row ---
+      // Reuses the .layer-menu popover. Each option builds a new row in the
+      // matching section, makes it visible (so a pin appears), selects it,
+      // and focuses the name field so it can be renamed straight away.
+      const createBtn = document.querySelector(".preset-create-new");
+      const createMenu = document.querySelector("[data-create-menu]");
+      const SECTION_TITLE_BY_KIND = {
+        marker: "Markers", icon: "Icons", label: "Labels", region: "Regions",
+      };
+      const DEFAULT_COLOR_BY_KIND = {
+        marker: "#FF4D5F", icon: "#FF4D5F", label: "#28277E", region: "#BC094A",
+      };
+      const sectionListForKind = (kind) => {
+        const title = SECTION_TITLE_BY_KIND[kind];
+        const section = [...document.querySelectorAll("[data-preset-section]")].find(
+          (s) => s.querySelector(".preset-section__title")?.textContent.trim() === title
+        );
+        return section ? { section, list: section.querySelector(".preset-items") } : null;
+      };
+      const closeCreateMenu = () => { createMenu.hidden = true; };
+      const openCreateMenu = () => {
+        closeMenu(); // never show both popovers at once
+        const r = createBtn.getBoundingClientRect();
+        createMenu.style.top = `${r.bottom + 4}px`;
+        createMenu.style.left = `${r.left}px`;
+        createMenu.style.minWidth = `${r.width}px`;
+        createMenu.hidden = false;
+      };
+      createBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (createMenu.hidden) openCreateMenu(); else closeCreateMenu();
+      });
+      const makeRow = (kind) => {
+        const color = DEFAULT_COLOR_BY_KIND[kind];
+        const name = `New ${kind}`;
+        const x = 40 + Math.round(Math.random() * 20);
+        const y = 40 + Math.round(Math.random() * 20);
+        const li = document.createElement("li");
+        li.className = "preset-item";
+        li.setAttribute("data-preset-item", "");
+        li.dataset.kind = kind;
+        li.dataset.pinColor = color;
+        li.dataset.pinX = x;
+        li.dataset.pinY = y;
+        const glyph =
+          kind === "icon"
+            ? '<span class="preset-item__icon"></span>'
+            : `<span class="preset-item__dot" style="background:${color}"></span>`;
+        if (kind === "icon") { li.dataset.icon = "info"; li.style.setProperty("--icon-tint", color); }
+        if (kind === "region") { li.dataset.pinW = 20; li.dataset.pinH = 20; }
+        li.innerHTML =
+          glyph +
+          `<span class="preset-item__name">${name}</span>` +
+          '<button class="preset-item__toggle" data-action="toggle-visible" aria-label="Hide" data-tooltip="Hide">' +
+          '<img src="assets/icons/eye.svg" alt="" width="18" height="18" /></button>' +
+          '<button class="preset-item__menu" aria-label="More options" data-tooltip="More options">' +
+          '<img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" /></button>';
+        return li;
+      };
+      createMenu.addEventListener("click", (e) => {
+        const kind = e.target.closest("[data-create-kind]")?.dataset.createKind;
+        if (!kind) return;
+        const target = sectionListForKind(kind);
+        closeCreateMenu();
+        if (!target) return;
+        // A new item should always be visible, even if a type filter is on.
+        applyTypeFilter("all");
+        if (target.section.tagName === "DETAILS") target.section.open = true;
+        const li = makeRow(kind);
+        target.list.appendChild(li);
+        if (kind === "icon") applyIconMask(li.querySelector(".preset-item__icon"), getIconSrc(li));
+        selectItem(li);
+        renderPins();
+        li.scrollIntoView({ block: "nearest" });
+        // Drop into the name field so the user can rename immediately.
+        const nameField = NAME_INPUT_BY_KIND[kind];
+        if (nameField) { nameField.focus(); nameField.select(); }
+      });
+      document.addEventListener("click", (e) => {
+        if (createMenu.hidden) return;
+        if (e.target === createBtn || createBtn.contains(e.target)) return;
+        if (createMenu.contains(e.target)) return;
+        closeCreateMenu();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !createMenu.hidden) closeCreateMenu();
+      });
+
+      // --- Name field → sidebar row sync ---
+      // Typing in a panel's name field renames the selected row live (and
+      // refreshes the preview so label text tracks the new name).
+      Object.entries(NAME_INPUT_BY_KIND).forEach(([kind, input]) => {
+        input?.addEventListener("input", () => {
+          const sel = document.querySelector(".preset-item--selected");
+          if (!sel || (sel.dataset.kind || "marker") !== kind) return;
+          const nameEl = sel.querySelector(".preset-item__name");
+          if (nameEl) nameEl.textContent = input.value;
+          renderPins();
+        });
+      });
+
+      // --- "Filter by type": show only the chosen preset section (or all) ---
+      const typeTrigger = document.querySelector("[data-type-filter-trigger]");
+      const typeMenu = document.querySelector("[data-type-filter-menu]");
+      const typeValueEl = document.querySelector("[data-type-filter-value]");
+      const applyTypeFilter = (value) => {
+        document.querySelectorAll(".preset-section").forEach((sec) => {
+          const title = sec.querySelector(".preset-section__title")?.textContent.trim();
+          sec.hidden = value !== "all" && title !== value;
+        });
+        if (typeValueEl) typeValueEl.textContent = value === "all" ? "All" : value;
+        typeMenu.querySelectorAll("[data-type-value]").forEach((o) => {
+          const on = o.dataset.typeValue === value;
+          o.classList.toggle("is-selected", on);
+          o.setAttribute("aria-checked", on ? "true" : "false");
+        });
+      };
+      const closeTypeMenu = () => { typeMenu.hidden = true; };
+      const openTypeMenu = () => {
+        closeMenu(); closeCreateMenu();
+        const r = typeTrigger.getBoundingClientRect();
+        typeMenu.style.top = `${r.bottom + 4}px`;
+        typeMenu.style.left = `${r.left}px`;
+        typeMenu.style.minWidth = `${r.width}px`;
+        typeMenu.hidden = false;
+      };
+      typeTrigger?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (typeMenu.hidden) openTypeMenu(); else closeTypeMenu();
+      });
+      typeMenu.addEventListener("click", (e) => {
+        const value = e.target.closest("[data-type-value]")?.dataset.typeValue;
+        if (!value) return;
+        applyTypeFilter(value);
+        closeTypeMenu();
+      });
+      document.addEventListener("click", (e) => {
+        if (typeMenu.hidden) return;
+        if (e.target === typeTrigger || typeTrigger.contains(e.target)) return;
+        if (typeMenu.contains(e.target)) return;
+        closeTypeMenu();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !typeMenu.hidden) closeTypeMenu();
+      });
+
       // --- Upload SVG: replace the selected icon's glyph live ---
       // The chosen file is read as a data URL and written to the row's
       // data-icon-src; getIconSrc() picks that up over the built-in
@@ -944,11 +1122,9 @@
         });
       });
 
-      // --- Filter bar clear ---
+      // --- Filter bar clear: reset the type filter back to "All" ---
       document.querySelector(".preset-filter-bar__clear")?.addEventListener("click", () => {
-        document.querySelectorAll(".select__value").forEach((v) => {
-          if (v.dataset.original) v.textContent = v.dataset.original;
-        });
+        applyTypeFilter("all");
       });
 
       // --- Save toast ---

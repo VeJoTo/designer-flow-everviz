@@ -234,12 +234,102 @@
             </div>
           </section>
 
-          <!-- Controls tab — stub -->
-          <section class="wizard-panel" data-panel="controls" hidden>
-            <div class="wiz-stub">
-              <span class="wiz-stub__badge">Coming soon</span>
-              <span class="wiz-stub__title">Controls</span>
-              <span class="wiz-stub__sub">Choose which interactive controls appear on the published map.</span>
+          <!-- Controls tab — toggle what the journalist can use in the template -->
+          <section class="wizard-panel" data-panel="controls" data-controls hidden>
+            <p class="wiz-panel__intro">Choose what the journalist can edit when they use this template. Expand a control to fine-tune which options are available.</p>
+            <div class="wiz-sections">
+
+              <details class="wiz-section">
+                <summary class="wiz-section__head">
+                  <span class="wiz-section__title">Text</span>
+                  <span class="wiz-section__head-controls">
+                    <label class="wiz-checkbox">
+                      <input type="checkbox" data-control-toggle checked aria-label="Enable Text controls" />
+                      <span class="wiz-checkbox__box" aria-hidden="true"></span>
+                    </label>
+                    <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+                  </span>
+                </summary>
+                <div class="wiz-section__body">
+                  <div class="wiz-row"><span class="wiz-row__label">Title</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Title" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Subtitle</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Subtitle" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Description</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Description" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Source &amp; credits</span><label class="wiz-checkbox"><input type="checkbox" aria-label="Source and credits" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                </div>
+              </details>
+
+              <details class="wiz-section">
+                <summary class="wiz-section__head">
+                  <span class="wiz-section__title">Features</span>
+                  <span class="wiz-section__head-controls">
+                    <label class="wiz-checkbox">
+                      <input type="checkbox" data-control-toggle checked aria-label="Enable Features controls" />
+                      <span class="wiz-checkbox__box" aria-hidden="true"></span>
+                    </label>
+                    <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+                  </span>
+                </summary>
+                <div class="wiz-section__body">
+                  <div class="wiz-row"><span class="wiz-row__label">Legend</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Legend" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Tooltips</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Tooltips" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Data labels</span><label class="wiz-checkbox"><input type="checkbox" aria-label="Data labels" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                </div>
+              </details>
+
+              <details class="wiz-section">
+                <summary class="wiz-section__head">
+                  <span class="wiz-section__title">Interactivity</span>
+                  <span class="wiz-section__head-controls">
+                    <label class="wiz-checkbox">
+                      <input type="checkbox" data-control-toggle aria-label="Enable Interactivity controls" />
+                      <span class="wiz-checkbox__box" aria-hidden="true"></span>
+                    </label>
+                    <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+                  </span>
+                </summary>
+                <div class="wiz-section__body">
+                  <div class="wiz-row"><span class="wiz-row__label">Zoom &amp; pan</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Zoom and pan" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Fullscreen</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Fullscreen" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Reset view</span><label class="wiz-checkbox"><input type="checkbox" aria-label="Reset view" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                </div>
+              </details>
+
+              <details class="wiz-section">
+                <summary class="wiz-section__head">
+                  <span class="wiz-section__title">Appearance styles</span>
+                  <span class="wiz-section__head-controls">
+                    <label class="wiz-checkbox">
+                      <input type="checkbox" data-control-toggle aria-label="Enable Appearance styles controls" />
+                      <span class="wiz-checkbox__box" aria-hidden="true"></span>
+                    </label>
+                    <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+                  </span>
+                </summary>
+                <div class="wiz-section__body">
+                  <div class="wiz-row"><span class="wiz-row__label">Light</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Light style" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Dark</span><label class="wiz-checkbox"><input type="checkbox" aria-label="Dark style" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Satellite</span><label class="wiz-checkbox"><input type="checkbox" aria-label="Satellite style" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                </div>
+              </details>
+
+              <details class="wiz-section">
+                <summary class="wiz-section__head">
+                  <span class="wiz-section__title">Map layers</span>
+                  <span class="wiz-section__head-controls">
+                    <label class="wiz-checkbox">
+                      <input type="checkbox" data-control-toggle aria-label="Enable Map layers controls" />
+                      <span class="wiz-checkbox__box" aria-hidden="true"></span>
+                    </label>
+                    <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+                  </span>
+                </summary>
+                <div class="wiz-section__body">
+                  <div class="wiz-row"><span class="wiz-row__label">Labels</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Labels layer" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Roads</span><label class="wiz-checkbox"><input type="checkbox" checked aria-label="Roads layer" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                  <div class="wiz-row"><span class="wiz-row__label">Boundaries</span><label class="wiz-checkbox"><input type="checkbox" aria-label="Boundaries layer" /><span class="wiz-checkbox__box" aria-hidden="true"></span></label></div>
+                </div>
+              </details>
+
             </div>
           </section>
 
