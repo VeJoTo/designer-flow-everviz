@@ -473,6 +473,33 @@ body[data-page-mode="wizard"] main {
 .wiz-checkbox input:checked + .wiz-checkbox__box::after { opacity: 1; }
 .wiz-checkbox input:focus-visible + .wiz-checkbox__box { outline: 2px solid var(--color-text-link); outline-offset: 2px; }
 
+/* Toggle switch — for a single on/off feature (Mini-Map enable). A sliding
+   pill reads as an instant on/off setting, distinct from the Controls
+   checkboxes which are a "what to include" selection list. */
+.wiz-switch { position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer; }
+.wiz-switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+.wiz-switch__track {
+  position: absolute; inset: 0;
+  background: var(--color-border-subtle);
+  border-radius: 999px;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.wiz-switch__thumb {
+  position: absolute; top: 2px; left: 2px;
+  width: 20px; height: 20px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(16, 21, 61, 0.3);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+.wiz-switch input:checked + .wiz-switch__track { background: var(--color-text-primary); }
+.wiz-switch input:checked + .wiz-switch__track .wiz-switch__thumb { transform: translateX(20px); }
+.wiz-switch input:focus-visible + .wiz-switch__track { outline: 2px solid var(--color-text-link); outline-offset: 2px; }
+
+/* Wizard dropdown menu reuses the shared .filter-popover; trigger width is
+   set inline by JS, so let the menu shrink to it instead of the 200px min. */
+.wiz-select-menu { min-width: 0; }
+
 /* --- Control mirrors (verbatim from preset-editor.css; wizard pages don't load that file) --- */
 .color-input { display: inline-flex; align-items: center; gap: var(--space-2); }
 .color-input__hex {
@@ -520,7 +547,31 @@ body[data-page-mode="wizard"] main {
   display: none;
 }
 .minimap-overlay.is-on { display: block; }
-.minimap-overlay[data-border="on"] { border: 2px solid var(--minimap-border-color, #123456); }
+.minimap-overlay[data-border="solid"]  { border: 2px solid var(--minimap-border-color, #123456); }
+.minimap-overlay[data-border="dashed"] { border: 3px dashed var(--minimap-border-color, #123456); }
+.minimap-overlay[data-border="dotted"] { border: 3px dotted var(--minimap-border-color, #123456); }
+
+/* Icon marker at the centre of the minimap preview (Icon dropdown). */
+.minimap-overlay__marker[hidden] { display: none; }
+.minimap-overlay__marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  background: var(--minimap-border-color, #123456);
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
+  filter: drop-shadow(0 1px 2px rgba(16, 21, 61, 0.4));
+}
+.minimap-overlay__marker--dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  -webkit-mask: none;
+  mask: none;
+}
 
 /* Stub tabs — Enabled controls / Publish & Export (not yet designed) */
 .wiz-stub {

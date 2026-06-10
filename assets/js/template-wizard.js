@@ -102,13 +102,58 @@
     document.querySelector("[data-minimap-enable]")?.addEventListener("change", (e) => {
       overlay?.classList.toggle("is-on", e.target.checked);
     });
-    const borderBtn = document.querySelector("[data-minimap-border]");
-    borderBtn?.addEventListener("click", () => {
-      const val = borderBtn.querySelector(".select__value");
-      const on = val.textContent.trim() === "Off";
-      val.textContent = on ? "On" : "Off";
-      overlay?.setAttribute("data-border", on ? "on" : "off");
-    });
+    // Reusable wizard dropdown: a .select trigger + a .filter-popover menu
+    // of [optionAttr] options. Opens on click, single-selects (✓ on the
+    // chosen row), closes on outside-click / Escape, and calls onChange.
+    const setupWizSelect = (trigger, menu, valueEl, optionAttr, onChange) => {
+      if (!trigger || !menu) return;
+      const close = () => {
+        menu.hidden = true;
+        trigger.classList.remove("is-open");
+        trigger.setAttribute("aria-expanded", "false");
+      };
+      const open = () => {
+        const r = trigger.getBoundingClientRect();
+        menu.style.position = "fixed";
+        menu.style.top = `${r.bottom + 6}px`;
+        menu.style.left = `${r.left}px`;
+        menu.style.minWidth = `${r.width}px`;
+        menu.hidden = false;
+        trigger.classList.add("is-open");
+        trigger.setAttribute("aria-expanded", "true");
+      };
+      trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.hidden ? open() : close();
+      });
+      menu.addEventListener("click", (e) => {
+        const opt = e.target.closest(`[${optionAttr}]`);
+        if (!opt) return;
+        menu.querySelectorAll(`[${optionAttr}]`).forEach((o) =>
+          o.classList.toggle("is-selected", o === opt)
+        );
+        if (valueEl) valueEl.textContent = opt.textContent.trim();
+        onChange?.(opt.getAttribute(optionAttr));
+        close();
+      });
+      document.addEventListener("click", (e) => {
+        if (menu.hidden) return;
+        if (trigger.contains(e.target) || menu.contains(e.target)) return;
+        close();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !menu.hidden) close();
+      });
+    };
+
+    // Border type dropdown → overlay border style (off / solid / dashed / dotted)
+    setupWizSelect(
+      document.querySelector("[data-minimap-border-trigger]"),
+      document.querySelector("[data-minimap-border-menu]"),
+      document.querySelector("[data-minimap-border-value]"),
+      "data-border-type",
+      (type) => overlay?.setAttribute("data-border", type)
+    );
     const hex = document.querySelector("[data-minimap-color-hex]");
     const color = document.querySelector("[data-minimap-color]");
     const swatch = color?.closest(".color-input__swatch");
@@ -135,11 +180,31 @@
       });
     });
     size?.addEventListener("change", applySize);
-    const iconBtn = document.querySelector("[data-minimap-icon]");
-    iconBtn?.addEventListener("click", () => {
-      const val = iconBtn.querySelector(".select__value");
-      val.textContent = val.textContent.trim() === "None" ? "Pin" : "None";
-    });
+    // Icon dropdown → marker glyph at the centre of the minimap preview
+    const marker = document.querySelector("[data-minimap-marker]");
+    const ICON_SRC = {
+      pin: "assets/icons/map-pin-solid.svg",
+      star: "assets/icons/star-solid.svg",
+    };
+    const setMinimapIcon = (type) => {
+      if (!marker) return;
+      marker.classList.toggle("minimap-overlay__marker--dot", type === "dot");
+      if (type === "none") {
+        marker.hidden = true;
+        return;
+      }
+      marker.hidden = false;
+      const src = ICON_SRC[type] ? `url("${ICON_SRC[type]}")` : "none";
+      marker.style.webkitMaskImage = src;
+      marker.style.maskImage = src;
+    };
+    setupWizSelect(
+      document.querySelector("[data-minimap-icon-trigger]"),
+      document.querySelector("[data-minimap-icon-menu]"),
+      document.querySelector("[data-minimap-icon-value]"),
+      "data-icon-type",
+      setMinimapIcon
+    );
 
     // ── Preset pickers (Presets tab) ────────────────────────────────
     document.querySelectorAll("[data-add-preset]").forEach((btn) => {
