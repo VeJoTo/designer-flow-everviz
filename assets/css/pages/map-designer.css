@@ -133,3 +133,34 @@
   padding: 0;
 }
 .icon-btn img { filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%); }
+
+/* Saved-template thumb fallback (saved cards set background-image inline). */
+.template-card--saved .template-card__thumb { background-color: #B8D5E6; }
+
+/* A freshly-saved template arriving from the wizard: ringed + "New" badge,
+   fading back to normal after a few seconds. */
+.template-card--new {
+  position: relative;
+  outline: 2px solid var(--color-text-link);
+  outline-offset: 3px;
+  animation: template-new-pulse 1.8s var(--ease-out);
+}
+@keyframes template-new-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(91, 91, 255, 0.5); }
+  70%  { box-shadow: 0 0 0 12px rgba(91, 91, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(91, 91, 255, 0); }
+}
+.template-card__new-badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 2;
+  background: var(--color-text-link);
+  color: #FFFFFF;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  padding: 5px 10px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(16, 21, 61, 0.25);
+}

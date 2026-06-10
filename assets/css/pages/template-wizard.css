@@ -759,3 +759,121 @@ body[data-page-mode="wizard"] main {
 
 /* Single-page wizard: only the active tab panel shows. */
 .wizard-panel[hidden] { display: none; }
+
+/* ──────────────────────────────────────────────────────────────
+   Save template modal + toast
+   (mirrors the editor's .save-modal so the wizard saves like the
+   basemap/minimap editors do)
+   ────────────────────────────────────────────────────────────── */
+.save-modal[hidden] { display: none; }
+.save-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+.save-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 21, 61, 0.55);
+  backdrop-filter: blur(2px);
+}
+.save-modal__panel {
+  position: relative;
+  width: min(520px, 100%);
+  background: var(--color-bg-app);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(16, 21, 61, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+.save-modal__head {
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.save-modal__title {
+  color: var(--color-text-on-dark);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  margin: 0;
+}
+.save-modal__close {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  color: var(--color-text-on-dark);
+}
+.save-modal__close img { filter: brightness(0) invert(1); }
+.save-modal__close:hover { background: rgba(255, 255, 255, 0.1); }
+.save-modal__body {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.save-modal__label {
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  font-size: var(--fs-body);
+}
+.save-modal__input {
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px var(--space-3);
+  font: inherit;
+  background: var(--color-bg-surface);
+  color: var(--color-text-body);
+  outline: none;
+  width: 100%;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+.save-modal__input:hover { border-color: var(--color-text-primary); }
+.save-modal__input:focus {
+  background: var(--color-brand-purple-soft);
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
+}
+.save-modal__foot {
+  padding: 0 var(--space-5) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+.save-modal__foot .btn { align-self: auto; }
+
+.save-toast[hidden] { display: none; }
+.save-toast {
+  position: fixed;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translate(-50%, 12px);
+  z-index: 11000;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: #22895A;
+  color: #FFFFFF;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  box-shadow: 0 12px 32px rgba(34, 137, 90, 0.35);
+  opacity: 0;
+  transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+}
+.save-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.save-toast img { filter: brightness(0) invert(1); }
