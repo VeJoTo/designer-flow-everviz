@@ -166,6 +166,26 @@
     };
     color?.addEventListener("input", (e) => applyColor(e.target.value));
     hex?.addEventListener("change", (e) => applyColor(e.target.value.trim()));
+
+    // Border thickness stepper → overlay border width (px)
+    const bWidth = document.querySelector("[data-minimap-border-width]");
+    const applyBorderWidth = () => {
+      if (!bWidth) return;
+      const min = Number(bWidth.min || 1), max = Number(bWidth.max || 8);
+      const v = Math.max(min, Math.min(max, Number(bWidth.value || min)));
+      bWidth.value = v;
+      overlay?.style.setProperty("--minimap-border-width", v + "px");
+    };
+    document.querySelectorAll("[data-bw-step]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const dir = b.dataset.bwStep === "up" ? 1 : -1;
+        if (bWidth) bWidth.value = Number(bWidth.value || 2) + dir;
+        applyBorderWidth();
+      });
+    });
+    bWidth?.addEventListener("change", applyBorderWidth);
+    applyBorderWidth(); // seed --minimap-border-width from the default
+
     const size = document.querySelector("[data-minimap-size]");
     const applySize = () => {
       const px = 132 + Number(size.value || 0) * 2;

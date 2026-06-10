@@ -547,9 +547,9 @@ body[data-page-mode="wizard"] main {
   display: none;
 }
 .minimap-overlay.is-on { display: block; }
-.minimap-overlay[data-border="solid"]  { border: 2px solid var(--minimap-border-color, #123456); }
-.minimap-overlay[data-border="dashed"] { border: 3px dashed var(--minimap-border-color, #123456); }
-.minimap-overlay[data-border="dotted"] { border: 3px dotted var(--minimap-border-color, #123456); }
+.minimap-overlay[data-border="solid"]  { border: var(--minimap-border-width, 2px) solid var(--minimap-border-color, #123456); }
+.minimap-overlay[data-border="dashed"] { border: var(--minimap-border-width, 2px) dashed var(--minimap-border-color, #123456); }
+.minimap-overlay[data-border="dotted"] { border: var(--minimap-border-width, 2px) dotted var(--minimap-border-color, #123456); }
 
 /* Icon marker at the centre of the minimap preview (Icon dropdown). */
 .minimap-overlay__marker[hidden] { display: none; }
