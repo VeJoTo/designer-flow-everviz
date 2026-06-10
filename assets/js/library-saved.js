@@ -83,4 +83,56 @@ document.addEventListener("DOMContentLoaded", () => {
     if (id && window.SavedMaps) window.SavedMaps.delete(kind, id);
     li.remove();
   });
+
+  // Duplicate handler — clones any map-card as "<name> copy" and inserts
+  // it. Saved cards also get a new SavedMaps entry so the copy survives a
+  // reload; static demo cards clone in the DOM only (mirrors how the
+  // delete handler treats them).
+  function todayISO() {
+    const d = new Date();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${d.getFullYear()}-${m}-${day}`;
+  }
+  grid.addEventListener("click", (e) => {
+    const btn = e.target.closest('.icon-btn[aria-label="Duplicate"]');
+    if (!btn) return;
+    e.preventDefault();
+    const li = btn.closest(".map-card");
+    if (!li) return;
+
+    const baseName =
+      li.dataset.name || li.querySelector(".map-card__title")?.textContent?.trim() || "Map";
+    const newName = `${baseName} copy`;
+    const clone = li.cloneNode(true);
+    clone.dataset.name = newName;
+    clone.dataset.created = todayISO(); // fresh copy → newest
+    const titleEl = clone.querySelector(".map-card__title");
+    if (titleEl) titleEl.textContent = newName;
+    clone.querySelectorAll('[aria-label^="Open "]').forEach((a) =>
+      a.setAttribute("aria-label", `Open ${newName}`)
+    );
+    const dateSlot = clone.querySelector("[data-date-slot]");
+    if (dateSlot) dateSlot.textContent = "Today";
+    // A fresh copy starts unfavorited (favorites are keyed by name / id).
+    clone.classList.remove("is-favorited");
+    const star = clone.querySelector(".icon-btn--toggle img");
+    if (star) star.src = "assets/icons/star.svg";
+
+    if (li.dataset.savedId && window.SavedMaps) {
+      const thumb = clone.querySelector(".map-card__thumb")?.style.backgroundImage || "";
+      const entry = window.SavedMaps.save(kind, { name: newName, thumb });
+      clone.dataset.savedId = entry.id;
+      const url = `${editorHref}?id=${encodeURIComponent(entry.id)}&name=${encodeURIComponent(
+        newName
+      )}`;
+      clone
+        .querySelectorAll(".map-card__hit, .icon-btn[aria-label='Edit']")
+        .forEach((a) => a.setAttribute("href", url));
+    }
+
+    li.after(clone);
+    // Re-run the grid filter/sort so the copy is indexed and surfaced.
+    clone.dispatchEvent(new CustomEvent("favorite-changed", { bubbles: true }));
+  });
 });
