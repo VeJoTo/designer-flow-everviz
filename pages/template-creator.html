@@ -156,25 +156,33 @@
 
               <details class="wiz-section" open>
                 <summary class="wiz-section__head">
-                  <span class="wiz-section__title">Mini-Map</span>
+                  <span class="wiz-section__title">Minimap</span>
                   <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
                 </summary>
                 <div class="wiz-section__body">
                   <div class="wiz-row">
                     <span class="wiz-row__label">Minimap</span>
-                    <label class="wiz-checkbox">
-                      <input type="checkbox" data-minimap-enable />
-                      <span class="wiz-checkbox__box" aria-hidden="true"></span>
+                    <label class="wiz-switch">
+                      <input type="checkbox" data-minimap-enable aria-label="Show minimap" />
+                      <span class="wiz-switch__track" aria-hidden="true"><span class="wiz-switch__thumb"></span></span>
                     </label>
                   </div>
-                  <div class="wiz-row">
+                  <div class="wiz-row" data-minimap-dependent>
                     <span class="wiz-row__label">Border</span>
-                    <button class="select" data-minimap-border type="button">
-                      <span class="select__value">Off</span>
-                      <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
-                    </button>
+                    <div class="wiz-select">
+                      <button class="select" type="button" data-minimap-border-trigger aria-haspopup="listbox" aria-expanded="false">
+                        <span class="select__value" data-minimap-border-value>Off</span>
+                        <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                      </button>
+                      <div class="filter-popover wiz-select-menu" data-minimap-border-menu hidden role="listbox">
+                        <button type="button" class="sort-option is-selected" role="option" data-border-type="off">Off</button>
+                        <button type="button" class="sort-option" role="option" data-border-type="solid">Solid</button>
+                        <button type="button" class="sort-option" role="option" data-border-type="dashed">Dashed</button>
+                        <button type="button" class="sort-option" role="option" data-border-type="dotted">Dotted</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="wiz-row">
+                  <div class="wiz-row" data-border-dependent data-minimap-dependent>
                     <span class="wiz-row__label">Border color</span>
                     <div class="color-input">
                       <input type="text" class="color-input__hex" value="#123456" maxlength="7" data-minimap-color-hex />
@@ -183,7 +191,17 @@
                       </label>
                     </div>
                   </div>
-                  <div class="wiz-row">
+                  <div class="wiz-row" data-border-dependent data-minimap-dependent>
+                    <span class="wiz-row__label">Border thickness</span>
+                    <div class="prop-stepper">
+                      <input type="number" class="prop-stepper__input" value="2" min="1" max="8" data-minimap-border-width />
+                      <span class="prop-stepper__spinners">
+                        <button type="button" aria-label="Increase border thickness" data-bw-step="up">▲</button>
+                        <button type="button" aria-label="Decrease border thickness" data-bw-step="down">▼</button>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="wiz-row" data-minimap-dependent>
                     <span class="wiz-row__label">Minimap size</span>
                     <div class="prop-stepper">
                       <input type="number" class="prop-stepper__input" value="0" min="0" max="100" data-minimap-size />
@@ -193,12 +211,20 @@
                       </span>
                     </div>
                   </div>
-                  <div class="wiz-row">
+                  <div class="wiz-row" data-minimap-dependent>
                     <span class="wiz-row__label">Icon</span>
-                    <button class="select" data-minimap-icon type="button">
-                      <span class="select__value">None</span>
-                      <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
-                    </button>
+                    <div class="wiz-select">
+                      <button class="select" type="button" data-minimap-icon-trigger aria-haspopup="listbox" aria-expanded="false">
+                        <span class="select__value" data-minimap-icon-value>None</span>
+                        <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                      </button>
+                      <div class="filter-popover wiz-select-menu" data-minimap-icon-menu hidden role="listbox">
+                        <button type="button" class="sort-option is-selected" role="option" data-icon-type="none">None</button>
+                        <button type="button" class="sort-option" role="option" data-icon-type="pin">Pin</button>
+                        <button type="button" class="sort-option" role="option" data-icon-type="dot">Dot</button>
+                        <button type="button" class="sort-option" role="option" data-icon-type="star">Star</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </details>
@@ -350,7 +376,9 @@
               <img src="assets/icons/expand-collapse.svg" alt="" width="20" height="20" />
             </button>
             <div class="wizard-preview__stage" data-preview-stage data-stage="globe">
-              <div class="minimap-overlay" data-minimap-overlay data-border="off"></div>
+              <div class="minimap-overlay" data-minimap-overlay data-border="off">
+                <span class="minimap-overlay__marker" data-minimap-marker hidden></span>
+              </div>
             </div>
             <div class="wizard-preview__attr">everviz | © Stadia Maps © OpenMapTiles © OpenStreetMap</div>
           </div>

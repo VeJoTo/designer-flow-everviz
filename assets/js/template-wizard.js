@@ -99,16 +99,92 @@
 
     // ── Mini-Map controls (Customize tab) → preview overlay ─────────
     const overlay = document.querySelector("[data-minimap-overlay]");
-    document.querySelector("[data-minimap-enable]")?.addEventListener("change", (e) => {
+    // Every Mini-Map option except the on/off toggle is only relevant once
+    // the minimap is on — collapse them while it's off (progressive reveal).
+    const minimapEnable = document.querySelector("[data-minimap-enable]");
+    const minimapRows = document.querySelectorAll("[data-minimap-dependent]");
+    const setMinimapRowsShown = (on) => {
+      minimapRows.forEach((row) => { row.hidden = !on; });
+    };
+    minimapEnable?.addEventListener("change", (e) => {
       overlay?.classList.toggle("is-on", e.target.checked);
+      setMinimapRowsShown(e.target.checked);
     });
-    const borderBtn = document.querySelector("[data-minimap-border]");
-    borderBtn?.addEventListener("click", () => {
-      const val = borderBtn.querySelector(".select__value");
-      const on = val.textContent.trim() === "Off";
-      val.textContent = on ? "On" : "Off";
-      overlay?.setAttribute("data-border", on ? "on" : "off");
-    });
+    setMinimapRowsShown(!!minimapEnable?.checked); // default: off → collapsed
+    // Reusable wizard dropdown: a .select trigger + a .filter-popover menu
+    // of [optionAttr] options. Opens on click, single-selects (✓ on the
+    // chosen row), closes on outside-click / Escape, and calls onChange.
+    const setupWizSelect = (trigger, menu, valueEl, optionAttr, onChange) => {
+      if (!trigger || !menu) return;
+      const close = () => {
+        menu.hidden = true;
+        trigger.classList.remove("is-open");
+        trigger.setAttribute("aria-expanded", "false");
+      };
+      const open = () => {
+        const r = trigger.getBoundingClientRect();
+        menu.style.position = "fixed";
+        menu.style.left = `${r.left}px`;
+        menu.style.minWidth = `${r.width}px`;
+        // Render first so we can measure, then flip above the trigger when
+        // there isn't enough room below (e.g. the last row in the panel).
+        menu.hidden = false;
+        const mh = menu.offsetHeight;
+        const spaceBelow = window.innerHeight - r.bottom;
+        if (spaceBelow < mh + 12 && r.top > mh + 12) {
+          menu.style.top = `${Math.round(r.top - mh - 6)}px`;
+        } else {
+          menu.style.top = `${Math.round(r.bottom + 6)}px`;
+        }
+        trigger.classList.add("is-open");
+        trigger.setAttribute("aria-expanded", "true");
+      };
+      trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.hidden ? open() : close();
+      });
+      menu.addEventListener("click", (e) => {
+        const opt = e.target.closest(`[${optionAttr}]`);
+        if (!opt) return;
+        menu.querySelectorAll(`[${optionAttr}]`).forEach((o) =>
+          o.classList.toggle("is-selected", o === opt)
+        );
+        if (valueEl) valueEl.textContent = opt.textContent.trim();
+        onChange?.(opt.getAttribute(optionAttr));
+        close();
+      });
+      document.addEventListener("click", (e) => {
+        if (menu.hidden) return;
+        if (trigger.contains(e.target) || menu.contains(e.target)) return;
+        close();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !menu.hidden) close();
+      });
+    };
+
+    // Border color + thickness only do anything when a border is shown, so
+    // gray them out (disabled) while the border type is "off".
+    const borderDependents = document.querySelectorAll("[data-border-dependent]");
+    const setBorderControlsEnabled = (on) => {
+      borderDependents.forEach((row) => {
+        row.classList.toggle("is-disabled", !on);
+        row.setAttribute("aria-disabled", on ? "false" : "true");
+      });
+    };
+
+    // Border type dropdown → overlay border style (off / solid / dashed / dotted)
+    setupWizSelect(
+      document.querySelector("[data-minimap-border-trigger]"),
+      document.querySelector("[data-minimap-border-menu]"),
+      document.querySelector("[data-minimap-border-value]"),
+      "data-border-type",
+      (type) => {
+        overlay?.setAttribute("data-border", type);
+        setBorderControlsEnabled(type !== "off");
+      }
+    );
+    setBorderControlsEnabled(false); // default border is "Off"
     const hex = document.querySelector("[data-minimap-color-hex]");
     const color = document.querySelector("[data-minimap-color]");
     const swatch = color?.closest(".color-input__swatch");
@@ -121,6 +197,26 @@
     };
     color?.addEventListener("input", (e) => applyColor(e.target.value));
     hex?.addEventListener("change", (e) => applyColor(e.target.value.trim()));
+
+    // Border thickness stepper → overlay border width (px)
+    const bWidth = document.querySelector("[data-minimap-border-width]");
+    const applyBorderWidth = () => {
+      if (!bWidth) return;
+      const min = Number(bWidth.min || 1), max = Number(bWidth.max || 8);
+      const v = Math.max(min, Math.min(max, Number(bWidth.value || min)));
+      bWidth.value = v;
+      overlay?.style.setProperty("--minimap-border-width", v + "px");
+    };
+    document.querySelectorAll("[data-bw-step]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const dir = b.dataset.bwStep === "up" ? 1 : -1;
+        if (bWidth) bWidth.value = Number(bWidth.value || 2) + dir;
+        applyBorderWidth();
+      });
+    });
+    bWidth?.addEventListener("change", applyBorderWidth);
+    applyBorderWidth(); // seed --minimap-border-width from the default
+
     const size = document.querySelector("[data-minimap-size]");
     const applySize = () => {
       const px = 132 + Number(size.value || 0) * 2;
@@ -135,11 +231,31 @@
       });
     });
     size?.addEventListener("change", applySize);
-    const iconBtn = document.querySelector("[data-minimap-icon]");
-    iconBtn?.addEventListener("click", () => {
-      const val = iconBtn.querySelector(".select__value");
-      val.textContent = val.textContent.trim() === "None" ? "Pin" : "None";
-    });
+    // Icon dropdown → marker glyph at the centre of the minimap preview
+    const marker = document.querySelector("[data-minimap-marker]");
+    const ICON_SRC = {
+      pin: "assets/icons/map-pin-solid.svg",
+      star: "assets/icons/star-solid.svg",
+    };
+    const setMinimapIcon = (type) => {
+      if (!marker) return;
+      marker.classList.toggle("minimap-overlay__marker--dot", type === "dot");
+      if (type === "none") {
+        marker.hidden = true;
+        return;
+      }
+      marker.hidden = false;
+      const src = ICON_SRC[type] ? `url("${ICON_SRC[type]}")` : "none";
+      marker.style.webkitMaskImage = src;
+      marker.style.maskImage = src;
+    };
+    setupWizSelect(
+      document.querySelector("[data-minimap-icon-trigger]"),
+      document.querySelector("[data-minimap-icon-menu]"),
+      document.querySelector("[data-minimap-icon-value]"),
+      "data-icon-type",
+      setMinimapIcon
+    );
 
     // ── Preset pickers (Presets tab) ────────────────────────────────
     document.querySelectorAll("[data-add-preset]").forEach((btn) => {
