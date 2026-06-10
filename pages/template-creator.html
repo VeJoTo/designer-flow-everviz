@@ -337,18 +337,29 @@
           <section class="wizard-panel" data-panel="publish" data-export-root hidden>
             <h2 class="export-title">Export Presets</h2>
 
-            <div class="export-default">
-              <span class="export-default__label">Default Export Preset</span>
-              <div class="wiz-select export-select">
-                <button class="select" type="button" data-default-trigger aria-haspopup="listbox" aria-expanded="false">
-                  <span class="select__value export-default__value" data-default-value>Desktop</span>
-                  <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
-                </button>
-                <div class="filter-popover wiz-select-menu" data-default-menu hidden role="listbox"></div>
+            <!-- Part 1 — SELECT which preset to export with -->
+            <section class="export-section">
+              <h3 class="export-section__title">Default preset</h3>
+              <p class="export-section__desc">Choose which preset this template exports with by default.</p>
+              <div class="export-default">
+                <span class="export-default__label">Default Export Preset</span>
+                <div class="wiz-select export-select">
+                  <button class="select" type="button" data-default-trigger aria-haspopup="listbox" aria-expanded="false">
+                    <span class="select__value export-default__value" data-default-value>Desktop</span>
+                    <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                  </button>
+                  <div class="filter-popover wiz-select-menu" data-default-menu hidden role="listbox"></div>
+                </div>
               </div>
-            </div>
+            </section>
 
-            <div class="export-presets" data-export-list>
+            <hr class="export-divider" />
+
+            <!-- Part 2 — CREATE / EDIT the presets you can choose from -->
+            <section class="export-section">
+              <h3 class="export-section__title">Manage presets</h3>
+              <p class="export-section__desc">Create, edit, or remove the presets you can choose from above.</p>
+              <div class="export-presets" data-export-list>
               <!-- preset card template is cloned here by JS for "Add" -->
               <div class="export-preset" data-export-preset>
                 <input type="text" class="export-preset__name" value="Desktop" aria-label="Preset name" />
@@ -393,7 +404,8 @@
               </div>
             </div>
 
-            <button type="button" class="export-add" data-export-add>+ Add Export Preset</button>
+              <button type="button" class="export-add" data-export-add>+ Add Export Preset</button>
+            </section>
           </section>
         </aside>
 

@@ -767,7 +767,28 @@ body[data-page-mode="wizard"] main {
   font-size: 18px;
   font-weight: var(--fw-bold);
   color: var(--color-text-primary);
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--space-5);
+}
+/* Two distinct jobs: "Default preset" (pick which one) and "Manage presets"
+   (create / edit them). Each gets a heading + one-line description so the
+   split between *selecting* and *creating* reads clearly. */
+.export-section { margin: 0; }
+.export-section__title {
+  font-size: 15px;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 4px;
+}
+.export-section__desc {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-3);
+  line-height: 1.5;
+}
+.export-divider {
+  border: 0;
+  border-top: 1px solid var(--color-border-subtle);
+  margin: var(--space-5) 0;
 }
 .export-default {
   display: flex;
@@ -775,9 +796,10 @@ body[data-page-mode="wizard"] main {
   justify-content: space-between;
   gap: var(--space-3);
   background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-sm);
   padding: var(--space-3) var(--space-4);
-  margin-bottom: var(--space-5);
+  margin-bottom: 0;
 }
 .export-default__label { font-weight: var(--fw-bold); color: var(--color-text-primary); }
 
