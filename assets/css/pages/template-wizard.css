@@ -917,3 +917,117 @@ body[data-page-mode="wizard"] main {
   transform: translate(-50%, 0);
 }
 .save-toast img { filter: brightness(0) invert(1); }
+
+/* ──────────────────────────────────────────────────────────────
+   Publish & Export — export presets
+   ────────────────────────────────────────────────────────────── */
+.export-title {
+  font-size: 18px;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-5);
+}
+/* Two distinct jobs: "Default preset" (pick which one) and "Manage presets"
+   (create / edit them). Each gets a heading + one-line description so the
+   split between *selecting* and *creating* reads clearly. */
+.export-section { margin: 0; }
+.export-section__title {
+  font-size: 15px;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 4px;
+}
+.export-section__desc {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-3);
+  line-height: 1.5;
+}
+.export-divider {
+  border: 0;
+  border-top: 1px solid var(--color-border-subtle);
+  margin: var(--space-5) 0;
+}
+.export-default {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: 0;
+}
+.export-default__label { font-weight: var(--fw-bold); color: var(--color-text-primary); }
+
+/* The platform / default selects render as just a coloured value + chevron
+   (no boxed control), right-aligned in their row. */
+.export-select { position: relative; }
+.export-select .select {
+  width: auto;
+  background: transparent;
+  border: 0;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: 4px 0;
+}
+.export-row__value,
+.export-default__value { color: var(--color-text-link); font-weight: var(--fw-bold); }
+
+.export-presets { display: flex; flex-direction: column; gap: var(--space-4); }
+.export-preset {
+  position: relative;
+  background: #F6F7FB;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.export-preset__name {
+  width: 100%;
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px var(--space-3);
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surface);
+  outline: none;
+}
+.export-preset__name:focus { border-color: var(--color-text-primary); }
+.export-preset__rows { display: flex; flex-direction: column; gap: var(--space-2); }
+.export-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+}
+.export-row__label { font-weight: var(--fw-bold); color: var(--color-text-primary); }
+.export-preset__delete {
+  align-self: flex-end;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: var(--radius-sm);
+  background: none; border: 0; cursor: pointer;
+}
+.export-preset__delete:hover { background: rgba(192, 57, 43, 0.08); }
+.export-preset__delete img {
+  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+}
+.export-add {
+  margin-top: var(--space-5);
+  color: var(--color-text-link);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  background: none; border: 0; padding: 0;
+}
+.export-add:hover { color: var(--color-text-primary); }

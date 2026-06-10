@@ -375,5 +375,146 @@
         persistSave();
       });
     }
+
+    // ── Publish & Export: export presets ────────────────────────────
+    // A list of editable preset cards (name + platform + width/height),
+    // a "default preset" picker that mirrors the card names, plus add and
+    // delete. Multi-Platform presets label their size "Preview Width/
+    // Height"; Video presets label it "Width/Height".
+    const exportRoot = document.querySelector("[data-export-root]");
+    if (exportRoot) {
+      const list = exportRoot.querySelector("[data-export-list]");
+      const templateNode = list.querySelector("[data-export-preset]").cloneNode(true);
+
+      const PLATFORMS = {
+        multi: { value: "Multi Platform", w: "Preview Width", h: "Preview Height" },
+        video: { value: "Video", w: "Width", h: "Height" },
+      };
+      const INITIAL = [
+        { name: "Desktop",           platform: "multi", w: 1440, h: 1024 },
+        { name: "Tablet",            platform: "multi", w: 768,  h: 1024 },
+        { name: "Mobile",            platform: "multi", w: 390,  h: 844 },
+        { name: "Full HD Landscape", platform: "video", w: 1920, h: 1080 },
+        { name: "Full HD Portrait",  platform: "video", w: 1080, h: 1920 },
+      ];
+
+      // Small dropdown: a .select trigger + a .filter-popover menu, flips
+      // up when there's no room below.
+      const initDropdown = (trigger, menu, valueEl, optionAttr, onChange) => {
+        if (!trigger || !menu) return;
+        const close = () => { menu.hidden = true; trigger.classList.remove("is-open"); trigger.setAttribute("aria-expanded", "false"); };
+        const open = () => {
+          const r = trigger.getBoundingClientRect();
+          menu.style.position = "fixed";
+          menu.style.left = `${r.left}px`;
+          menu.style.minWidth = `${Math.max(r.width, 140)}px`;
+          menu.hidden = false;
+          const mh = menu.offsetHeight;
+          const below = window.innerHeight - r.bottom;
+          menu.style.top = (below < mh + 12 && r.top > mh + 12)
+            ? `${Math.round(r.top - mh - 6)}px`
+            : `${Math.round(r.bottom + 6)}px`;
+          trigger.classList.add("is-open");
+          trigger.setAttribute("aria-expanded", "true");
+        };
+        trigger.addEventListener("click", (e) => { e.stopPropagation(); menu.hidden ? open() : close(); });
+        menu.addEventListener("click", (e) => {
+          const opt = e.target.closest(`[${optionAttr}]`);
+          if (!opt) return;
+          menu.querySelectorAll(`[${optionAttr}]`).forEach((o) => o.classList.toggle("is-selected", o === opt));
+          if (valueEl) valueEl.textContent = opt.textContent.trim();
+          onChange?.(opt.getAttribute(optionAttr));
+          close();
+        });
+        document.addEventListener("click", (e) => {
+          if (menu.hidden) return;
+          if (trigger.contains(e.target) || menu.contains(e.target)) return;
+          close();
+        });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) close(); });
+      };
+
+      const applyPlatform = (card, key) => {
+        const p = PLATFORMS[key] || PLATFORMS.multi;
+        card.querySelector("[data-platform-value]").textContent = p.value;
+        card.querySelector('[data-dim-label="w"]').textContent = p.w;
+        card.querySelector('[data-dim-label="h"]').textContent = p.h;
+        card.querySelectorAll("[data-platform]").forEach((o) => o.classList.toggle("is-selected", o.dataset.platform === key));
+      };
+
+      // Default Export Preset dropdown — its options mirror the live card
+      // names, rebuilt whenever a preset is added/renamed/removed.
+      const defaultTrigger = exportRoot.querySelector("[data-default-trigger]");
+      const defaultMenu = exportRoot.querySelector("[data-default-menu]");
+      const defaultValue = exportRoot.querySelector("[data-default-value]");
+      function refreshDefaultOptions() {
+        const names = [...list.querySelectorAll(".export-preset__name")].map((i) => i.value.trim() || "Untitled");
+        const current = defaultValue.textContent.trim();
+        defaultMenu.innerHTML = "";
+        names.forEach((n) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "sort-option";
+          b.setAttribute("role", "option");
+          b.dataset.defaultName = n;
+          b.textContent = n;
+          if (n === current) b.classList.add("is-selected");
+          defaultMenu.appendChild(b);
+        });
+        if (!names.includes(current) && names[0]) defaultValue.textContent = names[0];
+      }
+
+      const makeCard = (cfg) => {
+        const card = templateNode.cloneNode(true);
+        card.querySelector(".export-preset__name").value = cfg.name;
+        card.querySelector("[data-export-w]").value = cfg.w;
+        card.querySelector("[data-export-h]").value = cfg.h;
+        applyPlatform(card, cfg.platform);
+        initDropdown(
+          card.querySelector("[data-platform-trigger]"),
+          card.querySelector("[data-platform-menu]"),
+          card.querySelector("[data-platform-value]"),
+          "data-platform",
+          (key) => applyPlatform(card, key)
+        );
+        card.querySelector(".export-preset__name").addEventListener("input", refreshDefaultOptions);
+        return card;
+      };
+
+      initDropdown(defaultTrigger, defaultMenu, defaultValue, "data-default-name", () => {});
+
+      // Width / height steppers (scoped to this panel).
+      exportRoot.addEventListener("click", (e) => {
+        const step = e.target.closest("[data-estep]");
+        if (!step) return;
+        const input = step.closest(".prop-stepper").querySelector("input");
+        const dir = step.dataset.estep === "up" ? 1 : -1;
+        const min = Number(input.min || 0), max = Number(input.max || 9999);
+        input.value = Math.max(min, Math.min(max, Number(input.value || 0) + dir));
+      });
+
+      // Delete a preset card.
+      list.addEventListener("click", (e) => {
+        const del = e.target.closest("[data-export-delete]");
+        if (!del) return;
+        del.closest("[data-export-preset]").remove();
+        refreshDefaultOptions();
+      });
+
+      // Add a new preset.
+      exportRoot.querySelector("[data-export-add]")?.addEventListener("click", () => {
+        const card = makeCard({ name: "New preset", platform: "multi", w: 1280, h: 720 });
+        list.appendChild(card);
+        refreshDefaultOptions();
+        const nameField = card.querySelector(".export-preset__name");
+        nameField.focus();
+        nameField.select();
+      });
+
+      // Seed the initial presets (replacing the static template card).
+      list.innerHTML = "";
+      INITIAL.forEach((cfg) => list.appendChild(makeCard(cfg)));
+      refreshDefaultOptions();
+    }
   });
 })();
