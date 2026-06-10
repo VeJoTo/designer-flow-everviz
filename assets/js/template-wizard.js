@@ -115,10 +115,18 @@
       const open = () => {
         const r = trigger.getBoundingClientRect();
         menu.style.position = "fixed";
-        menu.style.top = `${r.bottom + 6}px`;
         menu.style.left = `${r.left}px`;
         menu.style.minWidth = `${r.width}px`;
+        // Render first so we can measure, then flip above the trigger when
+        // there isn't enough room below (e.g. the last row in the panel).
         menu.hidden = false;
+        const mh = menu.offsetHeight;
+        const spaceBelow = window.innerHeight - r.bottom;
+        if (spaceBelow < mh + 12 && r.top > mh + 12) {
+          menu.style.top = `${Math.round(r.top - mh - 6)}px`;
+        } else {
+          menu.style.top = `${Math.round(r.bottom + 6)}px`;
+        }
         trigger.classList.add("is-open");
         trigger.setAttribute("aria-expanded", "true");
       };
@@ -146,14 +154,28 @@
       });
     };
 
+    // Border color + thickness only do anything when a border is shown, so
+    // gray them out (disabled) while the border type is "off".
+    const borderDependents = document.querySelectorAll("[data-border-dependent]");
+    const setBorderControlsEnabled = (on) => {
+      borderDependents.forEach((row) => {
+        row.classList.toggle("is-disabled", !on);
+        row.setAttribute("aria-disabled", on ? "false" : "true");
+      });
+    };
+
     // Border type dropdown → overlay border style (off / solid / dashed / dotted)
     setupWizSelect(
       document.querySelector("[data-minimap-border-trigger]"),
       document.querySelector("[data-minimap-border-menu]"),
       document.querySelector("[data-minimap-border-value]"),
       "data-border-type",
-      (type) => overlay?.setAttribute("data-border", type)
+      (type) => {
+        overlay?.setAttribute("data-border", type);
+        setBorderControlsEnabled(type !== "off");
+      }
     );
+    setBorderControlsEnabled(false); // default border is "Off"
     const hex = document.querySelector("[data-minimap-color-hex]");
     const color = document.querySelector("[data-minimap-color]");
     const swatch = color?.closest(".color-input__swatch");
