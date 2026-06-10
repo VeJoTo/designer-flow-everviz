@@ -164,3 +164,10 @@
   border-radius: 999px;
   box-shadow: 0 4px 12px rgba(16, 21, 61, 0.25);
 }
+
+/* Delete (trash) button on template cards — purple by default, red on
+   hover, matching the library cards' delete affordance. */
+.template-card__actions .icon-btn--danger:hover { background: rgba(220, 53, 69, 0.10); }
+.template-card__actions .icon-btn--danger:hover img {
+  filter: invert(28%) sepia(83%) saturate(2200%) hue-rotate(340deg) brightness(98%) contrast(96%);
+}
