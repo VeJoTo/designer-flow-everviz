@@ -377,46 +377,66 @@
 .preset-map__head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--space-3);
 }
-.preset-map__label {
+/* Base-map style picker: one light pill holding the "Base map style" label
+   (navy) and the selected value (brand purple), with the chevron at the far
+   right. The "Create new base map" (+) button sits separately beside it. */
+.preset-style-select {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 12px 20px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+.preset-style-select:hover { border-color: var(--color-brand-purple); }
+.preset-style-select__label {
   font-size: var(--fs-body);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   color: var(--color-text-primary);
 }
-.preset-style-toggle {
+.preset-style-select__pick {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
 }
-.preset-style-btn {
-  padding: 10px 18px;
-  border-radius: 999px;
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-small);
-  color: var(--color-text-primary);
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-subtle);
-  transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+.preset-style-select__value {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--color-brand-purple);
 }
-.preset-style-btn:hover { background: var(--color-bg-app); }
-.preset-style-btn--active {
-  background: var(--color-text-primary);
-  color: var(--color-text-on-dark);
-  border-color: var(--color-text-primary);
+.preset-style-select__chev {
+  transition: transform var(--duration-fast) var(--ease-out);
 }
-.preset-style-btn--add {
-  width: 36px;
-  height: 36px;
-  padding: 0;
+.preset-style-select.is-open .preset-style-select__chev { transform: rotate(180deg); }
+
+.preset-style-add {
+  flex: none;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   background: var(--color-brand-purple-soft);
-  border-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
 }
-.preset-style-btn--add img {
-  filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
+.preset-style-add:hover { background: #D8D8FF; }
+.preset-style-add__icon {
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-brand-purple);
+  -webkit-mask: url("../../icons/plus.svg") center / contain no-repeat;
+          mask: url("../../icons/plus.svg") center / contain no-repeat;
 }
 
 .preset-map__preview {
