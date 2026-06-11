@@ -1,7 +1,8 @@
 // Promise-based confirm dialog. Reuses the save-modal aesthetic
 // (navy header, X close, body, outline-cancel + filled-confirm
-// footer). Usage:
+// footer). Two shapes:
 //
+//   Binary (default) — resolves a boolean:
 //   const ok = await window.confirmDialog({
 //     title: "Delete map",
 //     message: "Are you sure you want to delete <strong>X</strong>?",
@@ -9,6 +10,16 @@
 //     destructive: true,
 //   });
 //   if (ok) { ...do the thing... }
+//
+//   Three-way — pass discardLabel to get a middle "Discard" button.
+//   Resolves "confirm" | "discard" | "cancel" instead of a boolean:
+//   const choice = await window.confirmDialog({
+//     title: "Unsaved changes",
+//     message: "Save changes to this preset?",
+//     confirmLabel: "Save",
+//     discardLabel: "Discard",
+//     destructive: false,
+//   });
 
 (function () {
   let modal = null;
@@ -30,6 +41,7 @@
         </header>
         <div class="confirm-modal__body" data-confirm-body></div>
         <footer class="confirm-modal__foot">
+          <button class="btn btn--discard" data-confirm-discard hidden>Discard</button>
           <button class="btn btn--outline" data-confirm-cancel>Cancel</button>
           <button class="btn btn--danger" data-confirm-ok>Delete</button>
         </footer>
@@ -43,6 +55,7 @@
     title = "Confirm",
     message = "",
     confirmLabel = "Delete",
+    discardLabel = null,
     destructive = true,
   } = {}) {
     const m = ensureModal();
@@ -52,6 +65,13 @@
     okBtn.textContent = confirmLabel;
     okBtn.classList.toggle("btn--danger", destructive);
     okBtn.classList.toggle("btn--primary", !destructive);
+
+    // Three-way mode: showing the Discard button switches the resolved
+    // value from a boolean to a "confirm" | "discard" | "cancel" string.
+    const discardBtn = m.querySelector("[data-confirm-discard]");
+    const threeWay = discardLabel != null;
+    discardBtn.hidden = !threeWay;
+    if (threeWay) discardBtn.textContent = discardLabel;
 
     return new Promise((resolve) => {
       function cleanup(result) {
@@ -66,21 +86,27 @@
           e.target.closest("[data-confirm-cancel]") ||
           e.target.closest("[data-confirm-close]")
         ) {
-          cleanup(false);
+          cleanup(threeWay ? "cancel" : false);
+        } else if (e.target.closest("[data-confirm-discard]")) {
+          cleanup("discard");
         } else if (e.target.closest("[data-confirm-ok]")) {
-          cleanup(true);
+          cleanup(threeWay ? "confirm" : true);
         }
       }
       function onKey(e) {
-        if (e.key === "Escape") cleanup(false);
-        if (e.key === "Enter") cleanup(true);
+        if (e.key === "Escape") cleanup(threeWay ? "cancel" : false);
+        if (e.key === "Enter") cleanup(threeWay ? "confirm" : true);
       }
       m.addEventListener("click", onClick);
       document.addEventListener("keydown", onKey);
       m.hidden = false;
       document.body.style.overflow = "hidden";
-      // Focus Cancel by default — safer for destructive actions.
-      m.querySelector("[data-confirm-cancel]").focus();
+      // Focus the safe default: Cancel for a destructive confirm, the
+      // primary action (e.g. Save) when nothing is being destroyed.
+      const focusTarget = destructive
+        ? m.querySelector("[data-confirm-cancel]")
+        : okBtn;
+      focusTarget.focus();
     });
   }
 
