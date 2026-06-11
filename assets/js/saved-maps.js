@@ -13,6 +13,10 @@
     minimap: "everviz-saved-minimaps",
     basemap: "everviz-saved-basemaps",
     template: "everviz-saved-templates",
+    // The preset editor stores its whole left-pane library here as a
+    // snapshot (richer than the {id,name,created,thumb} card entries),
+    // written/read via the generic replaceAll/list below.
+    preset: "everviz-saved-presets",
   };
 
   function read(kind) {
@@ -71,6 +75,18 @@
     delete(kind, id) {
       const list = read(kind).filter((e) => e.id !== id);
       write(kind, list);
+    },
+    /** Overwrite a bucket wholesale with the given array (snapshot model). */
+    replaceAll(kind, list) {
+      write(kind, Array.isArray(list) ? list : []);
+    },
+    /** Has this bucket ever been written? Distinguishes "empty" from "unseeded". */
+    has(kind) {
+      return localStorage.getItem(KEYS[kind]) !== null;
+    },
+    /** Generate a stable id in the same format as save(). */
+    id() {
+      return newId();
     },
   };
 })(window);

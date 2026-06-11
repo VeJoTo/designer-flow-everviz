@@ -811,6 +811,7 @@
         state.isNew = false;
         state.dirty = false;
         state.baselineName = getName(state.li);
+        serialize();
         refreshSaveButton();
         showToast(wasNew ? "Preset saved" : "Preset updated");
       };
@@ -910,6 +911,7 @@
         btn.setAttribute("aria-label", isHidden ? "Show" : "Hide");
         btn.setAttribute("data-tooltip", isHidden ? "Show" : "Hide");
         renderPins();
+        serialize();
       });
 
       // --- Item context menu (Hide / Duplicate / Delete) ---
@@ -938,14 +940,17 @@
         if (action === "menu-duplicate") {
           const clone = menuTargetLi.cloneNode(true);
           clone.classList.remove("preset-item--selected");
+          clone.removeAttribute("data-preset-id"); // a copy is its own preset
           const nm = clone.querySelector(".preset-item__name");
           if (nm) nm.textContent = `${nm.textContent} copy`;
           menuTargetLi.after(clone);
+          serialize();
         } else if (action === "menu-delete") {
           const next = menuTargetLi.nextElementSibling || menuTargetLi.previousElementSibling;
           const wasSelected = menuTargetLi.classList.contains("preset-item--selected");
           menuTargetLi.remove();
           if (wasSelected && next) selectItem(next);
+          serialize();
         }
         closeMenu();
       });
@@ -991,33 +996,54 @@
         e.preventDefault();
         if (createMenu.hidden) openCreateMenu(); else closeCreateMenu();
       });
-      const makeRow = (kind) => {
-        const color = DEFAULT_COLOR_BY_KIND[kind];
-        const name = `New ${kind}`;
-        const x = 40 + Math.round(Math.random() * 20);
-        const y = 40 + Math.round(Math.random() * 20);
+      // Build a preset row from a full data object. Used by "Create new"
+      // (with defaults) and by hydrate() when restoring the saved library.
+      // Name is set via textContent to avoid HTML injection from stored data.
+      const buildRow = (d) => {
+        const kind = d.kind || "marker";
+        const color = d.color || DEFAULT_COLOR_BY_KIND[kind];
+        const hidden = !!d.hidden;
         const li = document.createElement("li");
-        li.className = "preset-item";
+        li.className = "preset-item" + (hidden ? " preset-item--hidden" : "");
         li.setAttribute("data-preset-item", "");
         li.dataset.kind = kind;
         li.dataset.pinColor = color;
-        li.dataset.pinX = x;
-        li.dataset.pinY = y;
+        li.dataset.pinX = d.x != null ? d.x : 50;
+        li.dataset.pinY = d.y != null ? d.y : 50;
+        if (d.id) li.dataset.presetId = d.id;
+        if (kind === "region") {
+          li.dataset.pinW = d.w != null ? d.w : 20;
+          li.dataset.pinH = d.h != null ? d.h : 20;
+        }
+        if (kind === "icon") {
+          li.dataset.icon = d.icon || "info";
+          if (d.iconSrc) li.dataset.iconSrc = d.iconSrc;
+          li.style.setProperty("--icon-tint", color);
+        }
         const glyph =
           kind === "icon"
             ? '<span class="preset-item__icon"></span>'
             : `<span class="preset-item__dot" style="background:${color}"></span>`;
-        if (kind === "icon") { li.dataset.icon = "info"; li.style.setProperty("--icon-tint", color); }
-        if (kind === "region") { li.dataset.pinW = 20; li.dataset.pinH = 20; }
         li.innerHTML =
           glyph +
-          `<span class="preset-item__name">${name}</span>` +
-          '<button class="preset-item__toggle" data-action="toggle-visible" aria-label="Hide" data-tooltip="Hide">' +
-          '<img src="assets/icons/eye.svg" alt="" width="18" height="18" /></button>' +
+          '<span class="preset-item__name"></span>' +
+          `<button class="preset-item__toggle" data-action="toggle-visible" aria-label="${hidden ? "Show" : "Hide"}" data-tooltip="${hidden ? "Show" : "Hide"}">` +
+          `<img src="assets/icons/${hidden ? "eye-slash" : "eye"}.svg" alt="" width="18" height="18" /></button>` +
           '<button class="preset-item__menu" aria-label="More options" data-tooltip="More options">' +
           '<img src="assets/icons/ellipsis-vertical.svg" alt="" width="18" height="18" /></button>';
+        li.querySelector(".preset-item__name").textContent = d.name || `New ${kind}`;
+        if (kind === "icon") applyIconMask(li.querySelector(".preset-item__icon"), getIconSrc(li));
         return li;
       };
+      // "Create new" builds a row with the default colour and a slightly
+      // random preview position so a fresh pin doesn't stack on an existing one.
+      const makeRow = (kind) =>
+        buildRow({
+          kind,
+          name: `New ${kind}`,
+          x: 40 + Math.round(Math.random() * 20),
+          y: 40 + Math.round(Math.random() * 20),
+        });
       createMenu.addEventListener("click", async (e) => {
         const kind = e.target.closest("[data-create-kind]")?.dataset.createKind;
         if (!kind) return;
@@ -1293,16 +1319,73 @@
       navGuard(document.querySelector(".preset-actions .btn--outline")); // Cancel
       navGuard(document.querySelector(".preset-back-link"));             // Back
 
-      // --- Initial state: the pre-selected row is an existing, clean
-      //     preset, so the button reads "Update Preset" and is disabled. ---
-      const initSel = document.querySelector(".preset-item--selected");
-      if (initSel) {
-        state.li = initSel;
-        state.baselineName = getName(initSel);
-      }
+      // ── Persistence (localStorage via SavedMaps "preset" bucket) ──────
+      // serialize() snapshots the whole left-pane library; hydrate()
+      // rebuilds it on load. Only committed state is persisted: a
+      // never-saved new preset is skipped, and an existing preset with an
+      // uncommitted rename persists its baseline name (not the live edit),
+      // so a reload reflects what was actually saved.
+      const rowId = (li) => {
+        if (!li.dataset.presetId) {
+          li.dataset.presetId =
+            window.SavedMaps ? SavedMaps.id() : `p_${Math.random().toString(36).slice(2, 8)}`;
+        }
+        return li.dataset.presetId;
+      };
+      const serialize = () => {
+        if (!window.SavedMaps) return;
+        const list = [];
+        document.querySelectorAll(".preset-item").forEach((li) => {
+          if (state.isNew && li === state.li) return; // not committed yet
+          const name =
+            state.dirty && !state.isNew && li === state.li
+              ? state.baselineName // uncommitted rename → keep baseline
+              : getName(li);
+          const d = {
+            id: rowId(li),
+            kind: li.dataset.kind || "marker",
+            name,
+            color: li.dataset.pinColor || "",
+            x: li.dataset.pinX || "50",
+            y: li.dataset.pinY || "50",
+            hidden: li.classList.contains("preset-item--hidden"),
+          };
+          if (li.dataset.pinW) d.w = li.dataset.pinW;
+          if (li.dataset.pinH) d.h = li.dataset.pinH;
+          if (li.dataset.icon) d.icon = li.dataset.icon;
+          if (li.dataset.iconSrc) d.iconSrc = li.dataset.iconSrc;
+          list.push(d);
+        });
+        SavedMaps.replaceAll("preset", list);
+      };
+      const hydrate = () => {
+        if (!window.SavedMaps) return;
+        // First ever load: adopt the seed rows into storage, keep them shown.
+        if (!SavedMaps.has("preset")) {
+          document.querySelectorAll(".preset-item").forEach(rowId);
+          serialize();
+          return;
+        }
+        // Returning load: rebuild every section from the stored snapshot.
+        document.querySelectorAll(".preset-items").forEach((ul) => (ul.innerHTML = ""));
+        SavedMaps.list("preset").forEach((d) => {
+          const target = sectionListForKind(d.kind);
+          if (target) target.list.appendChild(buildRow(d));
+        });
+      };
+      hydrate();
+      // Establish initial selection: the seed-selected row on first load,
+      // else the first row in the rebuilt library. selectItem leaves it
+      // clean, so the action button reads "Update Preset" and is disabled.
+      const firstRow =
+        document.querySelector(".preset-item--selected") ||
+        document.querySelector(".preset-item");
+      if (firstRow) selectItem(firstRow);
+      renderPins();
       refreshSaveButton();
     });
   </script>
+  <script src="assets/js/saved-maps.js" defer></script>
   <script src="assets/js/confirm-dialog.js" defer></script>
   <script src="assets/js/tooltip.js" defer></script>
   <script src="assets/js/chrome.js" defer></script>
