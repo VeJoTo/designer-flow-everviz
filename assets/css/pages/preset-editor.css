@@ -397,7 +397,8 @@
   text-align: left;
   transition: border-color var(--duration-fast) var(--ease-out);
 }
-.preset-style-select:hover { border-color: var(--color-brand-purple); }
+.preset-style-select:hover,
+.preset-style-select.is-open { border-color: var(--color-brand-purple); }
 .preset-style-select__label {
   font-size: var(--fs-body);
   font-weight: var(--fw-bold);

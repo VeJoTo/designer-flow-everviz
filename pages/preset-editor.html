@@ -1254,7 +1254,8 @@
         const r = styleTrigger.getBoundingClientRect();
         styleMenu.style.top = `${r.bottom + 4}px`;
         styleMenu.style.left = `${r.left}px`;
-        styleMenu.style.minWidth = "200px";
+        // Match the menu to the full width of the pill trigger.
+        styleMenu.style.width = `${r.width}px`;
         styleMenu.hidden = false;
         styleTrigger.classList.add("is-open");
       };
