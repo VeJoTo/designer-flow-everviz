@@ -129,4 +129,66 @@ document.addEventListener("DOMContentLoaded", () => {
     if (id && window.SavedMaps) window.SavedMaps.delete("template", id);
     card.remove();
   });
+
+  // Duplicate a template — clones any card as "<name> copy" and inserts it
+  // after the original. Saved cards also get a new SavedMaps entry so the
+  // copy survives a reload; static demo cards clone in the DOM only (mirrors
+  // how the delete handler treats them, and the library duplicate in
+  // library-saved.js).
+  function todayISO() {
+    const d = new Date();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${d.getFullYear()}-${m}-${day}`;
+  }
+  grid.addEventListener("click", (e) => {
+    const btn = e.target.closest('.icon-btn[aria-label="Duplicate"]');
+    if (!btn) return;
+    e.preventDefault();
+    const li = btn.closest(".template-card");
+    if (!li) return;
+
+    const baseName =
+      li.dataset.name || li.querySelector(".template-card__title")?.textContent.trim() || "Template";
+    const newName = `${baseName} copy`;
+    const clone = li.cloneNode(true);
+    clone.dataset.name = newName;
+    clone.dataset.created = todayISO(); // fresh copy → newest
+    const titleEl = clone.querySelector(".template-card__title");
+    if (titleEl) titleEl.textContent = newName;
+    clone.querySelectorAll('[aria-label^="Open "]').forEach((a) =>
+      a.setAttribute("aria-label", `Open ${newName} template`)
+    );
+    const dateSlot = clone.querySelector("[data-date-slot]");
+    if (dateSlot) dateSlot.textContent = "Today";
+    // A fresh copy starts unfavorited and is not the default template.
+    clone.classList.remove("is-favorited");
+    const star = clone.querySelector(".icon-btn--toggle img");
+    if (star) star.src = "assets/icons/star.svg";
+    clone.classList.remove("is-default");
+    const defaultLink = clone.querySelector(".template-card__default");
+    if (defaultLink) defaultLink.textContent = "Set as default location map template";
+    // Drop the wizard's "new" highlight if it happened to be on the source.
+    clone.classList.remove("template-card--new");
+    clone.querySelector(".template-card__new-badge")?.remove();
+
+    if (li.dataset.savedId && window.SavedMaps) {
+      const thumb = clone.querySelector(".template-card__thumb")?.style.backgroundImage || "";
+      const entry = window.SavedMaps.save("template", { name: newName, thumb });
+      clone.dataset.savedId = entry.id;
+      const url = `pages/template-creator.html?id=${encodeURIComponent(
+        entry.id
+      )}&name=${encodeURIComponent(newName)}`;
+      clone
+        .querySelectorAll('.template-card__hit, .icon-btn[aria-label="Edit"]')
+        .forEach((a) => a.setAttribute("href", url));
+    } else {
+      // Static demo card → not persisted, so it must not look saved.
+      delete clone.dataset.savedId;
+    }
+
+    li.after(clone);
+    // Re-run the grid filter/sort so the copy is indexed and surfaced.
+    clone.dispatchEvent(new CustomEvent("favorite-changed", { bubbles: true }));
+  });
 });
