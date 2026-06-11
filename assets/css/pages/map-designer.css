@@ -132,7 +132,9 @@
   cursor: pointer;
   padding: 0;
 }
-.icon-btn img { filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%); }
+/* Navy (--color-text-primary, #28277E), matching the editor bar's icon
+   buttons and the favorited-star state below — not the brand purple. */
+.icon-btn img { filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%); }
 
 /* Saved-template thumb fallback (saved cards set background-image inline). */
 .template-card--saved .template-card__thumb { background-color: #B8D5E6; }
