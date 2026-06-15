@@ -150,7 +150,7 @@
   font-weight: var(--fw-bold);
   color: var(--color-text-primary);
 }
-/* Per-section info affordance — a small purple (i) that explains the
+/* Per-section info affordance — a small navy (i) that explains the
    section on hover/focus/click via the shared tooltip. Subtle at rest,
    full-strength on interaction. */
 .preset-section__info {
@@ -161,27 +161,30 @@
   line-height: 0;
   border-radius: 50%;
 }
+/* The colour is baked into info-circle.svg, so the icon renders as a
+   plain <img> (no filter/mask) — reliable everywhere. Size is a touch larger
+   than the body icons; subtle at rest, full-strength on interaction. */
 .preset-section__info img {
-  filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%);
-  opacity: 0.55;
+  width: 17px;
+  height: 17px;
+  opacity: 0.7;
   transition: opacity var(--duration-fast) var(--ease-out);
 }
 .preset-section__info:hover img,
 .preset-section__info:focus-visible img { opacity: 1; }
 
-/* Same (i) affordance reused on the properties-pane section heads. The
-   title + (i) group keeps the chevron pinned right; the override stops
-   the generic `.prop-section[open] .prop-section__head img` rule from
-   rotating the (i) 180° (those sections are open by default). */
+/* Same (i) affordance reused on the properties-pane section heads — the
+   title + (i) group keeps the chevron pinned right. The generic
+   `.prop-section__head img` rule tints/rotates head images, so stop it
+   from recolouring or flipping the (i). */
 .prop-section__head-left {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   min-width: 0;
 }
-.prop-section[open] .prop-section__head .preset-section__info img {
-  transform: none;
-}
+.prop-section__head .preset-section__info img { filter: none; }
+.prop-section[open] .prop-section__head .preset-section__info img { transform: none; }
 .preset-section__chev {
   filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);
   transition: transform var(--duration-fast) var(--ease-out);
