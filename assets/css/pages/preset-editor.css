@@ -34,38 +34,62 @@
   filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%);
 }
 
-/* Top filter bar — sits above the 3-pane body, full-bleed white. */
-.preset-filter-bar {
+/* Compact type filter — lives inside the left list pane, just under
+   "Create new". Replaces the old full-width top bar so the three editor
+   panes start flush at the top (no reserved whitespace band). */
+.preset-filter {
   display: flex;
-  align-items: flex-end;
-  gap: var(--space-5);
-  padding: var(--space-3) var(--space-6);
+  align-items: center;
+  gap: var(--space-2);
+}
+/* White control reads as an input against the grey list pane, matching
+   the section headers. The leading "Type" hint keeps it self-describing
+   without a stacked field label. */
+.preset-filter__select {
+  flex: 1;
+  min-width: 0;
   background: var(--color-bg-surface);
-  border-bottom: 1px solid var(--color-border-subtle);
 }
-.preset-filter-bar .filter-bar__field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 200px;
+.preset-filter__inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
 }
-.preset-filter-bar .field-label {
+.preset-filter__icon {
+  flex: none;
+  color: var(--color-text-muted);
+}
+/* "Type" reads as a quiet field label: small and muted — the divider
+   and the bolder value keep it distinct from the chosen selection. */
+.preset-filter__hint {
   font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+}
+/* Thin separator between the label and the active selection. */
+.preset-filter__divider {
+  flex: none;
+  width: 1px;
+  align-self: stretch;
+  margin: 2px 0;
+  background: var(--color-border-subtle);
+}
+/* The selected value is the prominent token — darker and bold. */
+.preset-filter__select .select__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: var(--fw-semibold);
   color: var(--color-text-primary);
 }
-.preset-filter-bar__clear {
-  margin-bottom: 10px;
+.preset-filter__clear {
   color: var(--color-text-link);
   font-weight: var(--fw-semibold);
-  font-size: var(--fs-body);
+  font-size: var(--fs-small);
+  white-space: nowrap;
 }
-.preset-filter-bar__clear:hover { text-decoration: underline; }
-/* Inputs inside the preset filter bar use the editor's neutral grey
-   instead of the brand cream so they cohere with the rest of the
-   editor surface. */
-.preset-filter-bar .select,
-.preset-filter-bar .search__input { background: #F5F5F5; }
+.preset-filter__clear:hover { text-decoration: underline; }
 
 /* Three-pane grid (override editor.css proportions for this screen) */
 .preset-editor-grid {
@@ -113,10 +137,50 @@
   border-radius: var(--radius-sm);
 }
 .preset-section__head::-webkit-details-marker { display: none; }
+/* Title + its (i) info button group, kept left so the chevron stays
+   pinned to the right edge via the head's space-between. */
+.preset-section__head-left {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
 .preset-section__title {
   font-size: var(--fs-body);
   font-weight: var(--fw-bold);
   color: var(--color-text-primary);
+}
+/* Per-section info affordance — a small purple (i) that explains the
+   section on hover/focus/click via the shared tooltip. Subtle at rest,
+   full-strength on interaction. */
+.preset-section__info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  line-height: 0;
+  border-radius: 50%;
+}
+.preset-section__info img {
+  filter: invert(36%) sepia(98%) saturate(2300%) hue-rotate(228deg) brightness(98%) contrast(101%);
+  opacity: 0.55;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+.preset-section__info:hover img,
+.preset-section__info:focus-visible img { opacity: 1; }
+
+/* Same (i) affordance reused on the properties-pane section heads. The
+   title + (i) group keeps the chevron pinned right; the override stops
+   the generic `.prop-section[open] .prop-section__head img` rule from
+   rotating the (i) 180° (those sections are open by default). */
+.prop-section__head-left {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.prop-section[open] .prop-section__head .preset-section__info img {
+  transform: none;
 }
 .preset-section__chev {
   filter: invert(11%) sepia(74%) saturate(2178%) hue-rotate(228deg) brightness(64%) contrast(91%);

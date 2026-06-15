@@ -23,18 +23,6 @@
         Back to Map designer
       </a>
 
-      <!-- Editor-level filter bar (sits above the 3-pane body) -->
-      <div class="preset-filter-bar">
-        <div class="filter-bar__field">
-          <label class="field-label">Filter by type</label>
-          <button class="select" data-type-filter-trigger data-tooltip="Filter by preset type">
-            <span class="select__value" data-type-filter-value>All</span>
-            <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
-          </button>
-        </div>
-        <button class="preset-filter-bar__clear" type="button">clear</button>
-      </div>
-
       <!-- Three-pane editor body -->
       <div class="editor-grid preset-editor-grid">
         <!-- LEFT: Create new + sections -->
@@ -44,10 +32,37 @@
             <img src="assets/icons/plus.svg" alt="" width="16" height="16" />
           </a>
 
+          <!-- Compact type filter — scopes the section list below.
+               Lives in the left pane (not a full-width top bar) so the
+               editor's three panes start flush at the top. -->
+          <div class="preset-filter">
+            <button class="select preset-filter__select" data-type-filter-trigger>
+              <span class="preset-filter__inner">
+                <!-- Inline (not <img>) so currentColor tints it to match the
+                     muted hint; signals "filter" without a hover tooltip. -->
+                <svg class="preset-filter__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                </svg>
+                <span class="preset-filter__hint">Type</span>
+                <span class="preset-filter__divider" aria-hidden="true"></span>
+                <span class="select__value" data-type-filter-value>All</span>
+              </span>
+              <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+            </button>
+            <button class="preset-filter__clear" type="button" hidden>clear</button>
+          </div>
+
           <div class="preset-sections">
             <details class="preset-section" open data-preset-section>
               <summary class="preset-section__head">
-                <span class="preset-section__title">Markers</span>
+                <span class="preset-section__head-left">
+                  <span class="preset-section__title">Markers</span>
+                  <button type="button" class="preset-section__info" aria-label="About Markers"
+                          data-tooltip="Map pins you drop onto the map — set each one's colour, size and shape."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <ul class="preset-items">
@@ -86,7 +101,14 @@
 
             <details class="preset-section" data-preset-section>
               <summary class="preset-section__head">
-                <span class="preset-section__title">Icons</span>
+                <span class="preset-section__head-left">
+                  <span class="preset-section__title">Icons</span>
+                  <button type="button" class="preset-section__info" aria-label="About Icons"
+                          data-tooltip="Reusable symbols for points of interest. Upload an SVG or pick a built-in glyph."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <ul class="preset-items">
@@ -128,7 +150,14 @@
 
             <details class="preset-section" data-preset-section>
               <summary class="preset-section__head">
-                <span class="preset-section__title">Labels</span>
+                <span class="preset-section__head-left">
+                  <span class="preset-section__title">Labels</span>
+                  <button type="button" class="preset-section__info" aria-label="About Labels"
+                          data-tooltip="Text callouts with placement, anchor offset and an optional connector line."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <ul class="preset-items">
@@ -170,7 +199,14 @@
 
             <details class="preset-section" data-preset-section>
               <summary class="preset-section__head">
-                <span class="preset-section__title">Regions</span>
+                <span class="preset-section__head-left">
+                  <span class="preset-section__title">Regions</span>
+                  <button type="button" class="preset-section__info" aria-label="About Regions"
+                          data-tooltip="Styling for areas and shapes — fill, border and hover states."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img class="preset-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <ul class="preset-items">
@@ -245,7 +281,14 @@
 
           <details class="prop-section" open>
             <summary class="prop-section__head">
-              <span class="prop-section__title">Icons</span>
+              <span class="prop-section__head-left">
+                <span class="prop-section__title">Icons</span>
+                <button type="button" class="preset-section__info" aria-label="About Icons"
+                        data-tooltip="Symbol shown inside the marker — add one or more and set their size."
+                        data-tooltip-placement="bottom">
+                  <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                </button>
+              </span>
               <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
             </summary>
             <div class="prop-section__body">
@@ -268,7 +311,14 @@
 
           <details class="prop-section" open>
             <summary class="prop-section__head">
-              <span class="prop-section__title">Labels</span>
+              <span class="prop-section__head-left">
+                <span class="prop-section__title">Labels</span>
+                <button type="button" class="preset-section__info" aria-label="About Labels"
+                        data-tooltip="Text shown beside the marker, with placement, anchor and offset."
+                        data-tooltip-placement="bottom">
+                  <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                </button>
+              </span>
               <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
             </summary>
             <div class="prop-section__body">
@@ -329,7 +379,14 @@
 
           <details class="prop-section" open>
             <summary class="prop-section__head">
-              <span class="prop-section__title">Connector</span>
+              <span class="prop-section__head-left">
+                <span class="prop-section__title">Connector</span>
+                <button type="button" class="preset-section__info" aria-label="About Connector"
+                        data-tooltip="A leader line linking the label to its marker."
+                        data-tooltip-placement="bottom">
+                  <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                </button>
+              </span>
               <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
             </summary>
             <div class="prop-section__body">
@@ -379,7 +436,14 @@
           <div class="props-panel" data-panel="label" hidden>
             <details class="prop-section" open>
               <summary class="prop-section__head">
-                <span class="prop-section__title">General</span>
+                <span class="prop-section__head-left">
+                  <span class="prop-section__title">General</span>
+                  <button type="button" class="preset-section__info" aria-label="About General"
+                          data-tooltip="Core settings for this preset."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <div class="prop-section__body">
@@ -400,7 +464,14 @@
 
             <details class="prop-section" open>
               <summary class="prop-section__head">
-                <span class="prop-section__title">Connector Style</span>
+                <span class="prop-section__head-left">
+                  <span class="prop-section__title">Connector Style</span>
+                  <button type="button" class="preset-section__info" aria-label="About Connector Style"
+                          data-tooltip="Appearance of the connector line — width, colour and style."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <div class="prop-section__body">
@@ -431,7 +502,14 @@
           <div class="props-panel" data-panel="region" hidden>
             <details class="prop-section" open>
               <summary class="prop-section__head">
-                <span class="prop-section__title">General</span>
+                <span class="prop-section__head-left">
+                  <span class="prop-section__title">General</span>
+                  <button type="button" class="preset-section__info" aria-label="About General"
+                          data-tooltip="Core settings for this preset."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <div class="prop-section__body">
@@ -448,7 +526,14 @@
 
             <details class="prop-section" open>
               <summary class="prop-section__head">
-                <span class="prop-section__title">Paint fill</span>
+                <span class="prop-section__head-left">
+                  <span class="prop-section__title">Paint fill</span>
+                  <button type="button" class="preset-section__info" aria-label="About Paint fill"
+                          data-tooltip="Fill colour and opacity for the region area."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <div class="prop-section__body">
@@ -496,7 +581,14 @@
 
             <details class="prop-section" open>
               <summary class="prop-section__head">
-                <span class="prop-section__title">Paint line</span>
+                <span class="prop-section__head-left">
+                  <span class="prop-section__title">Paint line</span>
+                  <button type="button" class="preset-section__info" aria-label="About Paint line"
+                          data-tooltip="Outline colour, width and style for the region border."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <div class="prop-section__body">
@@ -564,7 +656,14 @@
 
             <details class="prop-section" open>
               <summary class="prop-section__head">
-                <span class="prop-section__title">Paint extrusion</span>
+                <span class="prop-section__head-left">
+                  <span class="prop-section__title">Paint extrusion</span>
+                  <button type="button" class="preset-section__info" aria-label="About Paint extrusion"
+                          data-tooltip="3D extrusion height and colour for the region."
+                          data-tooltip-placement="bottom">
+                    <img src="assets/icons/info-circle.svg" alt="" width="15" height="15" />
+                  </button>
+                </span>
                 <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
               </summary>
               <div class="prop-section__body">
@@ -1098,6 +1197,9 @@
           sec.hidden = value !== "all" && title !== value;
         });
         if (typeValueEl) typeValueEl.textContent = value === "all" ? "All" : value;
+        // "clear" is only meaningful once a real filter is applied.
+        const clearBtn = document.querySelector(".preset-filter__clear");
+        if (clearBtn) clearBtn.hidden = value === "all";
         typeMenu.querySelectorAll("[data-type-value]").forEach((o) => {
           const on = o.dataset.typeValue === value;
           o.classList.toggle("is-selected", on);
@@ -1298,9 +1400,19 @@
         });
       });
 
-      // --- Filter bar clear: reset the type filter back to "All" ---
-      document.querySelector(".preset-filter-bar__clear")?.addEventListener("click", () => {
+      // --- Filter clear: reset the type filter back to "All" ---
+      document.querySelector(".preset-filter__clear")?.addEventListener("click", () => {
         applyTypeFilter("all");
+      });
+
+      // --- Section info (i): show the tooltip without toggling the
+      // <details> open/closed. tooltip.js handles the tooltip itself; we
+      // just stop the click from reaching the summary's toggle. ---
+      document.querySelectorAll(".preset-section__info").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        });
       });
 
       // --- Save / Update the selected preset (commit point) ---
