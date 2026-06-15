@@ -1,110 +1,66 @@
-# Preset editor — focus-by-default preview with pin-to-compare
+# Preset editor — preview hidden by default, edited preset shown, Show to compare
 
 **Date:** 2026-06-15
-**Status:** Approved (design), pending implementation
+**Status:** Built
 **Page:** `pages/preset-editor.html` (preview + left-list interaction)
 
 ## Problem
 
-In the preset editor, visibility and selection are decoupled. Clicking a
-preset row *selects* it (drives the properties panel) and auto-shows it in
-the preview, but never hides the previously-shown presets. So the preview
-silently **accumulates** every preset the user clicks, cluttering the map
-even when they only meant to inspect/edit one. The eye toggle is the only
-thing that removes a preset, so users end up with a pile-up they didn't ask
-for.
+In the preset editor, clicking a preset row to inspect/edit it also showed
+it in the preview and **never hid the previously-shown presets**, so the map
+silently accumulated every preset the user touched. Primary use is editing
+and creating presets one at a time.
 
-Primary use is **editing and creating presets one at a time**, with
-**occasional side-by-side comparison**. The current model optimises for the
-rare case (compare) at the expense of the common one (focus).
+(Earlier iterations explored a "pin to preview" control and a "Show all"
+compare mode — both rejected: the pin overloaded the eye and still
+accumulated, and there is no real use case for viewing every preset at once.)
 
 ## Design
 
-### Core rule
+**Presets are hidden by default. The preview shows the preset you're editing,
+plus any you've explicitly toggled visible to compare against.**
 
-> **Preview = the preset currently being edited (selected) ∪ the set of
-> pinned presets.**
+- **Hidden by default** — on load nothing is shown except the one preset that
+  is selected (being edited).
+- **The edited preset is always shown** — selecting a row makes it the edited
+  preset and previews it; the previously-edited preset returns to hidden
+  (unless it was explicitly toggled visible). No accumulation.
+- **Per-row Show/Hide eye** — default Hidden (eye-slash, tooltip "Show").
+  Press it to bring a preset into the preview alongside the one you're
+  editing, for side-by-side comparison; press again to hide.
+- **Truthful eyes** — a preset that is in the preview (because it's being
+  edited *or* explicitly shown) reads the open eye / "Hide"; a hidden,
+  unedited preset reads eye-slash / "Show". The eye always reflects what's
+  actually on the map.
 
-- Clicking a row makes it the edited preset and shows **just that one**
-  (plus any pins). The previously-edited, unpinned preset drops out of the
-  preview automatically — no more accumulation.
-- The selected preset is **always** shown (editing implies previewing), so
-  the preview is never mysteriously empty and you can't lose the thing
-  you're working on.
-- Comparison is opt-in: pin A, then select B → both show. Unpin to drop one.
-  Pins are not kind-restricted (a marker and a region can be compared).
+This keeps the familiar Show/Hide eye semantics; the only change from the
+original is that **selecting a preset no longer permanently un-hides it**, so
+the preview stays focused on what you're editing instead of piling up.
 
-### The control (eye, relabelled)
+## Implementation
 
-The existing per-row eye button changes meaning from **show/hide** to
-**keep in preview** (pin):
+All in `pages/preset-editor.html`:
 
-- **Eye open** = pinned (kept in the preview regardless of selection).
-- **Eye-slash** = not pinned (only appears in the preview while selected).
-- Tooltip: "Keep in preview" (when unpinned) / "Pinned" (when pinned).
-- No new icon asset (chosen over a pushpin to avoid adding art).
-
-Accepted wrinkle: the selected preset is shown even when its eye reads
-"off" (unpinned), because it's the one being edited. This is the trade-off
-of keeping the eye glyph.
-
-### Visual states
-
-- **List rows:** selected row keeps its existing `--selected` highlight;
-  pinned rows are indicated by the open-eye icon. The blanket dimming that
-  today marks "hidden" rows is dropped — "not in the preview" is now the
-  normal resting state for most rows, so dimming them all would be noise.
-- **Preview:** the pin/icon/label/region for the **edited** preset gets a
-  subtle ring/halo (`is-editing` modifier) so that, when several are shown
-  side by side, the user can always tell which one reflects their live
-  edits.
-
-### Edge cases
-
-- **New preset:** becomes selected → previews solo, not auto-pinned.
-- **Delete:** a deleted preset leaves the preview cleanly whether it was
-  pinned and/or selected.
-- **Type filter:** filtering the *list* does not disturb the preview — a
-  pinned preset stays previewed even when its type is filtered out of the
-  list.
-- **Default on load:** nothing pinned; the initially-selected marker shows
-  solo with the editing highlight; all eyes render as eye-slash (unpinned).
-
-## Implementation notes (orientation, not prescriptive)
-
-Concentrated in the `DOMContentLoaded` script of `pages/preset-editor.html`
-plus a little CSS:
-
-- Introduce a **pinned** state in place of the current "hidden" meaning
-  (e.g. a `preset-item--pinned` class; the eye reflects it).
-- `renderPins()`: render set becomes `{ selected row } ∪ { .preset-item--pinned }`
-  instead of "all not-hidden". Add the `is-editing` modifier to the
-  selected preset's preview element.
-- `selectItem()`: drop the auto-unhide block; simply set `--selected` and
-  re-render the preview so the new selection shows and the old unpinned one
-  leaves.
-- Eye toggle handler: toggle `--pinned` (not `--hidden`), swap the eye/
-  eye-slash glyph + tooltip accordingly, re-render, re-serialize.
-- `serialize()` / persistence: store the pinned set rather than the hidden
-  set.
-- CSS: add `is-editing` ring/halo for `.preset-map__pin/__icon/__textlabel/
-  __region`; remove/repurpose the dimmed `.preset-item--hidden` list styling.
-- Migrate initial markup: rows currently marked `preset-item--hidden`
-  become plain (unpinned); eyes default to eye-slash; keep one row
-  `--selected`.
+- `renderPins()` renders `{ rows not hidden } ∪ { selected row }` — the edited
+  preset is always included.
+- `selectItem()` no longer un-hides the selected row; it just re-renders the
+  preview and calls `refreshEyes()`.
+- `refreshEyes()` (new) sets every row's eye icon/label from
+  `selected || !hidden`.
+- The eye toggle handler flips `preset-item--hidden`, then
+  `renderPins()` + `refreshEyes()` + `serialize()`.
+- Seed markup: the first marker starts `preset-item--hidden` (shown only via
+  selection); `makeRow()` creates new presets hidden too.
 
 ## Acceptance
 
-- Clicking a preset shows only it in the preview (plus any pinned), and the
-  previously-edited unpinned preset is no longer shown.
-- The eye toggle pins/unpins a preset (kept in preview across selections),
-  with updated glyph + tooltip.
-- The edited preset is visually distinguished in the preview when shown
-  alongside pinned presets.
-- New/deleted/filtered presets behave per the edge cases above.
+- On load only the edited preset is shown; all others hidden.
+- Clicking a preset swaps the preview to it; the previous one hides unless
+  explicitly shown.
+- The eye shows/hides a preset for comparison and always reflects real
+  visibility.
 
 ## Out of scope
 
-- A separate "Compare" mode or multi-select gesture.
-- A dedicated pushpin icon asset.
-- Changes to how preset *positions* (`data-pin-x/y`) are assigned.
+- A "Show all" / compare-everything mode.
+- A separate pin control.
