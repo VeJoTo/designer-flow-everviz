@@ -150,7 +150,7 @@
   font-weight: var(--fw-bold);
   color: var(--color-text-primary);
 }
-/* Per-section info affordance — a small blue (i) that explains the
+/* Per-section info affordance — a small navy (i) that explains the
    section on hover/focus/click via the shared tooltip. Subtle at rest,
    full-strength on interaction. */
 .preset-section__info {
@@ -161,8 +161,8 @@
   line-height: 0;
   border-radius: 50%;
 }
-/* The blue is baked into info-circle.svg, so the icon renders as a plain
-   <img> (no filter/mask) — reliable everywhere. Size is a touch larger
+/* The colour is baked into info-circle.svg, so the icon renders as a
+   plain <img> (no filter/mask) — reliable everywhere. Size is a touch larger
    than the body icons; subtle at rest, full-strength on interaction. */
 .preset-section__info img {
   width: 17px;
