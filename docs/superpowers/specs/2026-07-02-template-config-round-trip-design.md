@@ -55,7 +55,7 @@ The template entry gains a `config`:
 
 ```js
 {
-  id, name, created, thumb,        // thumb derived from the selected map (see Save wiring)
+  id, name, created, thumb,        // thumb keeps its existing value (see Save wiring note)
   config: {
     version: 1,
     map:      { pick: "<selected map's data-thumb>" | null },
@@ -120,8 +120,9 @@ Replace the light `persistSave` (`template-wizard.js:346`, currently
 - Persist via `SavedMaps.replaceAll("template", list)` (snapshot model, like the minimap
   editor) so the rich `config` survives; keep the card fields so `saved-templates.js`
   still renders cards.
-- Derive `thumb` from `config.map.pick` (the selected map's image) so the template card
-  shows the chosen map instead of the hardcoded `north-europe.png`.
+- `thumb` keeps its existing hardcoded value. (Thumb-from-map was considered but dropped:
+  the map-pick `data-thumb` values are stage identifiers — `globe`, `evening-news`,
+  `nrk-nyheter` — not image basenames, so `assets/img/maps/<pick>.png` would 404.)
 
 Edit entry: on load, read `?id`; if it resolves to a saved template with a `config`,
 call `hydrateWizard(config)` after the wizard's own init.
@@ -129,7 +130,7 @@ call `hydrateWizard(config)` after the wizard's own init.
 ## Scope & fidelity
 
 **In:** full round-trip of Map, Minimap, Presets, Controls, Export; reference-by-id for
-the minimap preset with graceful "unavailable" fallback; thumb-from-map.
+the minimap preset with graceful "unavailable" fallback.
 
 **Out / deferred:**
 - The Customize "No options yet" sections (Text/Interactivity/Appearance/Map layers
