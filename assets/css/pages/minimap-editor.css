@@ -88,3 +88,40 @@
 .mm-preview__region path { fill: currentColor; stroke: var(--mm-stroke, #8a8a8a); stroke-width: var(--mm-stroke-w, 1); }
 .mm-preview__blob { width: 55%; color: var(--mm-land, #e9e6df); }
 .mm-preview__blob path { fill: currentColor; }
+
+/* --- Colour input --- */
+/* editor.css sizes .color-input__swatch but never clips the native
+   <input type=color>, so the browser's default picker chrome bleeds out
+   below the swatch. Match the preset editor: a small round swatch whose
+   fill comes from its inline background, with the native input stretched
+   over it and made invisible (still clickable). */
+.mm-settings .color-input__hex {
+  width: 84px;
+  border: 1px solid var(--color-border, #e3e3ea);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  background: #fff;
+}
+.mm-settings .color-input__swatch {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  flex: none;
+}
+.mm-settings .color-input__swatch input[type="color"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
