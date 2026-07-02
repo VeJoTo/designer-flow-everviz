@@ -6,7 +6,7 @@
 // and the marker/region preset pickers.
 
 (function () {
-  const TABS = ["map", "customize", "presets", "controls", "publish"];
+  const TABS = ["map", "presets", "customize", "controls", "publish"];
 
   const PRESETS = {
     markers: {
@@ -99,19 +99,20 @@
     });
 
     // ── Mini-Map controls (Customize tab) → preview overlay ─────────
+    // The minimap is shown iff a minimap preset has been added (Presets tab) —
+    // the preset presence IS the on/off. When a preset exists, the config rows
+    // (level/allow-zoom/size/placement/icon) and the preview overlay are shown;
+    // otherwise a hint points to the Presets tab. Toggled by showPresetChip /
+    // clearPresetChip below.
     const overlay = document.querySelector("[data-minimap-overlay]");
-    // Every Mini-Map option except the on/off toggle is only relevant once
-    // the minimap is on — collapse them while it's off (progressive reveal).
-    const minimapEnable = document.querySelector("[data-minimap-enable]");
     const minimapRows = document.querySelectorAll("[data-minimap-dependent]");
-    const setMinimapRowsShown = (on) => {
+    const minimapHint = document.querySelector("[data-minimap-hint]");
+    function setMinimapEnabled(on) {
+      overlay?.classList.toggle("is-on", on);
       minimapRows.forEach((row) => { row.hidden = !on; });
-    };
-    minimapEnable?.addEventListener("change", (e) => {
-      overlay?.classList.toggle("is-on", e.target.checked);
-      setMinimapRowsShown(e.target.checked);
-    });
-    setMinimapRowsShown(!!minimapEnable?.checked); // default: off → collapsed
+      if (minimapHint) minimapHint.hidden = on;
+    }
+    setMinimapEnabled(false); // default: no preset yet
     // Reusable wizard dropdown: a .select trigger + a .filter-popover menu
     // of [optionAttr] options. Opens on click, single-selects (✓ on the
     // chosen row), closes on outside-click / Escape, and calls onChange.
@@ -205,11 +206,47 @@
     );
 
     // --- Minimap preset picker (lists saved minimap presets) ---
+    // Presented like the marker/region presets: an "Add preset" button that,
+    // once a preset is chosen, is replaced by a single chip (single-select).
     const presetTrigger = document.querySelector("[data-minimap-preset-trigger]");
-    const presetValue = document.querySelector("[data-minimap-preset-value]");
     const levelValue = document.querySelector("[data-minimap-level-value]");
     const levelMenu = document.querySelector("[data-minimap-level-menu]");
     let chosenPreset = null;
+
+    // Show the chosen preset as a chip — built like the marker/region chips —
+    // and hide the add button (a minimap uses a single preset).
+    function showPresetChip(name) {
+      if (!presetTrigger) return;
+      const body = presetTrigger.parentElement;
+      let chip = body.querySelector("[data-minimap-preset-chip]");
+      if (!chip) {
+        chip = document.createElement("div");
+        chip.className = "wiz-preset-item";
+        chip.setAttribute("data-minimap-preset-chip", "");
+        chip.innerHTML =
+          '<span class="wiz-preset-item__thumb" aria-hidden="true"></span>' +
+          '<span class="wiz-preset-item__name" data-minimap-preset-value></span>' +
+          '<button type="button" class="wiz-preset-item__remove" aria-label="Remove minimap preset">' +
+          '<img src="assets/icons/x-mark.svg" alt="" width="14" height="14" /></button>';
+        chip.querySelector(".wiz-preset-item__remove").addEventListener("click", clearPresetChip);
+        body.insertBefore(chip, presetTrigger);
+      }
+      chip.querySelector("[data-minimap-preset-value]").textContent = name;
+      // Use style.display (not the hidden attr) — .wiz-add's own display rule
+      // would override [hidden].
+      presetTrigger.style.display = "none";
+      setMinimapEnabled(true); // a preset exists → show the minimap + config rows
+    }
+    // Remove the chip and restore the "Add preset" button.
+    function clearPresetChip() {
+      const chip = presetTrigger && presetTrigger.parentElement.querySelector("[data-minimap-preset-chip]");
+      if (chip) chip.remove();
+      chosenPreset = null;
+      if (presetTrigger) presetTrigger.style.display = "";
+      if (levelMenu) levelMenu.innerHTML = "";
+      if (levelValue) levelValue.textContent = "Default";
+      setMinimapEnabled(false); // no preset → hide the minimap + config rows
+    }
 
     function fillLevelMenu(pr) {
       levelMenu.innerHTML = "";
@@ -234,8 +271,7 @@
       const choice = await window.pickerModal({ title: "Choose a minimap preset", items });
       if (!choice) return;
       chosenPreset = SavedMaps.list("minimap").find((e) => e.name === choice.name) || null;
-      presetValue.textContent = choice.name;
-      presetValue.classList.remove("select__value--placeholder");
+      showPresetChip(choice.name);
       fillLevelMenu(chosenPreset);
     });
 
@@ -546,7 +582,7 @@
       const placeSel = document.querySelector("[data-minimap-placement-menu] .is-selected");
       const iconSel = document.querySelector("[data-minimap-icon-menu] .is-selected");
       const minimap = {
-        enabled: !!document.querySelector("[data-minimap-enable]")?.checked,
+        enabled: typeof chosenPreset !== "undefined" && !!chosenPreset,
         presetId: (typeof chosenPreset !== "undefined" && chosenPreset) ? chosenPreset.id : null,
         presetName: (typeof chosenPreset !== "undefined" && chosenPreset) ? chosenPreset.name : null,
         level: levelSel ? levelSel.dataset.levelId : null,
@@ -621,15 +657,9 @@
         }
       }
 
-      // Minimap
+      // Minimap — the preset presence is the on/off; showPresetChip below
+      // (called when the preset resolves) shows the overlay + config rows.
       const mm = config.minimap || {};
-      const enableEl = document.querySelector("[data-minimap-enable]");
-      if (enableEl) {
-        enableEl.checked = !!mm.enabled;
-        if (typeof setMinimapRowsShown === "function") setMinimapRowsShown(!!mm.enabled);
-        overlay?.classList.toggle("is-on", !!mm.enabled);
-      }
-      const presetValueEl = document.querySelector("[data-minimap-preset-value]");
       const levelMenuEl = document.querySelector("[data-minimap-level-menu]");
       const levelValueEl = document.querySelector("[data-minimap-level-value]");
       if (mm.presetId || mm.presetName) {
@@ -638,18 +668,14 @@
           : null;
         if (found) {
           chosenPreset = found;
-          if (presetValueEl) {
-            presetValueEl.textContent = found.name;
-            presetValueEl.classList.remove("select__value--placeholder");
-          }
+          showPresetChip(found.name);
           if (typeof fillLevelMenu === "function") fillLevelMenu(found);
           if (mm.level) pickMenuOption(levelMenuEl, levelValueEl, "data-level-id", mm.level);
-        } else if (presetValueEl) {
+        } else {
           // Keep the reference so re-saving doesn't drop the (temporarily) missing
           // preset — serialize only reads chosenPreset.id/name.
           chosenPreset = { id: mm.presetId, name: mm.presetName };
-          presetValueEl.textContent = (mm.presetName || "Preset") + " (unavailable)";
-          presetValueEl.classList.remove("select__value--placeholder");
+          showPresetChip((mm.presetName || "Preset") + " (unavailable)");
           if (levelMenuEl) levelMenuEl.innerHTML = "";
         }
       }

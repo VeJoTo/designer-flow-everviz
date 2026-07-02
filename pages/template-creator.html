@@ -37,8 +37,8 @@
       <nav class="wizard-steps" aria-label="Wizard steps">
         <ol class="wizard-steps__list">
           <li><a href="#map" data-tab="map" class="wizard-step wizard-step--active" aria-current="step">Map</a></li>
-          <li><a href="#customize" data-tab="customize" class="wizard-step">Customize</a></li>
           <li><a href="#presets" data-tab="presets" class="wizard-step">Presets</a></li>
+          <li><a href="#customize" data-tab="customize" class="wizard-step">Customize</a></li>
           <li><a href="#controls" data-tab="controls" class="wizard-step">Controls</a></li>
           <li><a href="#publish" data-tab="publish" class="wizard-step">Publish &amp; Export</a></li>
         </ol>
@@ -160,20 +160,7 @@
                   <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
                 </summary>
                 <div class="wiz-section__body">
-                  <div class="wiz-row">
-                    <span class="wiz-row__label">Minimap</span>
-                    <label class="wiz-switch">
-                      <input type="checkbox" data-minimap-enable aria-label="Show minimap" />
-                      <span class="wiz-switch__track" aria-hidden="true"><span class="wiz-switch__thumb"></span></span>
-                    </label>
-                  </div>
-                  <div class="wiz-row" data-minimap-dependent>
-                    <span class="wiz-row__label">Preset</span>
-                    <button class="select" type="button" data-minimap-preset-trigger aria-haspopup="dialog">
-                      <span class="select__value select__value--placeholder" data-minimap-preset-value>Choose a preset</span>
-                      <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
-                    </button>
-                  </div>
+                  <p class="wiz-hint" data-minimap-hint>Add a minimap preset in the <strong>Presets</strong> tab to configure it here.</p>
                   <div class="wiz-row" data-minimap-dependent>
                     <span class="wiz-row__label">Level</span>
                     <div class="wiz-select">
@@ -258,6 +245,18 @@
                 </summary>
                 <div class="wiz-section__body">
                   <button type="button" class="wiz-add" data-add-preset="regions">
+                    <img src="assets/icons/plus.svg" alt="" width="18" height="18" /> Add preset
+                  </button>
+                </div>
+              </details>
+
+              <details class="wiz-section" open>
+                <summary class="wiz-section__head">
+                  <span class="wiz-section__title">Minimap</span>
+                  <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
+                </summary>
+                <div class="wiz-section__body">
+                  <button type="button" class="wiz-add" data-minimap-preset-trigger>
                     <img src="assets/icons/plus.svg" alt="" width="18" height="18" /> Add preset
                   </button>
                 </div>

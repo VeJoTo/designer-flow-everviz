@@ -1035,3 +1035,13 @@ body[data-page-mode="wizard"] main {
 .minimap-overlay[data-placement="tr"] { left: auto; right: 16px; top: 16px; }
 .minimap-overlay[data-placement="bl"] { left: 16px; right: auto; top: auto; bottom: 16px; }
 .minimap-overlay[data-placement="br"] { left: auto; right: 16px; top: auto; bottom: 16px; }
+
+/* Hint shown in the Customize→Minimap panel when no preset has been added yet. */
+.wiz-hint {
+  margin: 0;
+  padding: 8px 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text-muted, #6a6a75);
+}
+.wiz-hint[hidden] { display: none; }
