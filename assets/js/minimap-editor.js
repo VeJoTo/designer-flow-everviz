@@ -349,7 +349,17 @@
       "<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'>" +
       "<rect width='80' height='80' fill='" + bg + "'/>" +
       "<circle cx='40' cy='40' r='26' fill='" + (land || "#ddd") + "'/></svg>";
-    return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+    // Wrap as a CSS url() so library-saved.js can drop it straight into
+    // `background-image:${thumb}` (matching the basemap `url("…")` form).
+    return 'url("data:image/svg+xml;utf8,' + encodeURIComponent(svg) + '")';
+  }
+
+  // Local-date stamp (matches SavedMaps' local todayISO, avoids UTC day-skew).
+  function todayLocalISO() {
+    const d = new Date();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${d.getFullYear()}-${m}-${day}`;
   }
 
   function serialize() {
@@ -357,12 +367,14 @@
     preset.name = currentName();
     preset.thumb = makeThumb();
     const list = SavedMaps.list("minimap").filter((e) => e.id !== preset.id);
-    if (!preset.created) preset.created = null;
     if (!preset.createdStamped) {
-      preset.created = new Date().toISOString().slice(0, 10);
+      preset.created = todayLocalISO();
       preset.createdStamped = true;
     }
-    list.push(JSON.parse(JSON.stringify(preset)));
+    // Don't leak the transient createdStamped flag into storage.
+    const snapshot = JSON.parse(JSON.stringify(preset));
+    delete snapshot.createdStamped;
+    list.push(snapshot);
     SavedMaps.replaceAll("minimap", list);
   }
 
