@@ -709,7 +709,12 @@
       const id = new URLSearchParams(location.search).get("id");
       if (!id || !window.SavedMaps) return;
       const entry = SavedMaps.list("template").find((e) => e.id === id);
-      if (entry && entry.config) hydrateWizard(entry.config);
+      if (!entry) return;
+      // Restore the name from the entry (not just the ?name param) so editing
+      // via ?id alone keeps the template's title.
+      const t = document.querySelector("[data-wizard-title]");
+      if (t && entry.name) t.textContent = entry.name;
+      if (entry.config) hydrateWizard(entry.config);
     })();
   });
 })();
