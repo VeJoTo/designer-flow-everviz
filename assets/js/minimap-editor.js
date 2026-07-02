@@ -79,6 +79,7 @@
       fieldsEl.appendChild(row);
     });
     renderCustomState(lvl);
+    if (window.ColorPicker) window.ColorPicker.enhanceAll(fieldsEl);
   }
 
   function buildControl(lvl, f, disabled) {

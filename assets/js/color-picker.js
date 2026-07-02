@@ -64,8 +64,97 @@
     return rgbToHex(r, g, b);
   }
 
-  // Expose maths now; the enhancer + popover are added in later tasks.
-  global.ColorPicker = {
-    _math: { clamp, normHex, hexToRgb, rgbToHex, rgbToHsv, hsvToRgb, hexToHsv, hsvToHex },
-  };
+  // ---- Enhancer ----
+  const M = { clamp, normHex, hexToRgb, rgbToHex, rgbToHsv, hsvToRgb, hexToHsv, hsvToHex };
+
+  // Resolve the parts of a .color-input defensively (markup differs per site).
+  function resolveParts(root) {
+    const swatch = root.querySelector(".color-input__swatch");
+    if (!swatch) return null;
+    const hex =
+      root.querySelector(".color-input__hex") ||
+      root.querySelector('input[type="text"]');
+    const native = swatch.querySelector('input[type="color"]'); // may be null
+    return { root, swatch, hex, native };
+  }
+
+  function currentHex(parts) {
+    if (parts.native && M.normHex(parts.native.value)) return M.normHex(parts.native.value);
+    if (parts.hex && M.normHex(parts.hex.value)) return M.normHex(parts.hex.value);
+    const bg = parts.swatch.style.background || "";
+    const m = bg.match(/#([0-9a-fA-F]{6})/);
+    return m ? "#" + m[1].toLowerCase() : "#000000";
+  }
+
+  // Single write path. Updates swatch + hex + native, fires input/change on both
+  // so any consumer binding is hit. `applying` guards against the hex-change loop.
+  let applying = false;
+  function setValue(parts, hexRaw) {
+    const hex = M.normHex(hexRaw);
+    if (!hex) return;
+    applying = true;
+    parts.swatch.style.background = hex;
+    if (parts.hex) parts.hex.value = hex.toUpperCase();
+    if (parts.native) parts.native.value = hex;
+    const fire = (el) => {
+      if (!el) return;
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+    fire(parts.native);
+    fire(parts.hex);
+    applying = false;
+  }
+
+  function labelFor(root) {
+    const row = root.closest(".mm-field, .prop-row, .wiz-row") || root.parentElement;
+    const lab = row && row.querySelector(".mm-field__label, .prop-label, .wiz-row__label, label");
+    const t = lab && lab.textContent.trim();
+    return t || "Colour";
+  }
+
+  function enhance(root) {
+    if (root.dataset.cpReady) return;
+    const parts = resolveParts(root);
+    if (!parts) return;
+    root.dataset.cpReady = "1";
+    parts.swatch.dataset.cpReady = "1";
+    parts.swatch.setAttribute("role", "button");
+    parts.swatch.setAttribute("tabindex", "0");
+    parts.swatch.setAttribute("aria-haspopup", "dialog");
+    parts.swatch.setAttribute("aria-expanded", "false");
+    parts.swatch.style.background = currentHex(parts);
+    const open = (e) => {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      openPopover(parts);
+    };
+    parts.swatch.addEventListener("click", open);
+    parts.swatch.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") open(e);
+    });
+    if (parts.hex) {
+      parts.hex.addEventListener("change", () => {
+        if (applying) return;
+        const hex = M.normHex(parts.hex.value);
+        if (hex) { setValue(parts, hex); syncPopover(parts, hex); }
+      });
+    }
+  }
+
+  function enhanceAll(root) {
+    (root || document).querySelectorAll(".color-input").forEach(enhance);
+  }
+
+  // Popover hooks — real implementations land in later tasks. Stubs so this task
+  // is verifiable (swatch shows colour, native hidden) without a popover.
+  function openPopover(parts) { /* later task */ }
+  function syncPopover(parts, hex) { /* later task */ }
+
+  global.ColorPicker = { _math: M, enhance, enhanceAll, _setValue: setValue, _currentHex: currentHex, _resolveParts: resolveParts, _labelFor: labelFor };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => enhanceAll());
+  } else {
+    enhanceAll();
+  }
 })(typeof window !== "undefined" ? window : this);
