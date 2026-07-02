@@ -237,6 +237,9 @@
 
   // Commit the current activeHsv to the enhanced input + repaint.
   function commitHsv() {
+    // Guard: if the source input was removed (e.g. a re-render) while the popover
+    // was open, close rather than write to a detached node.
+    if (activeParts && !document.contains(activeParts.swatch)) { closePopover(); return; }
     const hex = M.hsvToHex(activeHsv.h, activeHsv.s, activeHsv.v);
     if (activeParts) setValue(activeParts, hex);
     renderPop(hex);
