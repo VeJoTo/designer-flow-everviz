@@ -1,0 +1,90 @@
+/* Minimap editor: 3-pane shell (level rail | settings | preview). */
+.mm-editor {
+  display: grid;
+  grid-template-columns: 240px minmax(320px, 1fr) minmax(320px, 520px);
+  gap: 1px;
+  background: var(--color-border, #e3e3ea);
+  height: 100%;
+  min-height: 0;
+}
+.mm-pane {
+  background: #fff;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px;
+}
+
+/* --- Level rail (zoom ladder) --- */
+.mm-rail__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.mm-rail__title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #6a6a75);
+}
+.mm-level-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.mm-level {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--color-border, #e3e3ea);
+  border-radius: 10px;
+  cursor: pointer;
+  background: #fff;
+}
+.mm-level.is-selected {
+  border-color: var(--color-primary, #4b4ae0);
+  box-shadow: 0 0 0 1px var(--color-primary, #4b4ae0) inset;
+}
+.mm-level__thumb {
+  width: 34px; height: 34px; border-radius: 6px; flex: none;
+  border: 1px solid var(--color-border, #e3e3ea);
+  background-size: cover; background-position: center;
+}
+.mm-level__body { flex: 1; min-width: 0; }
+.mm-level__name { font-size: 14px; font-weight: 500; color: var(--color-text, #1c1c24); }
+.mm-level__type { font-size: 12px; color: var(--color-text-muted, #6a6a75); }
+.mm-level__default {
+  font-size: 11px; font-weight: 600; color: var(--color-primary, #4b4ae0);
+  background: color-mix(in srgb, var(--color-primary, #4b4ae0) 12%, #fff);
+  border-radius: 999px; padding: 2px 8px; white-space: nowrap;
+}
+.mm-level__menu { flex: none; border: 0; background: none; cursor: pointer; padding: 4px; border-radius: 6px; }
+.mm-level__menu:hover { background: var(--color-surface-2, #f2f2f6); }
+.mm-add-level { margin-top: 12px; }
+
+/* --- Settings pane --- */
+.mm-settings__title { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+.mm-settings__type { font-size: 13px; color: var(--color-text-muted, #6a6a75); margin: 0 0 16px; }
+.mm-field { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--color-border, #e3e3ea); }
+.mm-field__label { font-size: 14px; color: var(--color-text, #1c1c24); }
+.mm-advanced { margin-top: 18px; }
+.mm-advanced__note { font-size: 13px; color: var(--color-text-muted, #6a6a75); display: flex; align-items: center; gap: 10px; }
+
+/* --- Preview pane --- */
+.mm-preview__caption { font-size: 13px; color: var(--color-text-muted, #6a6a75); margin-bottom: 12px; }
+.mm-preview__stage {
+  display: grid; place-items: center;
+  aspect-ratio: 1 / 1; width: 100%;
+  border-radius: 12px;
+  background: var(--mm-bg, #fff);
+  border: 1px solid var(--color-border, #e3e3ea);
+}
+/* Globe: a water disc with an abstract land blob. */
+.mm-preview__globe {
+  width: 70%; aspect-ratio: 1; border-radius: 50%;
+  background: var(--mm-water, #cfe8f5);
+  display: grid; place-items: center; overflow: hidden;
+}
+/* Political: a region silhouette (inline SVG uses currentColor + stroke vars). */
+.mm-preview__region { width: 70%; height: auto; color: var(--mm-land, #e9e6df); opacity: calc(var(--mm-opacity, 100) / 100); }
+.mm-preview__region path { fill: currentColor; stroke: var(--mm-stroke, #8a8a8a); stroke-width: var(--mm-stroke-w, 1); }
+.mm-preview__blob { width: 55%; color: var(--mm-land, #e9e6df); }
+.mm-preview__blob path { fill: currentColor; }
