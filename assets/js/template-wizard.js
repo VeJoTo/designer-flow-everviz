@@ -98,6 +98,52 @@
       if (stage) stage.dataset.stage = card.dataset.thumb || "globe";
     });
 
+    // ── Help FAB → dismissible help popover ─────────────────────────
+    const helpFab = document.querySelector(".wizard-help-fab");
+    if (helpFab) {
+      let helpPop = null;
+      const onDocHelp = (e) => {
+        if (helpPop && !helpPop.contains(e.target) && !helpFab.contains(e.target)) closeHelp();
+      };
+      const onEscHelp = (e) => { if (e.key === "Escape") closeHelp(); };
+      function closeHelp() {
+        if (!helpPop) return;
+        helpPop.remove();
+        helpPop = null;
+        document.removeEventListener("click", onDocHelp, true);
+        document.removeEventListener("keydown", onEscHelp);
+      }
+      function openHelp() {
+        helpPop = document.createElement("div");
+        helpPop.className = "wizard-help-pop";
+        helpPop.setAttribute("role", "dialog");
+        helpPop.setAttribute("aria-label", "Template wizard help");
+        helpPop.innerHTML =
+          '<div class="wizard-help-pop__head"><strong>Building a template</strong>' +
+          '<button type="button" class="wizard-help-pop__close" aria-label="Close">✕</button></div>' +
+          '<ul class="wizard-help-pop__list">' +
+          "<li><b>Map</b> — pick the base map for this template.</li>" +
+          "<li><b>Presets</b> — add marker, region and minimap presets to use.</li>" +
+          "<li><b>Customize</b> — tweak the minimap and other appearance options.</li>" +
+          "<li><b>Controls</b> — choose what the journalist can change.</li>" +
+          "<li><b>Publish &amp; Export</b> — set the export presets, then Save.</li>" +
+          "</ul>";
+        document.body.appendChild(helpPop);
+        const r = helpFab.getBoundingClientRect();
+        const pw = helpPop.offsetWidth, ph = helpPop.offsetHeight;
+        helpPop.style.position = "fixed";
+        helpPop.style.left = Math.max(12, Math.round(r.right - pw)) + "px";
+        helpPop.style.top = Math.max(12, Math.round(r.top - ph - 10)) + "px";
+        helpPop.querySelector(".wizard-help-pop__close").addEventListener("click", closeHelp);
+        setTimeout(() => document.addEventListener("click", onDocHelp, true), 0);
+        document.addEventListener("keydown", onEscHelp);
+      }
+      helpFab.addEventListener("click", (e) => {
+        e.stopPropagation();
+        helpPop ? closeHelp() : openHelp();
+      });
+    }
+
     // ── Mini-Map controls (Customize tab) → preview overlay ─────────
     // The minimap is shown iff a minimap preset has been added (Presets tab) —
     // the preset presence IS the on/off. When a preset exists, the config rows

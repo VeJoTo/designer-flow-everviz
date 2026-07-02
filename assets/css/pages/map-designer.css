@@ -173,3 +173,11 @@
 .template-card__actions .icon-btn--danger:hover img {
   filter: invert(28%) sepia(83%) saturate(2200%) hue-rotate(340deg) brightness(98%) contrast(96%);
 }
+
+/* Inline rename (Settings cog → Rename) on template cards. */
+.template-card__title[contenteditable="true"] {
+  outline: 2px solid var(--color-primary, #4b4ae0);
+  outline-offset: 2px;
+  border-radius: 3px;
+  cursor: text;
+}

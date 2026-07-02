@@ -191,4 +191,102 @@ document.addEventListener("DOMContentLoaded", () => {
     // Re-run the grid filter/sort so the copy is indexed and surfaced.
     clone.dispatchEvent(new CustomEvent("favorite-changed", { bubbles: true }));
   });
+
+  // ── Settings cog → small menu with "Rename" (inline-edit the title) ──
+  function closeSettingsMenu() {
+    document.querySelector("[data-template-settings-menu]")?.remove();
+    document.removeEventListener("click", onDocSettings, true);
+    document.removeEventListener("keydown", onEscSettings);
+  }
+  function onDocSettings(e) {
+    if (e.target.closest("[data-template-settings-menu]")) return;
+    closeSettingsMenu();
+  }
+  function onEscSettings(e) {
+    if (e.key === "Escape") closeSettingsMenu();
+  }
+  grid.addEventListener("click", (e) => {
+    const cog = e.target.closest('.icon-btn[aria-label="Settings"]');
+    if (!cog) return;
+    e.preventDefault();
+    const open = !!document.querySelector("[data-template-settings-menu]");
+    closeSettingsMenu();
+    if (open) return; // toggle off if it was already showing
+    const card = cog.closest(".template-card");
+    const menu = document.createElement("div");
+    menu.className = "filter-popover template-settings-menu";
+    menu.setAttribute("role", "menu");
+    menu.dataset.templateSettingsMenu = "";
+    menu.innerHTML = '<button type="button" class="sort-option" data-tpl-rename>Rename</button>';
+    const r = cog.getBoundingClientRect();
+    menu.style.position = "fixed";
+    menu.style.top = Math.round(r.bottom + 6) + "px";
+    menu.style.left = Math.round(r.right - 150) + "px";
+    menu.style.minWidth = "150px";
+    document.body.appendChild(menu);
+    menu.querySelector("[data-tpl-rename]").addEventListener("click", () => {
+      closeSettingsMenu();
+      startRename(card);
+    });
+    setTimeout(() => document.addEventListener("click", onDocSettings, true), 0);
+    document.addEventListener("keydown", onEscSettings);
+  });
+
+  // Inline rename: make the title editable, Enter/blur commits, Esc reverts.
+  function startRename(card) {
+    const titleEl = card && card.querySelector(".template-card__title");
+    if (!titleEl || titleEl.isContentEditable) return;
+    const before = titleEl.textContent;
+    let done = false;
+    const finish = (save) => {
+      if (done) return;
+      done = true;
+      titleEl.removeEventListener("keydown", onKey);
+      titleEl.removeEventListener("blur", onBlur);
+      titleEl.removeAttribute("contenteditable");
+      if (save) {
+        const name = (titleEl.textContent || "").replace(/\s+/g, " ").trim() || before;
+        titleEl.textContent = name;
+        applyRename(card, name);
+      } else {
+        titleEl.textContent = before;
+      }
+    };
+    const onKey = (e) => {
+      if (e.key === "Enter") { e.preventDefault(); finish(true); }
+      else if (e.key === "Escape") { e.preventDefault(); finish(false); }
+    };
+    const onBlur = () => finish(true);
+    titleEl.setAttribute("contenteditable", "true");
+    titleEl.addEventListener("keydown", onKey);
+    titleEl.addEventListener("blur", onBlur);
+    titleEl.focus();
+    const range = document.createRange();
+    range.selectNodeContents(titleEl);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  // Reflect the new name into the card's data + edit links, and persist for
+  // saved templates.
+  function applyRename(card, name) {
+    card.dataset.name = name;
+    const id = card.dataset.savedId;
+    const url =
+      "pages/template-creator.html?" +
+      (id ? `id=${encodeURIComponent(id)}&` : "") +
+      `name=${encodeURIComponent(name)}`;
+    card
+      .querySelectorAll('.template-card__hit, .icon-btn[aria-label="Edit"]')
+      .forEach((a) => a.setAttribute("href", url));
+    if (id && window.SavedMaps) {
+      const listT = SavedMaps.list("template");
+      const entry = listT.find((x) => x.id === id);
+      if (entry) {
+        entry.name = name;
+        SavedMaps.replaceAll("template", listT);
+      }
+    }
+  }
 });
