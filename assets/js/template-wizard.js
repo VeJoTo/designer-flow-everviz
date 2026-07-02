@@ -99,19 +99,20 @@
     });
 
     // ── Mini-Map controls (Customize tab) → preview overlay ─────────
+    // The minimap is shown iff a minimap preset has been added (Presets tab) —
+    // the preset presence IS the on/off. When a preset exists, the config rows
+    // (level/allow-zoom/size/placement/icon) and the preview overlay are shown;
+    // otherwise a hint points to the Presets tab. Toggled by showPresetChip /
+    // clearPresetChip below.
     const overlay = document.querySelector("[data-minimap-overlay]");
-    // Every Mini-Map option except the on/off toggle is only relevant once
-    // the minimap is on — collapse them while it's off (progressive reveal).
-    const minimapEnable = document.querySelector("[data-minimap-enable]");
     const minimapRows = document.querySelectorAll("[data-minimap-dependent]");
-    const setMinimapRowsShown = (on) => {
+    const minimapHint = document.querySelector("[data-minimap-hint]");
+    function setMinimapEnabled(on) {
+      overlay?.classList.toggle("is-on", on);
       minimapRows.forEach((row) => { row.hidden = !on; });
-    };
-    minimapEnable?.addEventListener("change", (e) => {
-      overlay?.classList.toggle("is-on", e.target.checked);
-      setMinimapRowsShown(e.target.checked);
-    });
-    setMinimapRowsShown(!!minimapEnable?.checked); // default: off → collapsed
+      if (minimapHint) minimapHint.hidden = on;
+    }
+    setMinimapEnabled(false); // default: no preset yet
     // Reusable wizard dropdown: a .select trigger + a .filter-popover menu
     // of [optionAttr] options. Opens on click, single-selects (✓ on the
     // chosen row), closes on outside-click / Escape, and calls onChange.
@@ -234,6 +235,7 @@
       // Use style.display (not the hidden attr) — .wiz-add's own display rule
       // would override [hidden].
       presetTrigger.style.display = "none";
+      setMinimapEnabled(true); // a preset exists → show the minimap + config rows
     }
     // Remove the chip and restore the "Add preset" button.
     function clearPresetChip() {
@@ -243,6 +245,7 @@
       if (presetTrigger) presetTrigger.style.display = "";
       if (levelMenu) levelMenu.innerHTML = "";
       if (levelValue) levelValue.textContent = "Default";
+      setMinimapEnabled(false); // no preset → hide the minimap + config rows
     }
 
     function fillLevelMenu(pr) {
@@ -579,7 +582,7 @@
       const placeSel = document.querySelector("[data-minimap-placement-menu] .is-selected");
       const iconSel = document.querySelector("[data-minimap-icon-menu] .is-selected");
       const minimap = {
-        enabled: !!document.querySelector("[data-minimap-enable]")?.checked,
+        enabled: typeof chosenPreset !== "undefined" && !!chosenPreset,
         presetId: (typeof chosenPreset !== "undefined" && chosenPreset) ? chosenPreset.id : null,
         presetName: (typeof chosenPreset !== "undefined" && chosenPreset) ? chosenPreset.name : null,
         level: levelSel ? levelSel.dataset.levelId : null,
@@ -654,14 +657,9 @@
         }
       }
 
-      // Minimap
+      // Minimap — the preset presence is the on/off; showPresetChip below
+      // (called when the preset resolves) shows the overlay + config rows.
       const mm = config.minimap || {};
-      const enableEl = document.querySelector("[data-minimap-enable]");
-      if (enableEl) {
-        enableEl.checked = !!mm.enabled;
-        if (typeof setMinimapRowsShown === "function") setMinimapRowsShown(!!mm.enabled);
-        overlay?.classList.toggle("is-on", !!mm.enabled);
-      }
       const levelMenuEl = document.querySelector("[data-minimap-level-menu]");
       const levelValueEl = document.querySelector("[data-minimap-level-value]");
       if (mm.presetId || mm.presetName) {

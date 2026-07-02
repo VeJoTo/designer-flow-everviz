@@ -37,7 +37,15 @@ Customize** — so the flow is "pick your presets, then customize the instance".
    Note: no `data-minimap-dependent` here — the section is always visible in Presets
    (independent of the Customize on/off toggle).
 
-3. **Customize→Minimap keeps** on/off, **Level**, allow-zoom, size, placement, icon. The
+3a. **Minimap gated on the preset (no on/off toggle).** The Customize on/off toggle is
+   removed — *adding a minimap preset in the Presets tab is what shows the minimap*.
+   `showPresetChip`/`clearPresetChip` call `setMinimapEnabled(on)`, which toggles the
+   preview overlay's `is-on`, shows/hides the `data-minimap-dependent` config rows, and
+   shows/hides a `[data-minimap-hint]` ("Add a minimap preset in the Presets tab…") when
+   no preset exists. `serialize` derives `minimap.enabled` from `chosenPreset`; `hydrate`
+   relies on the preset restore (`showPresetChip`) to re-enable.
+
+3. **Customize→Minimap keeps** ~~on/off~~ **Level**, allow-zoom, size, placement, icon. The
    Level dropdown still fills from the chosen preset — the picker sets the shared
    `chosenPreset` and calls `fillLevelMenu` (targets `[data-minimap-level-menu]`, still in
    Customize); this works cross-tab because both elements live in the DOM regardless of the
