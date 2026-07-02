@@ -163,60 +163,6 @@
       });
     };
 
-    // Border color + thickness only do anything when a border is shown, so
-    // gray them out (disabled) while the border type is "off".
-    const borderDependents = document.querySelectorAll("[data-border-dependent]");
-    const setBorderControlsEnabled = (on) => {
-      borderDependents.forEach((row) => {
-        row.classList.toggle("is-disabled", !on);
-        row.setAttribute("aria-disabled", on ? "false" : "true");
-      });
-    };
-
-    // Border type dropdown → overlay border style (off / solid / dashed / dotted)
-    setupWizSelect(
-      document.querySelector("[data-minimap-border-trigger]"),
-      document.querySelector("[data-minimap-border-menu]"),
-      document.querySelector("[data-minimap-border-value]"),
-      "data-border-type",
-      (type) => {
-        overlay?.setAttribute("data-border", type);
-        setBorderControlsEnabled(type !== "off");
-      }
-    );
-    setBorderControlsEnabled(false); // default border is "Off"
-    const hex = document.querySelector("[data-minimap-color-hex]");
-    const color = document.querySelector("[data-minimap-color]");
-    const swatch = color?.closest(".color-input__swatch");
-    const applyColor = (v) => {
-      if (!/^#[0-9a-fA-F]{6}$/.test(v)) return;
-      if (hex) hex.value = v.toUpperCase();
-      if (color) color.value = v;
-      if (swatch) swatch.style.background = v;
-      overlay?.style.setProperty("--minimap-border-color", v);
-    };
-    color?.addEventListener("input", (e) => applyColor(e.target.value));
-    hex?.addEventListener("change", (e) => applyColor(e.target.value.trim()));
-
-    // Border thickness stepper → overlay border width (px)
-    const bWidth = document.querySelector("[data-minimap-border-width]");
-    const applyBorderWidth = () => {
-      if (!bWidth) return;
-      const min = Number(bWidth.min || 1), max = Number(bWidth.max || 8);
-      const v = Math.max(min, Math.min(max, Number(bWidth.value || min)));
-      bWidth.value = v;
-      overlay?.style.setProperty("--minimap-border-width", v + "px");
-    };
-    document.querySelectorAll("[data-bw-step]").forEach((b) => {
-      b.addEventListener("click", () => {
-        const dir = b.dataset.bwStep === "up" ? 1 : -1;
-        if (bWidth) bWidth.value = Number(bWidth.value || 2) + dir;
-        applyBorderWidth();
-      });
-    });
-    bWidth?.addEventListener("change", applyBorderWidth);
-    applyBorderWidth(); // seed --minimap-border-width from the default
-
     const size = document.querySelector("[data-minimap-size]");
     const applySize = () => {
       const px = 132 + Number(size.value || 0) * 2;
@@ -256,6 +202,62 @@
       "data-icon-type",
       setMinimapIcon
     );
+
+    // --- Minimap preset picker (lists saved minimap presets) ---
+    const presetTrigger = document.querySelector("[data-minimap-preset-trigger]");
+    const presetValue = document.querySelector("[data-minimap-preset-value]");
+    const levelValue = document.querySelector("[data-minimap-level-value]");
+    const levelMenu = document.querySelector("[data-minimap-level-menu]");
+    let chosenPreset = null;
+
+    function fillLevelMenu(pr) {
+      levelMenu.innerHTML = "";
+      if (!pr || !pr.levels) return;
+      pr.levels.forEach((lvl) => {
+        const isDefault = lvl.id === pr.defaultLevelId;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "sort-option" + (isDefault ? " is-selected" : "");
+        btn.setAttribute("role", "option");
+        btn.dataset.levelId = lvl.id;
+        btn.textContent = lvl.name;
+        levelMenu.appendChild(btn);
+      });
+      const def = pr.levels.find((l) => l.id === pr.defaultLevelId) || pr.levels[0];
+      if (def) levelValue.textContent = def.name;
+    }
+
+    presetTrigger?.addEventListener("click", async () => {
+      if (!window.pickerModal || !window.SavedMaps) return;
+      const items = SavedMaps.list("minimap").map((e) => ({ name: e.name, id: e.id }));
+      const choice = await window.pickerModal({ title: "Choose a minimap preset", items });
+      if (!choice) return;
+      chosenPreset = SavedMaps.list("minimap").find((e) => e.name === choice.name) || null;
+      presetValue.textContent = choice.name;
+      presetValue.classList.remove("select__value--placeholder");
+      fillLevelMenu(chosenPreset);
+    });
+
+    // Level dropdown (options are (re)built when a preset is chosen).
+    setupWizSelect(
+      document.querySelector("[data-minimap-level-trigger]"),
+      levelMenu,
+      levelValue,
+      "data-level-id",
+      () => {}
+    );
+
+    // Placement -> move the preview overlay into a corner.
+    setupWizSelect(
+      document.querySelector("[data-minimap-placement-trigger]"),
+      document.querySelector("[data-minimap-placement-menu]"),
+      document.querySelector("[data-minimap-placement-value]"),
+      "data-placement",
+      (pos) => overlay?.setAttribute("data-placement", pos)
+    );
+
+    // Allow zoom is stored on the checkbox state; no preview behavior in the prototype.
+    document.querySelector("[data-minimap-allow-zoom]")?.addEventListener("change", () => {});
 
     // ── Preset pickers (Presets tab) ────────────────────────────────
     document.querySelectorAll("[data-add-preset]").forEach((btn) => {

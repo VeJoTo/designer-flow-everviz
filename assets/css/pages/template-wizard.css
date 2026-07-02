@@ -1031,3 +1031,7 @@ body[data-page-mode="wizard"] main {
   background: none; border: 0; padding: 0;
 }
 .export-add:hover { color: var(--color-text-primary); }
+
+.minimap-overlay[data-placement="tr"] { left: auto; right: 16px; top: 16px; }
+.minimap-overlay[data-placement="bl"] { left: 16px; right: auto; top: auto; bottom: 16px; }
+.minimap-overlay[data-placement="br"] { left: auto; right: 16px; top: auto; bottom: 16px; }
