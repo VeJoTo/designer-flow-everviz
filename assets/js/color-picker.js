@@ -214,9 +214,46 @@
 
   function syncPopover(parts, hex) { syncPopoverReal(parts, hex); }
 
-  function renderPop(hex) { const el = popEl.querySelector("[data-cp-hex]"); if (el) el.value = hex.toUpperCase(); }
-  function wirePopInputs() { /* later task */ }
-  function syncPopoverReal(parts, hex) { if (activeParts === parts && popEl && !popEl.hidden) { activeHsv = M.hexToHsv(hex); renderPop(hex); } }
+  // Paint the popover from activeHsv. `hex` is the current resolved colour.
+  function renderPop(hex) {
+    const sv = popEl.querySelector("[data-cp-sv]");
+    const svH = popEl.querySelector("[data-cp-sv-handle]");
+    const hueH = popEl.querySelector("[data-cp-hue-handle]");
+    const hexEl = popEl.querySelector("[data-cp-hex]");
+    sv.style.setProperty("--cp-hue-hex", M.hsvToHex(activeHsv.h, 1, 1));
+    svH.style.left = activeHsv.s * sv.clientWidth + "px";
+    svH.style.top = (1 - activeHsv.v) * sv.clientHeight + "px";
+    const hue = popEl.querySelector("[data-cp-hue]");
+    hueH.style.left = (activeHsv.h / 360) * hue.clientWidth + "px";
+    if (hexEl && document.activeElement !== hexEl) hexEl.value = (M.normHex(hex) || "#000000").toUpperCase();
+  }
+
+  function syncPopoverReal(parts, hex) {
+    if (activeParts === parts && popEl && !popEl.hidden) {
+      activeHsv = M.hexToHsv(hex);
+      renderPop(hex);
+    }
+  }
+
+  // Commit the current activeHsv to the enhanced input + repaint.
+  function commitHsv() {
+    const hex = M.hsvToHex(activeHsv.h, activeHsv.s, activeHsv.v);
+    if (activeParts) setValue(activeParts, hex);
+    renderPop(hex);
+  }
+
+  function wirePopInputs() {
+    const hexEl = popEl.querySelector("[data-cp-hex]");
+    hexEl.addEventListener("change", () => {
+      const hex = M.normHex(hexEl.value);
+      if (!hex) { hexEl.value = M.hsvToHex(activeHsv.h, activeHsv.s, activeHsv.v).toUpperCase(); return; }
+      activeHsv = M.hexToHsv(hex);
+      commitHsv();
+    });
+    wirePopDrag();
+  }
+
+  function wirePopDrag() { /* later task */ }
 
   global.ColorPicker = { _math: M, enhance, enhanceAll, _setValue: setValue, _currentHex: currentHex, _resolveParts: resolveParts, _labelFor: labelFor };
 
