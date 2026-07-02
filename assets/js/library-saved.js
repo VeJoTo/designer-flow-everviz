@@ -127,7 +127,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (li.dataset.savedId && window.SavedMaps) {
       const thumb = clone.querySelector(".map-card__thumb")?.style.backgroundImage || "";
-      const entry = window.SavedMaps.save(kind, { name: newName, thumb });
+      let entry;
+      // Minimaps use the snapshot model with rich level data — deep-clone the
+      // whole source entry so the copy keeps its levels/defaultLevelId, not just
+      // {name,thumb}. Basemaps keep the light save path.
+      const src =
+        kind === "minimap"
+          ? SavedMaps.list("minimap").find((x) => x.id === li.dataset.savedId)
+          : null;
+      if (src) {
+        const list = SavedMaps.list("minimap");
+        entry = JSON.parse(JSON.stringify(src));
+        entry.id = SavedMaps.id();
+        entry.name = newName;
+        entry.created = todayISO();
+        list.push(entry);
+        SavedMaps.replaceAll("minimap", list);
+      } else {
+        entry = window.SavedMaps.save(kind, { name: newName, thumb });
+      }
       clone.dataset.savedId = entry.id;
       const url = `${editorHref}?id=${encodeURIComponent(entry.id)}&name=${encodeURIComponent(
         newName
