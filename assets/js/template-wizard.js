@@ -533,5 +533,59 @@
       refreshDefaultOptions();
       exportApi = { list, makeCard, refreshDefaultOptions, defaultValue };
     }
+
+    // ── Round-trip: read the whole wizard into a config blob ─────────
+    function serializeWizard() {
+      // Map
+      const mapPick = document.querySelector("[data-map-pick-grid] .map-pick--selected");
+      // Minimap
+      const levelSel = document.querySelector("[data-minimap-level-menu] .is-selected");
+      const placeSel = document.querySelector("[data-minimap-placement-menu] .is-selected");
+      const iconSel = document.querySelector("[data-minimap-icon-menu] .is-selected");
+      const minimap = {
+        enabled: !!document.querySelector("[data-minimap-enable]")?.checked,
+        presetId: (typeof chosenPreset !== "undefined" && chosenPreset) ? chosenPreset.id : null,
+        presetName: (typeof chosenPreset !== "undefined" && chosenPreset) ? chosenPreset.name : null,
+        level: levelSel ? levelSel.dataset.levelId : null,
+        allowZoom: !!document.querySelector("[data-minimap-allow-zoom]")?.checked,
+        size: Number(document.querySelector("[data-minimap-size]")?.value || 0),
+        placement: placeSel ? placeSel.dataset.placement : "tl",
+        icon: iconSel ? iconSel.dataset.iconType : "none",
+      };
+      // Presets (name-keyed chips per section)
+      const namesIn = (container) =>
+        container ? [...container.querySelectorAll(".wiz-preset-item__name")].map((n) => n.textContent.trim()) : [];
+      const markersC = document.querySelector('[data-add-preset="markers"]')?.parentElement;
+      const regionsC = document.querySelector('[data-add-preset="regions"]')?.parentElement;
+      const presets = { markers: namesIn(markersC), regions: namesIn(regionsC) };
+      // Controls (keyed sections; ordered sub-option booleans)
+      const controls = {};
+      document.querySelectorAll("[data-controls] .wiz-section[data-control-key]").forEach((sec) => {
+        const key = sec.dataset.controlKey;
+        const head = sec.querySelector("[data-control-toggle]");
+        const opts = [...sec.querySelectorAll('.wiz-section__body input[type="checkbox"]')].map((c) => c.checked);
+        controls[key] = { on: !!head?.checked, opts };
+      });
+      // Export
+      const exp = { presets: [], defaultName: null };
+      if (exportApi) {
+        exp.presets = [...exportApi.list.querySelectorAll("[data-export-preset]")].map((card) => ({
+          name: card.querySelector(".export-preset__name").value.trim() || "Untitled",
+          platform: card.querySelector("[data-platform].is-selected")?.dataset.platform || "multi",
+          width: Number(card.querySelector("[data-export-w]").value || 0),
+          height: Number(card.querySelector("[data-export-h]").value || 0),
+        }));
+        exp.defaultName = exportApi.defaultValue.textContent.trim() || null;
+      }
+      return {
+        version: 1,
+        map: { pick: mapPick ? mapPick.dataset.thumb : null },
+        minimap,
+        presets,
+        controls,
+        export: exp,
+      };
+    }
+    window.__wizardSerialize = serializeWizard; // exposed for browser verification
   });
 })();
