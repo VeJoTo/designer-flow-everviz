@@ -253,7 +253,40 @@
     wirePopDrag();
   }
 
-  function wirePopDrag() { /* later task */ }
+  function wirePopDrag() {
+    const sv = popEl.querySelector("[data-cp-sv]");
+    const hue = popEl.querySelector("[data-cp-hue]");
+
+    function dragOn(el, onMove) {
+      el.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        const rect = el.getBoundingClientRect();
+        const move = (ev) => onMove(ev, rect);
+        move(e);
+        const up = () => {
+          document.removeEventListener("pointermove", move);
+          document.removeEventListener("pointerup", up);
+        };
+        document.addEventListener("pointermove", move);
+        document.addEventListener("pointerup", up);
+      });
+    }
+
+    dragOn(sv, (ev, rect) => {
+      const x = clamp(ev.clientX - rect.left, 0, rect.width);
+      const y = clamp(ev.clientY - rect.top, 0, rect.height);
+      activeHsv.s = rect.width ? x / rect.width : 0;
+      activeHsv.v = rect.height ? 1 - y / rect.height : 0;
+      commitHsv();
+    });
+
+    dragOn(hue, (ev, rect) => {
+      const x = clamp(ev.clientX - rect.left, 0, rect.width);
+      activeHsv.h = rect.width ? (x / rect.width) * 360 : 0;
+      if (activeHsv.h >= 360) activeHsv.h = 359.999;
+      commitHsv();
+    });
+  }
 
   global.ColorPicker = { _math: M, enhance, enhanceAll, _setValue: setValue, _currentHex: currentHex, _resolveParts: resolveParts, _labelFor: labelFor };
 
