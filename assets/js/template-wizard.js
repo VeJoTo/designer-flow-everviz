@@ -669,6 +669,38 @@
       hydrateRest(config);
     }
     window.__wizardHydrate = hydrateWizard; // exposed for browser verification
-    function hydrateRest(config) { /* filled in the next task */ }
+    function hydrateRest(config) {
+      // Presets — clear existing chips, recreate from saved names.
+      const markersC = document.querySelector('[data-add-preset="markers"]')?.parentElement;
+      const regionsC = document.querySelector('[data-add-preset="regions"]')?.parentElement;
+      [markersC, regionsC].forEach((c) => c && c.querySelectorAll(".wiz-preset-item").forEach((i) => i.remove()));
+      (config.presets?.markers || []).forEach((n) => markersC && addPresetItem(markersC, n));
+      (config.presets?.regions || []).forEach((n) => regionsC && addPresetItem(regionsC, n));
+
+      // Controls — set each section's header toggle + sub-options by index.
+      Object.entries(config.controls || {}).forEach(([key, val]) => {
+        const sec = document.querySelector('[data-controls] .wiz-section[data-control-key="' + key + '"]');
+        if (!sec) return;
+        const head = sec.querySelector("[data-control-toggle]");
+        if (head) head.checked = !!val.on;
+        const body = sec.querySelector(".wiz-section__body");
+        if (body) body.classList.toggle("is-disabled", !val.on);
+        const boxes = [...sec.querySelectorAll('.wiz-section__body input[type="checkbox"]')];
+        (val.opts || []).forEach((on, i) => { if (boxes[i]) boxes[i].checked = !!on; });
+      });
+
+      // Export — rebuild the card list from saved presets, then set default.
+      if (exportApi && config.export) {
+        exportApi.list.innerHTML = "";
+        (config.export.presets || []).forEach((p) =>
+          exportApi.list.appendChild(exportApi.makeCard({ name: p.name, platform: p.platform, w: p.width, h: p.height }))
+        );
+        exportApi.refreshDefaultOptions();
+        if (config.export.defaultName) {
+          exportApi.defaultValue.textContent = config.export.defaultName;
+          exportApi.refreshDefaultOptions();
+        }
+      }
+    }
   });
 })();
