@@ -19,26 +19,22 @@ Customize** — so the flow is "pick your presets, then customize the instance".
    `[data-minimap-preset-trigger]` / `[data-minimap-preset-value]`).
 
 2. **Add a "Minimap" section** to the Presets tab (`data-panel="presets"`), after
-   Markers and Regions, as a `<details class="wiz-section" open>` whose body holds the
-   **same** preset picker control (single-select — a minimap uses one preset):
+   Markers and Regions, as a `<details class="wiz-section" open>` — styled **exactly like
+   the Markers/Regions sections**: a `.wiz-add` "+ Add preset" button whose body is:
    ```html
-   <details class="wiz-section" open>
-     <summary class="wiz-section__head">
-       <span class="wiz-section__title">Minimap</span>
-       <img class="wiz-section__chev" src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
-     </summary>
-     <div class="wiz-section__body">
-       <div class="wiz-row">
-         <span class="wiz-row__label">Preset</span>
-         <button class="select" type="button" data-minimap-preset-trigger aria-haspopup="dialog">
-           <span class="select__value select__value--placeholder" data-minimap-preset-value>Choose a preset</span>
-           <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
-         </button>
-       </div>
-     </div>
-   </details>
+   <div class="wiz-section__body">
+     <button type="button" class="wiz-add" data-minimap-preset-trigger>
+       <img src="assets/icons/plus.svg" alt="" width="18" height="18" /> Add preset
+     </button>
+   </div>
    ```
-   Note: no `data-minimap-dependent` here — the picker is always visible in Presets
+   Because a minimap uses a **single** preset, choosing one creates a `.wiz-preset-item`
+   **chip** (thumbnail + name + ✕ remove — built in JS like the marker/region chips) and
+   **hides the add button** (via `style.display`, since `.wiz-add`'s own `display` rule
+   overrides the `[hidden]` attribute). Removing the chip restores the button and clears
+   the level menu. The chip's name span carries `data-minimap-preset-value` (so the
+   round-trip's display hook still resolves).
+   Note: no `data-minimap-dependent` here — the section is always visible in Presets
    (independent of the Customize on/off toggle).
 
 3. **Customize→Minimap keeps** on/off, **Level**, allow-zoom, size, placement, icon. The
