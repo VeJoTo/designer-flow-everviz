@@ -168,38 +168,28 @@
                     </label>
                   </div>
                   <div class="wiz-row" data-minimap-dependent>
-                    <span class="wiz-row__label">Border</span>
+                    <span class="wiz-row__label">Preset</span>
+                    <button class="select" type="button" data-minimap-preset-trigger aria-haspopup="dialog">
+                      <span class="select__value select__value--placeholder" data-minimap-preset-value>Choose a preset</span>
+                      <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                    </button>
+                  </div>
+                  <div class="wiz-row" data-minimap-dependent>
+                    <span class="wiz-row__label">Level</span>
                     <div class="wiz-select">
-                      <button class="select" type="button" data-minimap-border-trigger aria-haspopup="listbox" aria-expanded="false">
-                        <span class="select__value" data-minimap-border-value>Off</span>
+                      <button class="select" type="button" data-minimap-level-trigger aria-haspopup="listbox" aria-expanded="false">
+                        <span class="select__value" data-minimap-level-value>Default</span>
                         <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
                       </button>
-                      <div class="filter-popover wiz-select-menu" data-minimap-border-menu hidden role="listbox">
-                        <button type="button" class="sort-option is-selected" role="option" data-border-type="off">Off</button>
-                        <button type="button" class="sort-option" role="option" data-border-type="solid">Solid</button>
-                        <button type="button" class="sort-option" role="option" data-border-type="dashed">Dashed</button>
-                        <button type="button" class="sort-option" role="option" data-border-type="dotted">Dotted</button>
-                      </div>
+                      <div class="filter-popover wiz-select-menu" data-minimap-level-menu hidden role="listbox"></div>
                     </div>
                   </div>
-                  <div class="wiz-row" data-border-dependent data-minimap-dependent>
-                    <span class="wiz-row__label">Border color</span>
-                    <div class="color-input">
-                      <input type="text" class="color-input__hex" value="#123456" maxlength="7" data-minimap-color-hex />
-                      <label class="color-input__swatch" style="background:#123456">
-                        <input type="color" value="#123456" aria-label="Minimap border color" data-minimap-color />
-                      </label>
-                    </div>
-                  </div>
-                  <div class="wiz-row" data-border-dependent data-minimap-dependent>
-                    <span class="wiz-row__label">Border thickness</span>
-                    <div class="prop-stepper">
-                      <input type="number" class="prop-stepper__input" value="2" min="1" max="8" data-minimap-border-width />
-                      <span class="prop-stepper__spinners">
-                        <button type="button" aria-label="Increase border thickness" data-bw-step="up">▲</button>
-                        <button type="button" aria-label="Decrease border thickness" data-bw-step="down">▼</button>
-                      </span>
-                    </div>
+                  <div class="wiz-row" data-minimap-dependent>
+                    <span class="wiz-row__label">Allow zoom</span>
+                    <label class="wiz-switch">
+                      <input type="checkbox" data-minimap-allow-zoom aria-label="Allow zoom" />
+                      <span class="wiz-switch__track" aria-hidden="true"><span class="wiz-switch__thumb"></span></span>
+                    </label>
                   </div>
                   <div class="wiz-row" data-minimap-dependent>
                     <span class="wiz-row__label">Minimap size</span>
@@ -209,6 +199,21 @@
                         <button type="button" aria-label="Increment" data-stepper="up">▲</button>
                         <button type="button" aria-label="Decrement" data-stepper="down">▼</button>
                       </span>
+                    </div>
+                  </div>
+                  <div class="wiz-row" data-minimap-dependent>
+                    <span class="wiz-row__label">Placement</span>
+                    <div class="wiz-select">
+                      <button class="select" type="button" data-minimap-placement-trigger aria-haspopup="listbox" aria-expanded="false">
+                        <span class="select__value" data-minimap-placement-value>Top left</span>
+                        <img src="assets/icons/chevron-down.svg" alt="" width="16" height="16" />
+                      </button>
+                      <div class="filter-popover wiz-select-menu" data-minimap-placement-menu hidden role="listbox">
+                        <button type="button" class="sort-option is-selected" role="option" data-placement="tl">Top left</button>
+                        <button type="button" class="sort-option" role="option" data-placement="tr">Top right</button>
+                        <button type="button" class="sort-option" role="option" data-placement="bl">Bottom left</button>
+                        <button type="button" class="sort-option" role="option" data-placement="br">Bottom right</button>
+                      </div>
                     </div>
                   </div>
                   <div class="wiz-row" data-minimap-dependent>

@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/chrome.css" />
   <link rel="stylesheet" href="assets/css/pages/editor.css" />
+  <link rel="stylesheet" href="assets/css/pages/minimap-editor.css" />
 </head>
 <body data-screen="designer-tools" data-screen-title="Minimap editor" data-crumbs='[{"title":"Designer tools","href":"./"},{"title":"Map designer","href":"pages/map-designer.html"},{"title":"Minimaps library","href":"pages/mini-map-library.html"}]' data-page-mode="editor" data-save-toast="Minimap saved" data-editor-kind="minimap" data-library-href="pages/mini-map-library.html">
   <div class="app app--editor">
@@ -45,201 +46,55 @@
         </div>
       </header>
 
-      <div class="editor-grid">
-        <aside class="editor-pane editor-pane--layers">
-          <div class="layers-pane__head">
-            <h2 class="layers-pane__title">Layers</h2>
-            <div class="layers-pane__head-actions">
-              <button class="icon-pill" aria-label="Expand or collapse all layers" data-tooltip="Expand or collapse all layers"><img src="assets/icons/expand-collapse.svg" alt="" width="24" height="24" /></button>
-              <button class="icon-pill icon-pill--accent" data-tooltip="Add a new layer" aria-label="Add a new layer"><img src="assets/icons/plus.svg" alt="" width="24" height="24" /></button>
-              <button class="icon-pill icon-pill--ghost" data-action="toggle-layers-pane" aria-label="Collapse panel" data-tooltip="Collapse panel"><img src="assets/icons/chevron-left.svg" alt="" width="24" height="24" /></button>
-            </div>
+      <div class="mm-editor" data-mm-editor>
+        <!-- 1) Level rail -->
+        <aside class="mm-pane mm-rail">
+          <div class="mm-rail__head">
+            <span class="mm-rail__title">Levels</span>
           </div>
-          <div class="layers-pane__search">
-            <input type="text" class="layers-pane__search-input" placeholder="Search layers..." />
+          <ul class="mm-level-list" data-mm-levels></ul>
+          <button type="button" class="btn btn--outline mm-add-level" data-mm-add-level aria-haspopup="menu">
+            + Add level
+          </button>
+          <div class="filter-popover mm-add-menu" data-mm-add-menu hidden role="menu">
+            <button type="button" class="sort-option" role="menuitem" data-add-type="globe">Globe</button>
+            <button type="button" class="sort-option" role="menuitem" data-add-type="continent">Continent</button>
+            <button type="button" class="sort-option" role="menuitem" data-add-type="country">Country</button>
+            <button type="button" class="sort-option" role="menuitem" data-add-type="region">Region</button>
+            <button type="button" class="sort-option" role="menuitem" data-add-type="city">City</button>
           </div>
-          <ul class="layers-list">
-            <li class="layer-item" data-layer-id="background">
-              <button class="layer-item__row">
-                <span class="layer-item__handle" aria-hidden="true"></span>
-                <span class="layer-item__swatch layer-item__swatch--background"></span>
-                <span class="layer-item__body">
-                  <span class="layer-item__name">background</span>
-                  <span class="layer-item__meta">background</span>
-                </span>
-              </button>
-              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
-            </li>
-            <li class="layer-item layer-item--selected" data-layer-id="water">
-              <button class="layer-item__row">
-                <span class="layer-item__handle" aria-hidden="true"></span>
-                <span class="layer-item__swatch layer-item__swatch--water"></span>
-                <span class="layer-item__body">
-                  <span class="layer-item__name">water</span>
-                  <span class="layer-item__meta">fill · water</span>
-                </span>
-              </button>
-              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
-            </li>
-            <li class="layer-item layer-item--child" data-layer-id="ocean">
-              <button class="layer-item__row">
-                <span class="layer-item__handle" aria-hidden="true"></span>
-                <span class="layer-item__swatch layer-item__swatch--ocean"></span>
-                <span class="layer-item__body">
-                  <span class="layer-item__name">ocean</span>
-                  <span class="layer-item__meta">fill · water</span>
-                </span>
-              </button>
-              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
-            </li>
-            <li class="layer-item layer-item--child" data-layer-id="lake">
-              <button class="layer-item__row">
-                <span class="layer-item__handle" aria-hidden="true"></span>
-                <span class="layer-item__swatch layer-item__swatch--lake"></span>
-                <span class="layer-item__body">
-                  <span class="layer-item__name">lake</span>
-                  <span class="layer-item__meta">fill · water</span>
-                </span>
-              </button>
-              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
-            </li>
-            <li class="layer-item" data-layer-id="waterway">
-              <button class="layer-item__row">
-                <span class="layer-item__handle" aria-hidden="true"></span>
-                <span class="layer-item__swatch layer-item__swatch--waterway"></span>
-                <span class="layer-item__body">
-                  <span class="layer-item__name">waterway</span>
-                  <span class="layer-item__meta">line · waterway</span>
-                </span>
-              </button>
-              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
-            </li>
-            <li class="layer-item" data-layer-id="building">
-              <button class="layer-item__row">
-                <span class="layer-item__handle" aria-hidden="true"></span>
-                <span class="layer-item__swatch layer-item__swatch--building"></span>
-                <span class="layer-item__body">
-                  <span class="layer-item__name">building</span>
-                  <span class="layer-item__meta">fill-extrusion · building</span>
-                </span>
-              </button>
-              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
-            </li>
-            <li class="layer-item layer-item--child" data-layer-id="residential">
-              <button class="layer-item__row">
-                <span class="layer-item__handle" aria-hidden="true"></span>
-                <span class="layer-item__swatch layer-item__swatch--building"></span>
-                <span class="layer-item__body">
-                  <span class="layer-item__name">residential</span>
-                  <span class="layer-item__meta">fill-extrusion · building</span>
-                </span>
-              </button>
-              <button class="layer-item__menu" aria-label="More options" data-tooltip="More options"><img src="assets/icons/ellipsis-vertical.svg" alt="" width="20" height="20" /></button>
-            </li>
-          </ul>
-          <div class="layers-pane__foot">7 layers · 6 visible</div>
         </aside>
 
-        <section class="editor-pane editor-pane--properties">
-          <div class="prop-row">
-            <label class="prop-label">Layer ID</label>
-            <input type="text" class="prop-input" value="water" data-prop="layer-id" />
-          </div>
-          <div class="prop-row">
-            <label class="prop-label">Layer Type</label>
-            <input type="text" class="prop-input" value="fill" />
-          </div>
-
-          <details class="prop-section" open>
-            <summary class="prop-section__head">
-              <span class="prop-section__title">Paint Properties <span class="prop-section__count">2</span></span>
-              <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
-            </summary>
-            <div class="prop-section__body">
-              <div class="prop-row">
-                <label class="prop-label">Fill Color</label>
-                <div class="color-input">
-                  <span class="color-input__swatch" style="background:#a8c5e6"></span>
-                  <input type="text" class="prop-input prop-input--inline" value="#a8c5e6" />
-                </div>
-              </div>
-              <div class="prop-row">
-                <label class="prop-label">Fill Opacity</label>
-                <div class="slider-row">
-                  <input type="range" class="prop-slider" min="0" max="1" step="0.05" value="1" />
-                  <span class="prop-slider__value">1</span>
-                </div>
-              </div>
-            </div>
-          </details>
-
-          <details class="prop-section" open>
-            <summary class="prop-section__head">
-              <span class="prop-section__title">Filter</span>
-              <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
-            </summary>
-            <div class="prop-section__body">
-              <div class="prop-row">
-                <label class="prop-label">Filter Expression</label>
-                <div class="prop-input-with-clear">
-                  <input type="text" class="prop-input" value='[&quot;==&quot;,[&quot;get&quot;,&quot;class&quot;],&quot;lake&quot;]' />
-                  <button class="prop-input__clear" aria-label="Clear">×</button>
-                </div>
-              </div>
-              <div class="prop-row">
-                <label class="prop-label">Operator</label>
-                <button class="prop-select">
-                  <span></span>
-                  <img src="assets/icons/chevron-down.svg" alt="" width="20" height="20" />
-                </button>
-              </div>
-              <div class="prop-row">
-                <label class="prop-label">Property</label>
-                <input type="text" class="prop-input" value="class" />
-              </div>
-              <div class="prop-row">
-                <label class="prop-label">Value</label>
-                <input type="text" class="prop-input" value="" />
-              </div>
+        <!-- 2) Settings for the selected level -->
+        <section class="mm-pane mm-settings">
+          <h2 class="mm-settings__title" data-mm-level-name>Globe</h2>
+          <p class="mm-settings__type" data-mm-level-type>Physical · water, land, background</p>
+          <div data-mm-fields></div>
+          <details class="mm-advanced">
+            <summary>Advanced · Use custom style</summary>
+            <div class="mm-advanced__body">
+              <p class="mm-advanced__note" data-mm-custom-empty>
+                Upload a Maputnik style (.json) to override this level's fields.
+              </p>
+              <p class="mm-advanced__note" data-mm-custom-set hidden>
+                Custom style in use: <strong data-mm-custom-name></strong>
+                <button type="button" class="btn btn--text" data-mm-custom-clear>Clear</button>
+              </p>
+              <label class="btn btn--outline">
+                Choose file…
+                <input type="file" accept="application/json,.json" data-mm-custom-file hidden />
+              </label>
             </div>
           </details>
         </section>
 
-        <aside class="editor-pane editor-pane--map">
-          <div class="map-preview" aria-hidden="true"></div>
-          <div class="map-overlay map-overlay--top">
-            <div class="map-search">
-              <img src="assets/icons/magnifying-glass.svg" alt="" width="14" height="14" />
-              <input type="text" class="map-search__input" placeholder="Search" />
-            </div>
-            <div class="map-controls">
-              <button class="map-chip">Zoom: 0.45</button>
-              <button class="map-control-btn" aria-label="Zoom in" data-tooltip="Zoom in"><img src="assets/icons/magnifying-glass-plus.svg" alt="" width="14" height="14" /></button>
-              <button class="map-control-btn" aria-label="Zoom out" data-tooltip="Zoom out"><img src="assets/icons/magnifying-glass-minus.svg" alt="" width="14" height="14" /></button>
-              <button class="map-control-btn" aria-label="Recenter" data-tooltip="Recenter"><img src="assets/icons/viewfinder-circle.svg" alt="" width="14" height="14" /></button>
-            </div>
-          </div>
-          <button class="map-help-fab" aria-label="Help" data-tooltip="Help"><img src="assets/icons/question-mark-circle.svg" alt="" width="20" height="20" /></button>
-          <div class="map-attribution">MapLibre | © Stadia Maps | OpenMapTiles © OpenStreetMap</div>
+        <!-- 3) Live preview of the selected level -->
+        <aside class="mm-pane mm-preview">
+          <p class="mm-preview__caption">Previewing: <span data-mm-preview-label>Globe</span></p>
+          <div class="mm-preview__stage" data-mm-preview-stage></div>
         </aside>
       </div>
     </main>
-  </div>
-
-  <!-- Layer item context menu (opens from three-dot button) -->
-  <div class="layer-menu" data-layer-menu hidden role="menu">
-    <button class="layer-menu__item" role="menuitem" data-action="hide">
-      <img src="assets/icons/eye-slash.svg" alt="" width="16" height="16" data-menu-icon />
-      <span data-menu-label>Hide</span>
-    </button>
-    <button class="layer-menu__item" role="menuitem" data-action="duplicate">
-      <img src="assets/icons/document-duplicate.svg" alt="" width="16" height="16" />
-      <span>Duplicate</span>
-    </button>
-    <button class="layer-menu__item layer-menu__item--danger" role="menuitem" data-action="delete">
-      <img src="assets/icons/trash.svg" alt="" width="16" height="16" />
-      <span>Delete</span>
-    </button>
   </div>
 
   <!-- Save toast (shown after Save in modal) -->
@@ -271,104 +126,8 @@
   </div>
 
   <script>
-    // Layer selection: clicking a layer moves the purple highlight and
-    // updates the Layer ID field in the properties pane.
+    // Generic editor chrome: title editing, save modal, toast, overflow menu.
     document.addEventListener("DOMContentLoaded", () => {
-      // Title from ?name=… query (set by library cards when editing
-      // existing items; absent on Create new so title stays "Untitled").
-      const params = new URLSearchParams(window.location.search);
-      const nameParam = params.get("name");
-      if (nameParam) {
-        const titleEl = document.querySelector(".editor-bar__title-text");
-        if (titleEl) titleEl.textContent = nameParam;
-
-        // Swap the map preview to the matching tile based on the name.
-        // First pattern wins, so more-specific patterns come first.
-        const MAP_LOOKUP = [
-          [/nordic dark|northern europe.*dark/i, "north-europe.png", true],
-          [/mediterranean europe|southern europe|tourism.*europe/i, "europe.png", false],
-          [/(^|\s)mediterranean(\s|$)/i, "mediterranean.png", false],
-          [/northern europe|air quality.*northern/i, "north-europe.png", false],
-          [/central europe/i, "central-europe.png", false],
-          [/scandinavia|infrastructure.*scandinav/i, "scandinavia.png", false],
-          [/nordic|energy mix.*nordic/i, "north-europe.png", false],
-          [/(^|\s)(uk|united kingdom|london|constituency)(\s|$)|election results.*uk|transit.*london/i, "uk.png", false],
-          [/north africa/i, "north-africa.png", false],
-          [/middle east/i, "middle-east.png", false],
-          [/north america/i, "north-america.png", false],
-          [/south america/i, "south-america.png", false],
-          [/east asia/i, "asia-east.png", false],
-          [/south asia/i, "asia-india.png", false],
-          [/australia/i, "australia.png", false],
-          [/europe|election results.*europe|population.*mediterranean/i, "europe.png", false],
-          [/world|global|climate zones|time zones|economic/i, "world.png", false],
-        ];
-        const preview = document.querySelector(".map-preview");
-        if (preview) {
-          for (const [pattern, image, dark] of MAP_LOOKUP) {
-            if (pattern.test(nameParam)) {
-              preview.style.backgroundImage = `url("assets/img/maps/${image}")`;
-              if (dark) preview.classList.add("map-preview--dark");
-              break;
-            }
-          }
-        }
-      }
-
-      const idInput = document.querySelector('[data-prop="layer-id"]');
-      const layersList = document.querySelector(".layers-list");
-      const layerFoot = document.querySelector(".layers-pane__foot");
-      const layerSearch = document.querySelector(".layers-pane__search-input");
-      const updateLayerCount = () => {
-        if (!layerFoot) return;
-        const all = layersList.querySelectorAll(".layer-item");
-        const filterHidden = layersList.querySelectorAll(".layer-item--filter-hidden");
-        const visible = layersList.querySelectorAll(
-          ".layer-item:not(.layer-item--hidden):not(.layer-item--filter-hidden)"
-        );
-        // When filtering, show match counts; otherwise the normal layer summary.
-        if (filterHidden.length > 0) {
-          const matches = all.length - filterHidden.length;
-          layerFoot.textContent = `${matches} of ${all.length} match`;
-        } else {
-          layerFoot.textContent = `${all.length} layers · ${visible.length} visible`;
-        }
-      };
-      // Layer search: case-insensitive substring match on name + meta text.
-      const filterLayers = (raw) => {
-        const q = (raw || "").trim().toLowerCase();
-        layersList.querySelectorAll(".layer-item").forEach((li) => {
-          if (!q) { li.classList.remove("layer-item--filter-hidden"); return; }
-          const name = li.querySelector(".layer-item__name")?.textContent.toLowerCase() || "";
-          const meta = li.querySelector(".layer-item__meta")?.textContent.toLowerCase() || "";
-          li.classList.toggle("layer-item--filter-hidden", !(name.includes(q) || meta.includes(q)));
-        });
-        updateLayerCount();
-      };
-      if (layerSearch) {
-        layerSearch.addEventListener("input", () => filterLayers(layerSearch.value));
-        layerSearch.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && layerSearch.value) {
-            layerSearch.value = "";
-            filterLayers("");
-            e.preventDefault();
-          }
-        });
-      }
-      const selectLayer = (li) => {
-        layersList
-          .querySelectorAll(".layer-item--selected")
-          .forEach((s) => s.classList.remove("layer-item--selected"));
-        li.classList.add("layer-item--selected");
-        const name = li.querySelector(".layer-item__name")?.textContent;
-        if (idInput && name) idInput.value = name;
-      };
-      // Event-delegated row click → select (works for cloned items too).
-      layersList.addEventListener("click", (e) => {
-        const row = e.target.closest(".layer-item__row");
-        if (row) selectLayer(row.closest(".layer-item"));
-      });
-
       // Inline-editable title (pencil focuses, Enter commits, Esc reverts)
       const titleEl = document.querySelector("[data-editor-title]");
       if (titleEl) {
@@ -444,51 +203,7 @@
           setTimeout(() => { toast.hidden = true; }, 220);
         }, 2400);
       };
-
-      // Persist the save to localStorage (used by both Save and Save & go).
-      const editorKind = document.body.dataset.editorKind; // "minimap" | "basemap"
-      const persistSave = () => {
-        const nameInput = document.getElementById("save-template-name");
-        const name = (nameInput?.value || "").trim() || "Untitled";
-        const previewEl = document.querySelector(".map-preview");
-        const thumb = previewEl?.style.backgroundImage || "";
-        // If we arrived here from an existing saved entry (?id=...), update it.
-        const id = new URLSearchParams(window.location.search).get("id") || null;
-        const entry = window.SavedMaps?.save(editorKind, { id, name, thumb });
-        if (entry) {
-          // Update the editor title to reflect the saved name.
-          const titleEl = document.querySelector(".editor-bar__title-text");
-          if (titleEl) titleEl.textContent = entry.name;
-        }
-        return entry;
-      };
-
-      document.querySelectorAll('[data-action="save-confirm"]').forEach((btn) => {
-        btn.addEventListener("click", () => {
-          persistSave();
-          showToast();
-        });
-      });
-      document.querySelectorAll('[data-action="save-and-go"]').forEach((link) => {
-        link.addEventListener("click", () => {
-          persistSave();
-          // Anchor navigation continues normally
-        });
-      });
-
-      // Collapse / expand the Layers pane. Shrinks the editor grid's
-      // first column to a 56px rail; only the toggle chevron remains.
-      const layersPane = document.querySelector(".editor-pane--layers");
-      const editorGrid = document.querySelector(".editor-grid");
-      document.querySelectorAll('[data-action="toggle-layers-pane"]').forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const collapsed = layersPane.classList.toggle("is-collapsed");
-          editorGrid.classList.toggle("layers-collapsed", collapsed);
-          const label = collapsed ? "Expand panel" : "Collapse panel";
-          btn.setAttribute("aria-label", label);
-          btn.setAttribute("data-tooltip", label);
-        });
-      });
+      window.__mmShowToast = showToast;
 
       // Editor topbar overflow menu (Sources / Settings / Global state /
       // Export). Click trigger toggles the popover; outside click + Esc
@@ -512,85 +227,13 @@
           if (e.key === "Escape") closeOverflow();
         });
       }
-
-      // Per-layer context menu (Hide / Duplicate / Delete)
-      const layerMenu = document.querySelector("[data-layer-menu]");
-      let menuTrigger = null; // the layer-item__menu button that opened the menu
-      let menuTargetLi = null; // the .layer-item it belongs to
-      const positionMenu = (triggerBtn) => {
-        const rect = triggerBtn.getBoundingClientRect();
-        layerMenu.style.top = `${rect.bottom + 4}px`;
-        layerMenu.style.left = `${rect.right - 168}px`;
-      };
-      const syncHideLabel = () => {
-        const icon = layerMenu.querySelector("[data-menu-icon]");
-        const label = layerMenu.querySelector("[data-menu-label]");
-        const isHidden = menuTargetLi?.classList.contains("layer-item--hidden");
-        if (icon) icon.src = isHidden ? "assets/icons/eye.svg" : "assets/icons/eye-slash.svg";
-        if (label) label.textContent = isHidden ? "Show" : "Hide";
-      };
-      const openLayerMenu = (triggerBtn) => {
-        menuTrigger = triggerBtn;
-        menuTargetLi = triggerBtn.closest(".layer-item");
-        syncHideLabel();
-        positionMenu(triggerBtn);
-        layerMenu.hidden = false;
-      };
-      const closeLayerMenu = () => {
-        layerMenu.hidden = true;
-        menuTrigger = null;
-        menuTargetLi = null;
-      };
-
-      // Delegated click on layers list: handle menu button toggling.
-      layersList.addEventListener("click", (e) => {
-        const menuBtn = e.target.closest(".layer-item__menu");
-        if (!menuBtn) return;
-        e.stopPropagation();
-        if (layerMenu.hidden || menuTrigger !== menuBtn) openLayerMenu(menuBtn);
-        else closeLayerMenu();
-      });
-
-      // Menu actions
-      layerMenu.addEventListener("click", (e) => {
-        const item = e.target.closest(".layer-menu__item");
-        if (!item || !menuTargetLi) return;
-        const action = item.dataset.action;
-        if (action === "hide") {
-          menuTargetLi.classList.toggle("layer-item--hidden");
-          updateLayerCount();
-        } else if (action === "duplicate") {
-          const clone = menuTargetLi.cloneNode(true);
-          clone.classList.remove("layer-item--selected");
-          const nameEl = clone.querySelector(".layer-item__name");
-          if (nameEl) nameEl.textContent = `${nameEl.textContent} copy`;
-          menuTargetLi.after(clone);
-          updateLayerCount();
-        } else if (action === "delete") {
-          const wasSelected = menuTargetLi.classList.contains("layer-item--selected");
-          const next = menuTargetLi.nextElementSibling || menuTargetLi.previousElementSibling;
-          menuTargetLi.remove();
-          if (wasSelected && next && next.classList.contains("layer-item")) {
-            selectLayer(next);
-          }
-          updateLayerCount();
-        }
-        closeLayerMenu();
-      });
-
-      document.addEventListener("click", (e) => {
-        if (layerMenu.hidden) return;
-        if (menuTrigger && (e.target === menuTrigger || menuTrigger.contains(e.target))) return;
-        if (layerMenu.contains(e.target)) return;
-        closeLayerMenu();
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && !layerMenu.hidden) closeLayerMenu();
-      });
     });
   </script>
   <script src="assets/js/saved-maps.js" defer></script>
+  <script src="assets/js/minimap-model.js" defer></script>
   <script src="assets/js/tooltip.js" defer></script>
+  <script src="assets/js/confirm-dialog.js" defer></script>
+  <script src="assets/js/minimap-editor.js" defer></script>
   <script src="assets/js/chrome.js" defer></script>
   <script src="assets/js/prefetch.js" defer></script>
 </body>
