@@ -55,8 +55,19 @@ Exposed as `window.ColorPicker` with:
   enhanced (guard with a `data-cp-ready` flag), and enhance each.
 - Auto-runs `enhanceAll()` on `DOMContentLoaded` for static pages.
 
+**Heterogeneous markup** — the three sites don't share one shape, so the enhancer
+resolves parts defensively:
+- preset-editor & minimap: `.color-input__hex` + `.color-input__swatch` with a native
+  `<input type="color">` inside.
+- base-map-editor: a bare `<span class="color-input__swatch">` (no native input) + a
+  `.prop-input--inline` text field (no `.color-input__hex`).
+
+So: **hex field** = `.color-input__hex` else the first `input[type="text"]` in the
+`.color-input`; **native input** = `.color-input__swatch input[type="color"]` (may be
+absent — then there's nothing to hide and `setValue` just skips the native dispatch).
+
 **Enhance one `.color-input`:**
-1. Locate `.color-input__hex` (text) and `.color-input__swatch input[type="color"]` (native).
+1. Resolve the hex field and native input per the rules above.
 2. Set the native input to `display:none` (kept for value + events).
 3. Mark the swatch as a button: `role`/`tabindex` or wrap semantics, `aria-haspopup="dialog"`,
    `aria-expanded`, and seed its background from the current hex.
