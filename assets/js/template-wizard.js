@@ -353,15 +353,16 @@
       const persistSave = () => {
         const name = (nameInput?.value || "").trim() || "Untitled project";
         if (titleEl) titleEl.textContent = name; // reflect rename on the bar
-        const entry = window.SavedMaps?.save("template", {
-          id: editingId || undefined, // update the edited template instead of duplicating
-          name,
-          thumb: 'url("assets/img/maps/north-europe.png")',
-        });
-        // Tell the templates page which card to highlight as newly created.
-        if (entry) {
-          try { sessionStorage.setItem("everviz-new-template", entry.id); } catch (e) {}
+        const id = editingId || (window.SavedMaps ? SavedMaps.id() : "t_" + name);
+        const config = serializeWizard();
+        const list = window.SavedMaps ? SavedMaps.list("template") : [];
+        const existing = list.find((e) => e.id === id);
+        const created = existing ? existing.created : new Date().toISOString().slice(0, 10);
+        const entry = { id, name, created, thumb: 'url("assets/img/maps/north-europe.png")', config };
+        if (window.SavedMaps) {
+          SavedMaps.replaceAll("template", [...list.filter((e) => e.id !== id), entry]);
         }
+        try { sessionStorage.setItem("everviz-new-template", id); } catch (e) {}
         return entry;
       };
 
@@ -702,5 +703,13 @@
         }
       }
     }
+
+    // On edit (?id), restore the saved template's full config.
+    (function restoreOnLoad() {
+      const id = new URLSearchParams(location.search).get("id");
+      if (!id || !window.SavedMaps) return;
+      const entry = SavedMaps.list("template").find((e) => e.id === id);
+      if (entry && entry.config) hydrateWizard(entry.config);
+    })();
   });
 })();
