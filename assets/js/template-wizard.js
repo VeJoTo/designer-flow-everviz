@@ -360,7 +360,9 @@
         const created = existing ? existing.created : new Date().toISOString().slice(0, 10);
         const entry = { id, name, created, thumb: 'url("assets/img/maps/north-europe.png")', config };
         if (window.SavedMaps) {
-          SavedMaps.replaceAll("template", [...list.filter((e) => e.id !== id), entry]);
+          // Prepend so the just-saved template is newest-first (saved-templates.js
+          // renders list() newest-first, matching the old unshift-based save()).
+          SavedMaps.replaceAll("template", [entry, ...list.filter((e) => e.id !== id)]);
         }
         try { sessionStorage.setItem("everviz-new-template", id); } catch (e) {}
         return entry;
@@ -643,6 +645,9 @@
           if (typeof fillLevelMenu === "function") fillLevelMenu(found);
           if (mm.level) pickMenuOption(levelMenuEl, levelValueEl, "data-level-id", mm.level);
         } else if (presetValueEl) {
+          // Keep the reference so re-saving doesn't drop the (temporarily) missing
+          // preset — serialize only reads chosenPreset.id/name.
+          chosenPreset = { id: mm.presetId, name: mm.presetName };
           presetValueEl.textContent = (mm.presetName || "Preset") + " (unavailable)";
           presetValueEl.classList.remove("select__value--placeholder");
           if (levelMenuEl) levelMenuEl.innerHTML = "";
