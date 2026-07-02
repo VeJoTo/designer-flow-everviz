@@ -1,0 +1,81 @@
+/* Custom colour picker: enhanced swatch + shared popover. */
+
+/* The enhanced swatch becomes a button; hide the native input it wraps. */
+.color-input__swatch[data-cp-ready] { cursor: pointer; }
+.color-input__swatch[data-cp-ready] input[type="color"] { display: none; }
+
+/* Popover shell (appended to <body>, positioned via fixed inline coords). */
+.cp-pop {
+  position: fixed;
+  z-index: 1000;
+  width: 200px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 15px 6px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  box-sizing: border-box;
+  font-family: var(--font-sans, "Gordita", system-ui, sans-serif);
+}
+.cp-pop[hidden] { display: none; }
+
+.cp-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cp-title { font-size: 14px; font-weight: 700; color: #172b4c; }
+.cp-close { border: 0; background: none; cursor: pointer; padding: 2px; line-height: 0; color: #172b4c; }
+
+/* Saturation/value square. Base hue set via --cp-hue-hex inline. */
+.cp-sv {
+  position: relative;
+  width: 168px;
+  height: 124px;
+  border-radius: 4px;
+  cursor: crosshair;
+  background:
+    linear-gradient(to top, #000, rgba(0, 0, 0, 0)),
+    linear-gradient(to right, #fff, rgba(255, 255, 255, 0)),
+    var(--cp-hue-hex, #ff0000);
+  touch-action: none;
+}
+.cp-sv__handle,
+.cp-hue__handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Hue slider */
+.cp-hue {
+  position: relative;
+  width: 168px;
+  height: 10px;
+  margin-top: 14px;
+  border-radius: 15px;
+  cursor: pointer;
+  touch-action: none;
+  background: linear-gradient(90deg,
+    #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%,
+    #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+}
+.cp-hue__handle { top: 50%; }
+
+/* Hex field */
+.cp-hex-row { margin-top: 14px; }
+.cp-hex {
+  width: 100%;
+  box-sizing: border-box;
+  background: #f7f8f8;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.12);
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #28277e;
+  text-transform: uppercase;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.cp-hex:focus { outline: 2px solid #6d5bd1; outline-offset: 1px; }
