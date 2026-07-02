@@ -587,5 +587,88 @@
       };
     }
     window.__wizardSerialize = serializeWizard; // exposed for browser verification
+
+    // ── Round-trip: write a config blob back into the wizard ─────────
+    // Select an option in a .filter-popover-style menu: toggle is-selected,
+    // set the trigger's value text, return the chosen option (or null).
+    function pickMenuOption(menu, valueEl, attr, val) {
+      if (!menu) return null;
+      let chosen = null;
+      menu.querySelectorAll("[" + attr + "]").forEach((o) => {
+        const on = o.getAttribute(attr) === String(val);
+        o.classList.toggle("is-selected", on);
+        if (on) chosen = o;
+      });
+      if (chosen && valueEl) valueEl.textContent = chosen.textContent.trim();
+      return chosen;
+    }
+
+    function hydrateWizard(config) {
+      if (!config) return;
+
+      // Map
+      if (config.map && config.map.pick) {
+        const g = document.querySelector("[data-map-pick-grid]");
+        const card = g && g.querySelector('[data-map-pick][data-thumb="' + config.map.pick + '"]');
+        if (card) {
+          g.querySelectorAll(".map-pick--selected").forEach((c) => c.classList.remove("map-pick--selected"));
+          card.classList.add("map-pick--selected");
+          const st = document.querySelector("[data-preview-stage]");
+          if (st) st.dataset.stage = card.dataset.thumb;
+        }
+      }
+
+      // Minimap
+      const mm = config.minimap || {};
+      const enableEl = document.querySelector("[data-minimap-enable]");
+      if (enableEl) {
+        enableEl.checked = !!mm.enabled;
+        if (typeof setMinimapRowsShown === "function") setMinimapRowsShown(!!mm.enabled);
+        overlay?.classList.toggle("is-on", !!mm.enabled);
+      }
+      const presetValueEl = document.querySelector("[data-minimap-preset-value]");
+      const levelMenuEl = document.querySelector("[data-minimap-level-menu]");
+      const levelValueEl = document.querySelector("[data-minimap-level-value]");
+      if (mm.presetId || mm.presetName) {
+        const found = window.SavedMaps
+          ? SavedMaps.list("minimap").find((e) => e.id === mm.presetId)
+          : null;
+        if (found) {
+          chosenPreset = found;
+          if (presetValueEl) {
+            presetValueEl.textContent = found.name;
+            presetValueEl.classList.remove("select__value--placeholder");
+          }
+          if (typeof fillLevelMenu === "function") fillLevelMenu(found);
+          if (mm.level) pickMenuOption(levelMenuEl, levelValueEl, "data-level-id", mm.level);
+        } else if (presetValueEl) {
+          presetValueEl.textContent = (mm.presetName || "Preset") + " (unavailable)";
+          presetValueEl.classList.remove("select__value--placeholder");
+          if (levelMenuEl) levelMenuEl.innerHTML = "";
+        }
+      }
+      const azEl = document.querySelector("[data-minimap-allow-zoom]");
+      if (azEl) azEl.checked = !!mm.allowZoom;
+      const sizeEl = document.querySelector("[data-minimap-size]");
+      if (sizeEl && mm.size != null) sizeEl.value = mm.size;
+      pickMenuOption(
+        document.querySelector("[data-minimap-placement-menu]"),
+        document.querySelector("[data-minimap-placement-value]"),
+        "data-placement",
+        mm.placement || "tl"
+      );
+      overlay?.setAttribute("data-placement", mm.placement || "tl");
+      pickMenuOption(
+        document.querySelector("[data-minimap-icon-menu]"),
+        document.querySelector("[data-minimap-icon-value]"),
+        "data-icon-type",
+        mm.icon || "none"
+      );
+      if (typeof setMinimapIcon === "function") setMinimapIcon(mm.icon || "none");
+
+      hydrateRest(config);
+    }
+    window.__wizardHydrate = hydrateWizard; // exposed for browser verification
+    function hydrateRest(config) { /* filled in the next task */ }
   });
 })();
