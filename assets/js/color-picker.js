@@ -147,8 +147,76 @@
 
   // Popover hooks — real implementations land in later tasks. Stubs so this task
   // is verifiable (swatch shows colour, native hidden) without a popover.
-  function openPopover(parts) { /* later task */ }
-  function syncPopover(parts, hex) { /* later task */ }
+  // ---- Shared popover ----
+  let popEl = null;
+  let activeParts = null;
+  let activeHsv = { h: 0, s: 0, v: 0 };
+
+  function ensurePop() {
+    if (popEl) return popEl;
+    popEl = document.createElement("div");
+    popEl.className = "cp-pop";
+    popEl.setAttribute("role", "dialog");
+    popEl.hidden = true;
+    popEl.innerHTML =
+      '<div class="cp-head">' +
+        '<span class="cp-title" data-cp-title>Colour</span>' +
+        '<button type="button" class="cp-close" aria-label="Close">✕</button>' +
+      "</div>" +
+      '<div class="cp-sv" data-cp-sv><span class="cp-sv__handle" data-cp-sv-handle></span></div>' +
+      '<div class="cp-hue" data-cp-hue><span class="cp-hue__handle" data-cp-hue-handle></span></div>' +
+      '<div class="cp-hex-row"><input type="text" class="cp-hex" data-cp-hex maxlength="7" spellcheck="false" /></div>';
+    document.body.appendChild(popEl);
+    popEl.querySelector(".cp-close").addEventListener("click", closePopover);
+    document.addEventListener("click", (e) => {
+      if (popEl.hidden) return;
+      if (popEl.contains(e.target)) return;
+      if (activeParts && activeParts.swatch.contains(e.target)) return;
+      closePopover();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !popEl.hidden) closePopover();
+    });
+    wirePopInputs();
+    return popEl;
+  }
+
+  function positionPop(swatch) {
+    const r = swatch.getBoundingClientRect();
+    ensurePop();
+    popEl.hidden = false; // must be visible to measure
+    const pw = popEl.offsetWidth, ph = popEl.offsetHeight;
+    let top = r.bottom + 6;
+    if (top + ph > window.innerHeight - 8 && r.top - ph - 6 > 8) top = r.top - ph - 6;
+    let left = r.left;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+    popEl.style.top = Math.round(Math.max(8, top)) + "px";
+    popEl.style.left = Math.round(Math.max(8, left)) + "px";
+  }
+
+  function openPopover(parts) {
+    activeParts = parts;
+    ensurePop();
+    popEl.querySelector("[data-cp-title]").textContent = labelFor(parts.root);
+    const hex = currentHex(parts);
+    activeHsv = M.hexToHsv(hex);
+    positionPop(parts.swatch);
+    renderPop(hex);
+    parts.swatch.setAttribute("aria-expanded", "true");
+  }
+
+  function closePopover() {
+    if (!popEl || popEl.hidden) return;
+    popEl.hidden = true;
+    if (activeParts) activeParts.swatch.setAttribute("aria-expanded", "false");
+    activeParts = null;
+  }
+
+  function syncPopover(parts, hex) { syncPopoverReal(parts, hex); }
+
+  function renderPop(hex) { const el = popEl.querySelector("[data-cp-hex]"); if (el) el.value = hex.toUpperCase(); }
+  function wirePopInputs() { /* later task */ }
+  function syncPopoverReal(parts, hex) { if (activeParts === parts && popEl && !popEl.hidden) { activeHsv = M.hexToHsv(hex); renderPop(hex); } }
 
   global.ColorPicker = { _math: M, enhance, enhanceAll, _setValue: setValue, _currentHex: currentHex, _resolveParts: resolveParts, _labelFor: labelFor };
 
