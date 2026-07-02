@@ -202,5 +202,126 @@
     selectedLevel,
   };
 
+  // --- Add level ---
+  const addBtn = document.querySelector("[data-mm-add-level]");
+  const addMenu = document.querySelector("[data-mm-add-menu]");
+  addBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    addMenu.hidden = !addMenu.hidden;
+  });
+  document.addEventListener("click", (e) => {
+    if (addMenu.hidden) return;
+    if (addBtn.contains(e.target) || addMenu.contains(e.target)) return;
+    addMenu.hidden = true;
+  });
+  addMenu.addEventListener("click", (e) => {
+    const opt = e.target.closest("[data-add-type]");
+    if (!opt) return;
+    const lvl = M.makeLevel(opt.dataset.addType);
+    preset.levels.push(lvl);
+    selectedId = lvl.id;
+    addMenu.hidden = true;
+    renderAll();
+  });
+
+  // --- Per-level overflow menu ---
+  // Simple prompt-based rename keeps the prototype lean; duplicate/remove/default
+  // mutate state and re-render. Remove is guarded by the shared confirm dialog.
+  levelsEl.addEventListener("click", async (e) => {
+    const menuBtn = e.target.closest("[data-level-menu]");
+    if (!menuBtn) return;
+    e.stopPropagation();
+    const row = menuBtn.closest(".mm-level");
+    const id = row.dataset.levelId;
+    const lvl = preset.levels.find((l) => l.id === id);
+    const action = await levelMenu(menuBtn);
+    if (!action || !lvl) return;
+
+    if (action === "rename") {
+      const next = window.prompt("Rename level", lvl.name);
+      if (next && next.trim()) {
+        lvl.name = next.trim();
+        renderAll();
+      }
+    } else if (action === "duplicate") {
+      const copy = JSON.parse(JSON.stringify(lvl));
+      copy.id = M.uid();
+      copy.name = lvl.name + " copy";
+      preset.levels.push(copy);
+      selectedId = copy.id;
+      renderAll();
+    } else if (action === "default") {
+      preset.defaultLevelId = id;
+      renderAll();
+    } else if (action === "remove") {
+      if (preset.levels.length <= 1) {
+        window.alert("A preset needs at least one level.");
+        return;
+      }
+      const ok = window.confirmDialog
+        ? await window.confirmDialog({
+            title: "Remove level",
+            body: 'Remove "' + lvl.name + '" from this minimap?',
+            confirmLabel: "Remove",
+          })
+        : window.confirm("Remove this level?");
+      if (!ok) return;
+      preset.levels = preset.levels.filter((l) => l.id !== id);
+      if (preset.defaultLevelId === id) preset.defaultLevelId = preset.levels[0].id;
+      if (selectedId === id) selectedId = preset.levels[0].id;
+      renderAll();
+    }
+  });
+
+  // Lightweight popover menu anchored to the ⋯ button. Resolves an action string.
+  function levelMenu(anchor) {
+    return new Promise((resolve) => {
+      const menu = document.createElement("div");
+      menu.className = "filter-popover";
+      menu.setAttribute("role", "menu");
+      menu.innerHTML =
+        '<button type="button" class="sort-option" role="menuitem" data-a="rename">Rename</button>' +
+        '<button type="button" class="sort-option" role="menuitem" data-a="duplicate">Duplicate</button>' +
+        '<button type="button" class="sort-option" role="menuitem" data-a="default">Set as default</button>' +
+        '<button type="button" class="sort-option" role="menuitem" data-a="remove">Remove</button>';
+      const r = anchor.getBoundingClientRect();
+      menu.style.position = "fixed";
+      menu.style.top = Math.round(r.bottom + 4) + "px";
+      menu.style.left = Math.round(r.right - 160) + "px";
+      menu.style.minWidth = "160px";
+      document.body.appendChild(menu);
+      function cleanup(val) {
+        menu.remove();
+        document.removeEventListener("click", onDoc, true);
+        resolve(val);
+      }
+      function onDoc(ev) {
+        const opt = ev.target.closest("[data-a]");
+        if (opt && menu.contains(opt)) {
+          ev.preventDefault();
+          cleanup(opt.dataset.a);
+          return;
+        }
+        if (!menu.contains(ev.target)) cleanup(null);
+      }
+      setTimeout(() => document.addEventListener("click", onDoc, true), 0);
+    });
+  }
+
+  // --- Advanced: custom style file (records filename only; no parsing) ---
+  const fileInput = document.querySelector("[data-mm-custom-file]");
+  const clearBtn = document.querySelector("[data-mm-custom-clear]");
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    selectedLevel().customStyle = { filename: file.name };
+    fileInput.value = "";
+    renderSettings(); // re-render fields disabled + custom note
+  });
+  clearBtn.addEventListener("click", () => {
+    selectedLevel().customStyle = null;
+    renderSettings();
+  });
+
   renderAll();
 })();
