@@ -37,6 +37,7 @@
   };
 
   document.addEventListener("DOMContentLoaded", () => {
+    let exportApi = null; // set inside the export block; used by serialize/hydrate
     // ── Tab routing (hash) ──────────────────────────────────────────
     const tabLinks = [...document.querySelectorAll(".wizard-step")];
     const panels = [...document.querySelectorAll("[data-panel]")];
@@ -260,21 +261,27 @@
     document.querySelector("[data-minimap-allow-zoom]")?.addEventListener("change", () => {});
 
     // ── Preset pickers (Presets tab) ────────────────────────────────
+    // addPresetItem builds a chip in the given section container; used by the
+    // picker handler AND by hydrateWizard when restoring a saved template.
+    function addPresetItem(container, name) {
+      const btn = container.querySelector("[data-add-preset]");
+      const item = document.createElement("div");
+      item.className = "wiz-preset-item";
+      item.innerHTML =
+        '<span class="wiz-preset-item__thumb" aria-hidden="true"></span>' +
+        '<span class="wiz-preset-item__name"></span>' +
+        '<button type="button" class="wiz-preset-item__remove" aria-label="Remove preset">' +
+        '<img src="assets/icons/x-mark.svg" alt="" width="14" height="14" /></button>';
+      item.querySelector(".wiz-preset-item__name").textContent = name;
+      container.insertBefore(item, btn);
+    }
     document.querySelectorAll("[data-add-preset]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const cfg = PRESETS[btn.dataset.addPreset];
         if (!cfg || !window.pickerModal) return;
         const choice = await window.pickerModal(cfg);
         if (!choice) return;
-        const item = document.createElement("div");
-        item.className = "wiz-preset-item";
-        item.innerHTML =
-          '<span class="wiz-preset-item__thumb" aria-hidden="true"></span>' +
-          '<span class="wiz-preset-item__name"></span>' +
-          '<button type="button" class="wiz-preset-item__remove" aria-label="Remove preset">' +
-          '<img src="assets/icons/x-mark.svg" alt="" width="14" height="14" /></button>';
-        item.querySelector(".wiz-preset-item__name").textContent = choice.name;
-        btn.parentElement.insertBefore(item, btn);
+        addPresetItem(btn.parentElement, choice.name);
       });
     });
     document.querySelectorAll(".wiz-sections").forEach((sec) => {
@@ -346,15 +353,18 @@
       const persistSave = () => {
         const name = (nameInput?.value || "").trim() || "Untitled project";
         if (titleEl) titleEl.textContent = name; // reflect rename on the bar
-        const entry = window.SavedMaps?.save("template", {
-          id: editingId || undefined, // update the edited template instead of duplicating
-          name,
-          thumb: 'url("assets/img/maps/north-europe.png")',
-        });
-        // Tell the templates page which card to highlight as newly created.
-        if (entry) {
-          try { sessionStorage.setItem("everviz-new-template", entry.id); } catch (e) {}
+        const id = editingId || (window.SavedMaps ? SavedMaps.id() : "t_" + name);
+        const config = serializeWizard();
+        const list = window.SavedMaps ? SavedMaps.list("template") : [];
+        const existing = list.find((e) => e.id === id);
+        const created = existing ? existing.created : new Date().toISOString().slice(0, 10);
+        const entry = { id, name, created, thumb: 'url("assets/img/maps/north-europe.png")', config };
+        if (window.SavedMaps) {
+          // Prepend so the just-saved template is newest-first (saved-templates.js
+          // renders list() newest-first, matching the old unshift-based save()).
+          SavedMaps.replaceAll("template", [entry, ...list.filter((e) => e.id !== id)]);
         }
+        try { sessionStorage.setItem("everviz-new-template", id); } catch (e) {}
         return entry;
       };
 
@@ -524,6 +534,192 @@
       list.innerHTML = "";
       INITIAL.forEach((cfg) => list.appendChild(makeCard(cfg)));
       refreshDefaultOptions();
+      exportApi = { list, makeCard, refreshDefaultOptions, defaultValue };
     }
+
+    // ── Round-trip: read the whole wizard into a config blob ─────────
+    function serializeWizard() {
+      // Map
+      const mapPick = document.querySelector("[data-map-pick-grid] .map-pick--selected");
+      // Minimap
+      const levelSel = document.querySelector("[data-minimap-level-menu] .is-selected");
+      const placeSel = document.querySelector("[data-minimap-placement-menu] .is-selected");
+      const iconSel = document.querySelector("[data-minimap-icon-menu] .is-selected");
+      const minimap = {
+        enabled: !!document.querySelector("[data-minimap-enable]")?.checked,
+        presetId: (typeof chosenPreset !== "undefined" && chosenPreset) ? chosenPreset.id : null,
+        presetName: (typeof chosenPreset !== "undefined" && chosenPreset) ? chosenPreset.name : null,
+        level: levelSel ? levelSel.dataset.levelId : null,
+        allowZoom: !!document.querySelector("[data-minimap-allow-zoom]")?.checked,
+        size: Number(document.querySelector("[data-minimap-size]")?.value || 0),
+        placement: placeSel ? placeSel.dataset.placement : "tl",
+        icon: iconSel ? iconSel.dataset.iconType : "none",
+      };
+      // Presets (name-keyed chips per section)
+      const namesIn = (container) =>
+        container ? [...container.querySelectorAll(".wiz-preset-item__name")].map((n) => n.textContent.trim()) : [];
+      const markersC = document.querySelector('[data-add-preset="markers"]')?.parentElement;
+      const regionsC = document.querySelector('[data-add-preset="regions"]')?.parentElement;
+      const presets = { markers: namesIn(markersC), regions: namesIn(regionsC) };
+      // Controls (keyed sections; ordered sub-option booleans)
+      const controls = {};
+      document.querySelectorAll("[data-controls] .wiz-section[data-control-key]").forEach((sec) => {
+        const key = sec.dataset.controlKey;
+        const head = sec.querySelector("[data-control-toggle]");
+        const opts = [...sec.querySelectorAll('.wiz-section__body input[type="checkbox"]')].map((c) => c.checked);
+        controls[key] = { on: !!head?.checked, opts };
+      });
+      // Export
+      const exp = { presets: [], defaultName: null };
+      if (exportApi) {
+        exp.presets = [...exportApi.list.querySelectorAll("[data-export-preset]")].map((card) => ({
+          name: card.querySelector(".export-preset__name").value.trim() || "Untitled",
+          platform: card.querySelector("[data-platform].is-selected")?.dataset.platform || "multi",
+          width: Number(card.querySelector("[data-export-w]").value || 0),
+          height: Number(card.querySelector("[data-export-h]").value || 0),
+        }));
+        exp.defaultName = exportApi.defaultValue.textContent.trim() || null;
+      }
+      return {
+        version: 1,
+        map: { pick: mapPick ? mapPick.dataset.thumb : null },
+        minimap,
+        presets,
+        controls,
+        export: exp,
+      };
+    }
+    window.__wizardSerialize = serializeWizard; // exposed for browser verification
+
+    // ── Round-trip: write a config blob back into the wizard ─────────
+    // Select an option in a .filter-popover-style menu: toggle is-selected,
+    // set the trigger's value text, return the chosen option (or null).
+    function pickMenuOption(menu, valueEl, attr, val) {
+      if (!menu) return null;
+      let chosen = null;
+      menu.querySelectorAll("[" + attr + "]").forEach((o) => {
+        const on = o.getAttribute(attr) === String(val);
+        o.classList.toggle("is-selected", on);
+        if (on) chosen = o;
+      });
+      if (chosen && valueEl) valueEl.textContent = chosen.textContent.trim();
+      return chosen;
+    }
+
+    function hydrateWizard(config) {
+      if (!config) return;
+
+      // Map
+      if (config.map && config.map.pick) {
+        const g = document.querySelector("[data-map-pick-grid]");
+        const card = g && g.querySelector('[data-map-pick][data-thumb="' + config.map.pick + '"]');
+        if (card) {
+          g.querySelectorAll(".map-pick--selected").forEach((c) => c.classList.remove("map-pick--selected"));
+          card.classList.add("map-pick--selected");
+          const st = document.querySelector("[data-preview-stage]");
+          if (st) st.dataset.stage = card.dataset.thumb;
+        }
+      }
+
+      // Minimap
+      const mm = config.minimap || {};
+      const enableEl = document.querySelector("[data-minimap-enable]");
+      if (enableEl) {
+        enableEl.checked = !!mm.enabled;
+        if (typeof setMinimapRowsShown === "function") setMinimapRowsShown(!!mm.enabled);
+        overlay?.classList.toggle("is-on", !!mm.enabled);
+      }
+      const presetValueEl = document.querySelector("[data-minimap-preset-value]");
+      const levelMenuEl = document.querySelector("[data-minimap-level-menu]");
+      const levelValueEl = document.querySelector("[data-minimap-level-value]");
+      if (mm.presetId || mm.presetName) {
+        const found = window.SavedMaps
+          ? SavedMaps.list("minimap").find((e) => e.id === mm.presetId)
+          : null;
+        if (found) {
+          chosenPreset = found;
+          if (presetValueEl) {
+            presetValueEl.textContent = found.name;
+            presetValueEl.classList.remove("select__value--placeholder");
+          }
+          if (typeof fillLevelMenu === "function") fillLevelMenu(found);
+          if (mm.level) pickMenuOption(levelMenuEl, levelValueEl, "data-level-id", mm.level);
+        } else if (presetValueEl) {
+          // Keep the reference so re-saving doesn't drop the (temporarily) missing
+          // preset — serialize only reads chosenPreset.id/name.
+          chosenPreset = { id: mm.presetId, name: mm.presetName };
+          presetValueEl.textContent = (mm.presetName || "Preset") + " (unavailable)";
+          presetValueEl.classList.remove("select__value--placeholder");
+          if (levelMenuEl) levelMenuEl.innerHTML = "";
+        }
+      }
+      const azEl = document.querySelector("[data-minimap-allow-zoom]");
+      if (azEl) azEl.checked = !!mm.allowZoom;
+      const sizeEl = document.querySelector("[data-minimap-size]");
+      if (sizeEl && mm.size != null) sizeEl.value = mm.size;
+      pickMenuOption(
+        document.querySelector("[data-minimap-placement-menu]"),
+        document.querySelector("[data-minimap-placement-value]"),
+        "data-placement",
+        mm.placement || "tl"
+      );
+      overlay?.setAttribute("data-placement", mm.placement || "tl");
+      pickMenuOption(
+        document.querySelector("[data-minimap-icon-menu]"),
+        document.querySelector("[data-minimap-icon-value]"),
+        "data-icon-type",
+        mm.icon || "none"
+      );
+      if (typeof setMinimapIcon === "function") setMinimapIcon(mm.icon || "none");
+
+      hydrateRest(config);
+    }
+    window.__wizardHydrate = hydrateWizard; // exposed for browser verification
+    function hydrateRest(config) {
+      // Presets — clear existing chips, recreate from saved names.
+      const markersC = document.querySelector('[data-add-preset="markers"]')?.parentElement;
+      const regionsC = document.querySelector('[data-add-preset="regions"]')?.parentElement;
+      [markersC, regionsC].forEach((c) => c && c.querySelectorAll(".wiz-preset-item").forEach((i) => i.remove()));
+      (config.presets?.markers || []).forEach((n) => markersC && addPresetItem(markersC, n));
+      (config.presets?.regions || []).forEach((n) => regionsC && addPresetItem(regionsC, n));
+
+      // Controls — set each section's header toggle + sub-options by index.
+      Object.entries(config.controls || {}).forEach(([key, val]) => {
+        const sec = document.querySelector('[data-controls] .wiz-section[data-control-key="' + key + '"]');
+        if (!sec) return;
+        const head = sec.querySelector("[data-control-toggle]");
+        if (head) head.checked = !!val.on;
+        const body = sec.querySelector(".wiz-section__body");
+        if (body) body.classList.toggle("is-disabled", !val.on);
+        const boxes = [...sec.querySelectorAll('.wiz-section__body input[type="checkbox"]')];
+        (val.opts || []).forEach((on, i) => { if (boxes[i]) boxes[i].checked = !!on; });
+      });
+
+      // Export — rebuild the card list from saved presets, then set default.
+      if (exportApi && config.export) {
+        exportApi.list.innerHTML = "";
+        (config.export.presets || []).forEach((p) =>
+          exportApi.list.appendChild(exportApi.makeCard({ name: p.name, platform: p.platform, w: p.width, h: p.height }))
+        );
+        exportApi.refreshDefaultOptions();
+        if (config.export.defaultName) {
+          exportApi.defaultValue.textContent = config.export.defaultName;
+          exportApi.refreshDefaultOptions();
+        }
+      }
+    }
+
+    // On edit (?id), restore the saved template's full config.
+    (function restoreOnLoad() {
+      const id = new URLSearchParams(location.search).get("id");
+      if (!id || !window.SavedMaps) return;
+      const entry = SavedMaps.list("template").find((e) => e.id === id);
+      if (!entry) return;
+      // Restore the name from the entry (not just the ?name param) so editing
+      // via ?id alone keeps the template's title.
+      const t = document.querySelector("[data-wizard-title]");
+      if (t && entry.name) t.textContent = entry.name;
+      if (entry.config) hydrateWizard(entry.config);
+    })();
   });
 })();
