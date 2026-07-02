@@ -323,5 +323,78 @@
     renderSettings();
   });
 
+  // --- Persistence: snapshot the whole minimap library in the "minimap" bucket ---
+  // Each saved entry carries card fields (id/name/created/thumb) plus the rich
+  // level data (defaultLevelId/levels). Mirrors the preset editor's approach.
+  // The controller owns persistence outright: the page's old inline persistSave()
+  // and its save-button handlers were removed in an earlier task.
+  //
+  // Name source: the save modal's #save-template-name input is the source of
+  // truth on save (openModal prefills it from the editor title). Fall back to
+  // the title, then "Untitled".
+  function currentName() {
+    const input = document.getElementById("save-template-name");
+    if (input && input.value.trim()) return input.value.trim();
+    const t = document.querySelector("[data-editor-title]");
+    return (t && t.textContent.trim()) || "Untitled";
+  }
+
+  // A tiny inline-SVG data URI thumbnail of the default level (land over bg).
+  function makeThumb() {
+    const def = preset.levels.find((l) => l.id === preset.defaultLevelId) || preset.levels[0];
+    const s = def.settings;
+    const bg = s.background || "#fff";
+    const land = def.schema === "physical" ? s.water : s.land;
+    const svg =
+      "<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'>" +
+      "<rect width='80' height='80' fill='" + bg + "'/>" +
+      "<circle cx='40' cy='40' r='26' fill='" + (land || "#ddd") + "'/></svg>";
+    return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+  }
+
+  function serialize() {
+    if (!window.SavedMaps) return;
+    preset.name = currentName();
+    preset.thumb = makeThumb();
+    const list = SavedMaps.list("minimap").filter((e) => e.id !== preset.id);
+    if (!preset.created) preset.created = null;
+    if (!preset.createdStamped) {
+      preset.created = new Date().toISOString().slice(0, 10);
+      preset.createdStamped = true;
+    }
+    list.push(JSON.parse(JSON.stringify(preset)));
+    SavedMaps.replaceAll("minimap", list);
+  }
+
+  function hydrate() {
+    if (!window.SavedMaps) return;
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+    if (!id) return;
+    const found = SavedMaps.list("minimap").find((e) => e.id === id);
+    if (!found || !found.levels) return;
+    preset = JSON.parse(JSON.stringify(found));
+    preset.createdStamped = true;
+    selectedId = (preset.levels[0] || {}).id;
+    const titleEl = document.querySelector("[data-editor-title]");
+    if (titleEl && preset.name) titleEl.textContent = preset.name;
+    renderAll();
+  }
+
+  // Both modal commit buttons persist; reflect the saved name onto the editor
+  // title, and fire the shared toast on the in-page Save (save-confirm).
+  document.addEventListener("click", (e) => {
+    if (e.target.closest('[data-action="save-confirm"], [data-action="save-and-go"]')) {
+      serialize();
+      const titleEl = document.querySelector("[data-editor-title]");
+      if (titleEl) titleEl.textContent = preset.name;
+      if (e.target.closest('[data-action="save-confirm"]') && window.__mmShowToast) {
+        window.__mmShowToast();
+      }
+    }
+  });
+
+  hydrate();
+
   renderAll();
 })();
