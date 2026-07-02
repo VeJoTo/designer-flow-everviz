@@ -68,9 +68,9 @@
     };
   }
 
-  // A brand-new preset: Globe + Country + Region, default = Globe.
+  // A brand-new preset: Globe + Region, default = Globe.
   function makeDefaultPreset() {
-    const levels = ["globe", "country", "region"].map(makeLevel);
+    const levels = ["globe", "region"].map(makeLevel);
     return {
       id: uid(),
       name: "Untitled",
