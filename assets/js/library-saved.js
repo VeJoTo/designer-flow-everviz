@@ -35,9 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
       `${editorHref}?id=${encodeURIComponent(entry.id)}&name=${encodeURIComponent(
         entry.name
       )}`;
+    const levelCount = Array.isArray(entry.levels) ? entry.levels.length : 0;
+    const levelBadge =
+      kind === "minimap" && levelCount
+        ? `<span class="map-card__badge">${levelCount} ${levelCount === 1 ? "level" : "levels"}</span>`
+        : "";
     li.innerHTML = `
       <a class="map-card__hit" href="${url}" aria-label="Open ${escapeHTML(entry.name)}">
         <div class="map-card__thumb" style="background-image:${thumb.replace(/"/g, '&quot;')}" aria-hidden="true"></div>
+        ${levelBadge}
       </a>
       <div class="map-card__body">
         <h3 class="map-card__title">${escapeHTML(entry.name)}</h3>
