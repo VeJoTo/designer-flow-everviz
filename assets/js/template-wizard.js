@@ -37,6 +37,7 @@
   };
 
   document.addEventListener("DOMContentLoaded", () => {
+    let exportApi = null; // set inside the export block; used by serialize/hydrate
     // ── Tab routing (hash) ──────────────────────────────────────────
     const tabLinks = [...document.querySelectorAll(".wizard-step")];
     const panels = [...document.querySelectorAll("[data-panel]")];
@@ -530,6 +531,7 @@
       list.innerHTML = "";
       INITIAL.forEach((cfg) => list.appendChild(makeCard(cfg)));
       refreshDefaultOptions();
+      exportApi = { list, makeCard, refreshDefaultOptions, defaultValue };
     }
   });
 })();
