@@ -398,9 +398,25 @@ In `pages/minimap-editor.html`, replace the entire `<div class="editor-grid"> �
       </div>
 ```
 
-- [ ] **Step 2: Replace the inline editor script and includes**
+- [ ] **Step 2: Trim the inline editor script (preserve modal/title) and add includes**
 
-Delete the existing inline `<script> … </script>` block (the one starting around line 273 that swaps map tiles / handles the old layers UI). Then, in the bottom script includes, add the two new modules **before** `chrome.js`. The include list should read:
+The inline `<script>` at ~line 273 mixes **layer-editor code we are dropping** with **generic editor chrome we must keep**. Do NOT delete the whole block. Instead:
+
+**Remove** these parts (they reference DOM that no longer exists):
+- the `?name` → `MAP_LOOKUP` tile-swap block and its `.map-preview` writes;
+- the layers list/search/select code (`idInput`, `layersList`, `layerFoot`, `layerSearch`, `updateLayerCount`, `filterLayers`, `selectLayer`, the `layersList` click listener);
+- the layers-pane collapse toggle (`.editor-pane--layers` / `.editor-grid` / `[data-action="toggle-layers-pane"]`);
+- the **`persistSave()` function and its `save-confirm` / `save-and-go` click handlers** — persistence moves entirely into `minimap-editor.js` (Task 7). Leaving the old `persistSave` in place would write a competing light `SavedMaps.save` entry into the same `minimap` bucket and clobber the controller's snapshot.
+
+**Keep** these parts (still valid, still needed):
+- the inline-editable **title** wiring (`[data-editor-title]` focus/keydown/blur + `[data-action="focus-title"]`);
+- the **save modal** open/close (`openModal`/`closeModal`, `[data-action="open-save-modal"]`, `[data-save-modal-close]`, Escape-to-close);
+- the **toast** helper (`showToast`) — Task 7 will call it on save;
+- the **editor topbar overflow menu** wiring.
+
+Expose the toast for the controller: after `showToast` is defined, add `window.__mmShowToast = showToast;`.
+
+Then, in the bottom script includes, add the two new modules **before** `chrome.js`. The include list should read:
 
 ```html
   <script src="assets/js/saved-maps.js" defer></script>
@@ -840,7 +856,15 @@ Append inside the IIFE in `assets/js/minimap-editor.js`, before the final `rende
   // --- Persistence: snapshot the whole minimap library in the "minimap" bucket ---
   // Each saved entry carries card fields (id/name/created/thumb) plus the rich
   // level data (defaultLevelId/levels). Mirrors the preset editor's approach.
+  // The controller owns persistence outright: the page's old inline persistSave()
+  // and its save-button handlers were removed in Task 4.
+  //
+  // Name source: the save modal's #save-template-name input is the source of
+  // truth on save (openModal prefills it from the editor title). Fall back to
+  // the title, then "Untitled".
   function currentName() {
+    const input = document.getElementById("save-template-name");
+    if (input && input.value.trim()) return input.value.trim();
     const t = document.querySelector("[data-editor-title]");
     return (t && t.textContent.trim()) || "Untitled";
   }
@@ -888,24 +912,35 @@ Append inside the IIFE in `assets/js/minimap-editor.js`, before the final `rende
     renderAll();
   }
 
-  // The editor bar's Save opens a modal; its confirm button carries
-  // [data-action="confirm-save"]. Persist when the save is confirmed.
+  // The save modal has two commit buttons: [data-action="save-confirm"] (Save,
+  // stays on page) and [data-action="save-and-go"] (Save & go to library, an
+  // <a> that then navigates). Persist on both; also reflect the saved name back
+  // onto the editor title and fire the shared toast on save-confirm.
   document.addEventListener("click", (e) => {
-    if (e.target.closest('[data-action="confirm-save"], [data-action="save-confirm"]')) {
+    if (e.target.closest('[data-action="save-confirm"], [data-action="save-and-go"]')) {
       serialize();
+      const titleEl = document.querySelector("[data-editor-title]");
+      if (titleEl) titleEl.textContent = preset.name;
+      if (e.target.closest('[data-action="save-confirm"]') && window.__mmShowToast) {
+        window.__mmShowToast();
+      }
     }
   });
 
   hydrate();
 ```
 
-- [ ] **Step 2: Confirm the save modal's confirm-button hook**
+- [ ] **Step 2: Confirm the save modal's commit-button hooks**
 
-The exact confirm selector must match the save modal. Run:
+Verify the two commit buttons the Step 1 listener targets still exist:
 ```bash
-grep -n 'data-action=' pages/minimap-editor.html | grep -i save
+grep -n 'data-action="save-confirm"\|data-action="save-and-go"' pages/minimap-editor.html
 ```
-If the confirm button uses a different `data-action` value than `confirm-save`/`save-confirm`, update the selector in the `document.addEventListener("click", …)` from Step 1 to match it. (The Save button that *opens* the modal is `open-save-modal`; you want the button *inside* the modal that commits.)
+Expected: both present (inside `[data-save-modal]`). `open-save-modal` is the button that *opens* the modal — do not hook that one. Also confirm Task 4 removed the old inline `persistSave` handlers so they don't double-write:
+```bash
+grep -n 'persistSave' pages/minimap-editor.html
+```
+Expected: no matches.
 
 - [ ] **Step 3: Verify in browser**
 
