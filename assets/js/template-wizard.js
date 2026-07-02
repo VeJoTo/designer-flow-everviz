@@ -260,21 +260,27 @@
     document.querySelector("[data-minimap-allow-zoom]")?.addEventListener("change", () => {});
 
     // ── Preset pickers (Presets tab) ────────────────────────────────
+    // addPresetItem builds a chip in the given section container; used by the
+    // picker handler AND by hydrateWizard when restoring a saved template.
+    function addPresetItem(container, name) {
+      const btn = container.querySelector("[data-add-preset]");
+      const item = document.createElement("div");
+      item.className = "wiz-preset-item";
+      item.innerHTML =
+        '<span class="wiz-preset-item__thumb" aria-hidden="true"></span>' +
+        '<span class="wiz-preset-item__name"></span>' +
+        '<button type="button" class="wiz-preset-item__remove" aria-label="Remove preset">' +
+        '<img src="assets/icons/x-mark.svg" alt="" width="14" height="14" /></button>';
+      item.querySelector(".wiz-preset-item__name").textContent = name;
+      container.insertBefore(item, btn);
+    }
     document.querySelectorAll("[data-add-preset]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const cfg = PRESETS[btn.dataset.addPreset];
         if (!cfg || !window.pickerModal) return;
         const choice = await window.pickerModal(cfg);
         if (!choice) return;
-        const item = document.createElement("div");
-        item.className = "wiz-preset-item";
-        item.innerHTML =
-          '<span class="wiz-preset-item__thumb" aria-hidden="true"></span>' +
-          '<span class="wiz-preset-item__name"></span>' +
-          '<button type="button" class="wiz-preset-item__remove" aria-label="Remove preset">' +
-          '<img src="assets/icons/x-mark.svg" alt="" width="14" height="14" /></button>';
-        item.querySelector(".wiz-preset-item__name").textContent = choice.name;
-        btn.parentElement.insertBefore(item, btn);
+        addPresetItem(btn.parentElement, choice.name);
       });
     });
     document.querySelectorAll(".wiz-sections").forEach((sec) => {
