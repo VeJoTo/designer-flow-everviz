@@ -1045,3 +1045,23 @@ body[data-page-mode="wizard"] main {
   color: var(--color-text-muted, #6a6a75);
 }
 .wiz-hint[hidden] { display: none; }
+
+/* Help FAB popover (dismissible, anchored above the FAB). */
+.wizard-help-pop {
+  z-index: 1000;
+  width: 288px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.16);
+  padding: 14px 16px;
+  font-size: 13px;
+}
+.wizard-help-pop__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: var(--color-text, #1c1c24);
+}
+.wizard-help-pop__close { border: 0; background: none; cursor: pointer; font-size: 14px; color: var(--color-text-muted, #6a6a75); }
+.wizard-help-pop__list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; line-height: 1.4; color: var(--color-text, #1c1c24); }
