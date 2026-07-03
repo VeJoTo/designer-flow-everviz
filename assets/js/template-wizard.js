@@ -36,6 +36,40 @@
     },
   };
 
+  // Built-in minimap presets that ship with everviz (the same set the Minimaps
+  // library seeds for every user). The wizard's minimap picker reads user-saved
+  // minimaps from SavedMaps("minimap") — empty for anyone who hasn't authored one
+  // in the editor — so without these defaults the picker opens with nothing to
+  // pick and a minimap can't be added to a template. Each has a stable id + level
+  // ids so a template that references one round-trips across a save/reload.
+  const MINIMAP_DEFAULTS = [
+    ["mediterranean-europe", "Mediterranean Europe minimap", "europe",         false],
+    ["world",                "World minimap",                "world",          false],
+    ["nordic-dark",          "Nordic dark minimap",          "scandinavia",    true],
+    ["united-kingdom",       "United Kingdom minimap",       "uk",             false],
+    ["scandinavia",          "Scandinavia minimap",          "scandinavia",    false],
+    ["central-europe",       "Central Europe minimap",       "central-europe", false],
+    ["mediterranean",        "Mediterranean minimap",        "mediterranean",  false],
+    ["north-africa",         "North Africa minimap",         "north-africa",   false],
+    ["middle-east",          "Middle East minimap",          "middle-east",    false],
+    ["north-america",        "North America minimap",        "north-america",  false],
+    ["south-america",        "South America minimap",        "south-america",  false],
+    ["east-asia",            "East Asia minimap",            "asia-east",      false],
+    ["south-asia",           "South Asia minimap",           "asia-india",     false],
+    ["australia",            "Australia minimap",            "australia",      false],
+  ].map(([slug, name, img, dark]) => ({
+    id: "mm-" + slug,
+    name,
+    thumb: `url("assets/img/maps/${img}.png")`,
+    dark,
+    builtIn: true,
+    defaultLevelId: "mm-" + slug + "-globe",
+    levels: [
+      { id: "mm-" + slug + "-globe",  name: "Globe",  type: "globe" },
+      { id: "mm-" + slug + "-region", name: "Region", type: "region" },
+    ],
+  }));
+
   document.addEventListener("DOMContentLoaded", () => {
     let exportApi = null; // set inside the export block; used by serialize/hydrate
     // ── Tab routing (hash) ──────────────────────────────────────────
@@ -259,6 +293,16 @@
     const levelMenu = document.querySelector("[data-minimap-level-menu]");
     let chosenPreset = null;
 
+    // The pool the minimap picker chooses from: the user's saved minimaps first,
+    // then the shipped defaults (skipping any a saved entry shadows by id). Both
+    // the picker and the round-trip's hydrate resolve presets through this so a
+    // template that references a built-in default restores correctly on edit.
+    function allMinimaps() {
+      const saved = window.SavedMaps ? SavedMaps.list("minimap") : [];
+      const savedIds = new Set(saved.map((e) => e.id));
+      return [...saved, ...MINIMAP_DEFAULTS.filter((d) => !savedIds.has(d.id))];
+    }
+
     // Show the chosen preset as a chip — built like the marker/region chips —
     // and hide the add button (a minimap uses a single preset).
     function showPresetChip(name) {
@@ -297,8 +341,21 @@
     function fillLevelMenu(pr) {
       levelMenu.innerHTML = "";
       if (!pr || !pr.levels) return;
+      // Default template choice = the whole level stack ("All levels"), so the
+      // minimap isn't arbitrarily pinned to one zoom. A single-level preset has
+      // nothing to span, so it defaults to that one level instead.
+      const multi = pr.levels.length > 1;
+      if (multi) {
+        const allBtn = document.createElement("button");
+        allBtn.type = "button";
+        allBtn.className = "sort-option is-selected";
+        allBtn.setAttribute("role", "option");
+        allBtn.dataset.levelId = "all";
+        allBtn.textContent = "All levels";
+        levelMenu.appendChild(allBtn);
+      }
       pr.levels.forEach((lvl) => {
-        const isDefault = lvl.id === pr.defaultLevelId;
+        const isDefault = !multi && lvl.id === pr.defaultLevelId;
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "sort-option" + (isDefault ? " is-selected" : "");
@@ -307,16 +364,25 @@
         btn.textContent = lvl.name;
         levelMenu.appendChild(btn);
       });
-      const def = pr.levels.find((l) => l.id === pr.defaultLevelId) || pr.levels[0];
-      if (def) levelValue.textContent = def.name;
+      if (multi) {
+        levelValue.textContent = "All levels";
+      } else {
+        const def = pr.levels.find((l) => l.id === pr.defaultLevelId) || pr.levels[0];
+        if (def) levelValue.textContent = def.name;
+      }
     }
 
     presetTrigger?.addEventListener("click", async () => {
-      if (!window.pickerModal || !window.SavedMaps) return;
-      const items = SavedMaps.list("minimap").map((e) => ({ name: e.name, id: e.id }));
+      if (!window.pickerModal) return;
+      const pool = allMinimaps();
+      const items = pool.map((e) => ({
+        name: e.name,
+        id: e.id,
+        thumb: e.thumb ? { bg: e.thumb, dark: e.dark } : undefined,
+      }));
       const choice = await window.pickerModal({ title: "Choose a minimap preset", items });
       if (!choice) return;
-      chosenPreset = SavedMaps.list("minimap").find((e) => e.name === choice.name) || null;
+      chosenPreset = pool.find((e) => e.name === choice.name) || null;
       showPresetChip(choice.name);
       fillLevelMenu(chosenPreset);
     });
@@ -709,9 +775,11 @@
       const levelMenuEl = document.querySelector("[data-minimap-level-menu]");
       const levelValueEl = document.querySelector("[data-minimap-level-value]");
       if (mm.presetId || mm.presetName) {
-        const found = window.SavedMaps
-          ? SavedMaps.list("minimap").find((e) => e.id === mm.presetId)
-          : null;
+        const pool = allMinimaps();
+        const found =
+          pool.find((e) => e.id === mm.presetId) ||
+          pool.find((e) => e.name === mm.presetName) ||
+          null;
         if (found) {
           chosenPreset = found;
           showPresetChip(found.name);
