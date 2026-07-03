@@ -46,7 +46,13 @@
           const name = String(it.name);
           const esc = name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
           const t = it.thumb || {};
-          const mapStyle = t.map ? ` style="background-image:url('assets/img/maps/${t.map}.png')"` : "";
+          // t.bg = a ready-made CSS background-image value (e.g. url("…")); its
+          // double quotes are entity-escaped so they survive the style attribute.
+          const mapStyle = t.bg
+            ? ` style="background-image:${t.bg.replace(/"/g, "&quot;")}"`
+            : t.map
+            ? ` style="background-image:url('assets/img/maps/${t.map}.png')"`
+            : "";
           const darkCls = t.dark ? " picker-card__thumb--dark" : "";
           const mark = t.kind
             ? `<span class="picker-card__mark picker-card__mark--${t.kind}"${t.color ? ` style="--mark:${t.color}"` : ""}></span>`
