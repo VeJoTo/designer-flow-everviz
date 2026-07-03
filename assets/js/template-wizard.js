@@ -295,8 +295,21 @@
     function fillLevelMenu(pr) {
       levelMenu.innerHTML = "";
       if (!pr || !pr.levels) return;
+      // Default template choice = the whole level stack ("All levels"), so the
+      // minimap isn't arbitrarily pinned to one zoom. A single-level preset has
+      // nothing to span, so it defaults to that one level instead.
+      const multi = pr.levels.length > 1;
+      if (multi) {
+        const allBtn = document.createElement("button");
+        allBtn.type = "button";
+        allBtn.className = "sort-option is-selected";
+        allBtn.setAttribute("role", "option");
+        allBtn.dataset.levelId = "all";
+        allBtn.textContent = "All levels";
+        levelMenu.appendChild(allBtn);
+      }
       pr.levels.forEach((lvl) => {
-        const isDefault = lvl.id === pr.defaultLevelId;
+        const isDefault = !multi && lvl.id === pr.defaultLevelId;
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "sort-option" + (isDefault ? " is-selected" : "");
@@ -305,8 +318,12 @@
         btn.textContent = lvl.name;
         levelMenu.appendChild(btn);
       });
-      const def = pr.levels.find((l) => l.id === pr.defaultLevelId) || pr.levels[0];
-      if (def) levelValue.textContent = def.name;
+      if (multi) {
+        levelValue.textContent = "All levels";
+      } else {
+        const def = pr.levels.find((l) => l.id === pr.defaultLevelId) || pr.levels[0];
+        if (def) levelValue.textContent = def.name;
+      }
     }
 
     presetTrigger?.addEventListener("click", async () => {
