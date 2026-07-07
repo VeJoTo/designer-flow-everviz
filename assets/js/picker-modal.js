@@ -34,7 +34,9 @@
     return modal;
   }
 
-  function pickerModal({ title = "Choose", items = [] } = {}) {
+  // onCard(cardEl, item, index) — optional hook run for each card after render,
+  // e.g. to mount a live styled preview into the card's .picker-card__thumb.
+  function pickerModal({ title = "Choose", items = [], onCard } = {}) {
     const m = ensureModal();
     m.querySelector(".picker-modal__title").textContent = title;
     const body = m.querySelector("[data-picker-body]");
@@ -65,6 +67,10 @@
         })
         .join("") +
       `</div>`;
+
+    if (typeof onCard === "function") {
+      body.querySelectorAll(".picker-card").forEach((card, i) => onCard(card, items[i], i));
+    }
 
     return new Promise((resolve) => {
       function cleanup(result) {

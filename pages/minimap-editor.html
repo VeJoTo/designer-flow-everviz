@@ -54,16 +54,6 @@
             <span class="mm-rail__title">Levels</span>
           </div>
           <ul class="mm-level-list" data-mm-levels></ul>
-          <button type="button" class="btn btn--outline mm-add-level" data-mm-add-level aria-haspopup="menu">
-            + Add level
-          </button>
-          <div class="filter-popover mm-add-menu" data-mm-add-menu hidden role="menu">
-            <button type="button" class="sort-option" role="menuitem" data-add-type="globe">Globe</button>
-            <button type="button" class="sort-option" role="menuitem" data-add-type="continent">Continent</button>
-            <button type="button" class="sort-option" role="menuitem" data-add-type="country">Country</button>
-            <button type="button" class="sort-option" role="menuitem" data-add-type="region">Region</button>
-            <button type="button" class="sort-option" role="menuitem" data-add-type="city">City</button>
-          </div>
         </aside>
 
         <!-- 2) Settings for the selected level -->
@@ -72,7 +62,12 @@
           <p class="mm-settings__type" data-mm-level-type>Physical · water, land, background</p>
           <div data-mm-fields></div>
           <details class="mm-advanced">
-            <summary>Advanced · Use custom style</summary>
+            <summary>
+              <span>Advanced · Use custom style</span>
+              <svg class="mm-advanced__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+              </svg>
+            </summary>
             <div class="mm-advanced__body">
               <p class="mm-advanced__note" data-mm-custom-empty>
                 Upload a Maputnik style (.json) to override this level's fields.
@@ -92,7 +87,9 @@
         <!-- 3) Live preview of the selected level -->
         <aside class="mm-pane mm-preview">
           <p class="mm-preview__caption">Previewing: <span data-mm-preview-label>Globe</span></p>
-          <div class="mm-preview__stage" data-mm-preview-stage></div>
+          <div class="mm-preview__stage" data-mm-preview-stage>
+            <div class="mm-preview__map" data-mm-preview-map aria-hidden="true"></div>
+          </div>
         </aside>
       </div>
     </main>
@@ -233,6 +230,10 @@
   <script src="assets/js/saved-maps.js" defer></script>
   <script src="assets/js/color-picker.js" defer></script>
   <script src="assets/js/minimap-model.js" defer></script>
+  <script src="assets/js/geo-regions.js" defer></script>
+  <script src="assets/vendor/d3/d3-array.min.js" defer></script>
+  <script src="assets/vendor/d3/d3-geo.min.js" defer></script>
+  <script src="assets/js/minimap-render.js" defer></script>
   <script src="assets/js/tooltip.js" defer></script>
   <script src="assets/js/confirm-dialog.js" defer></script>
   <script src="assets/js/minimap-editor.js" defer></script>

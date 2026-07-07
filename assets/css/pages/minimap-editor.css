@@ -58,15 +58,58 @@
 }
 .mm-level__menu { flex: none; border: 0; background: none; cursor: pointer; padding: 4px; border-radius: 6px; }
 .mm-level__menu:hover { background: var(--color-surface-2, #f2f2f6); }
-.mm-add-level { margin-top: 12px; }
 
 /* --- Settings pane --- */
 .mm-settings__title { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
 .mm-settings__type { font-size: 13px; color: var(--color-text-muted, #6a6a75); margin: 0 0 16px; }
 .mm-field { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--color-border, #e3e3ea); }
 .mm-field__label { font-size: 14px; color: var(--color-text, #1c1c24); }
-.mm-advanced { margin-top: 18px; }
+/* The Advanced control reads as the everviz design-system Dropdown: a white
+   card with soft elevation (no heavy border), a bold navy label, and a chevron
+   on the right. The whole <details> is the box; the expanded content lives
+   inside it, divided from the trigger by a hairline. */
+.mm-advanced {
+  margin-top: 18px;
+  background: #fff;
+  border: 1px solid var(--color-border, #e6e6ee);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(23, 43, 76, 0.06), 0 4px 12px rgba(23, 43, 76, 0.06);
+  overflow: hidden;
+}
+.mm-advanced > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 18px;
+  font-family: "Gordita", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-text-primary, #28277E);
+  cursor: pointer;
+  user-select: none;
+}
+.mm-advanced > summary::-webkit-details-marker { display: none; }
+.mm-advanced > summary::marker { display: none; }
+.mm-advanced > summary:focus-visible {
+  outline: 2px solid var(--color-text-primary, #28277E);
+  outline-offset: -2px;
+}
+.mm-advanced__chev {
+  flex: none;
+  width: 14px; height: 14px;
+  transition: transform 0.2s ease;
+}
+.mm-advanced[open] > summary .mm-advanced__chev { transform: rotate(180deg); }
+.mm-advanced__body {
+  padding: 16px 18px 18px;
+  border-top: 1px solid var(--color-border, #e6e6ee);
+}
+
 .mm-advanced__note { font-size: 13px; color: var(--color-text-muted, #6a6a75); display: flex; align-items: center; gap: 10px; }
+/* A class-level display:flex would otherwise override the [hidden] attribute. */
+.mm-advanced__note[hidden] { display: none; }
 
 /* --- Preview pane --- */
 .mm-preview__caption { font-size: 13px; color: var(--color-text-muted, #6a6a75); margin-bottom: 12px; }
@@ -76,7 +119,10 @@
   border-radius: 12px;
   background: var(--mm-bg, #fff);
   border: 1px solid var(--color-border, #e3e3ea);
+  position: relative; overflow: hidden;
 }
+/* Live preview map fills the stage (rounded corners clipped by the stage). */
+.mm-preview__map { position: absolute; inset: 0; }
 /* Globe: a water disc with an abstract land blob. */
 .mm-preview__globe {
   width: 70%; aspect-ratio: 1; border-radius: 50%;

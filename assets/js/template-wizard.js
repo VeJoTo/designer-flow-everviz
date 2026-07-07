@@ -60,6 +60,7 @@
   ].map(([slug, name, img, dark]) => ({
     id: "mm-" + slug,
     name,
+    region: img, // the img basenames double as GeoRegions region slugs
     thumb: `url("assets/img/maps/${img}.png")`,
     dark,
     builtIn: true,
@@ -124,6 +125,7 @@
     // ── Map picker → updates the shared preview ─────────────────────
     const grid = document.querySelector("[data-map-pick-grid]");
     const stage = document.querySelector("[data-preview-stage]");
+
     grid?.addEventListener("click", (e) => {
       const card = e.target.closest("[data-map-pick]");
       if (!card) return;
@@ -326,6 +328,7 @@
       // would override [hidden].
       presetTrigger.style.display = "none";
       setMinimapEnabled(true); // a preset exists → show the minimap + config rows
+      renderMinimapInset();
     }
     // Remove the chip and restore the "Add preset" button.
     function clearPresetChip() {
@@ -336,6 +339,41 @@
       if (levelMenu) levelMenu.innerHTML = "";
       if (levelValue) levelValue.textContent = "Default";
       setMinimapEnabled(false); // no preset → hide the minimap + config rows
+      if (minimapMapEl && window.MinimapRender) MinimapRender.dispose(minimapMapEl);
+    }
+
+    const minimapMapEl = document.querySelector("[data-minimap-map]");
+    // The currently-selected level object. "All levels" (id "all") / no selection
+    // → treat as the globe level. MinimapRender draws every level as a styled
+    // vector locator (globe = orthographic sphere, region = mercator land).
+    function selectedLevelObj() {
+      const sel = document.querySelector("[data-minimap-level-menu] .is-selected");
+      const id = sel && sel.dataset.levelId;
+      if (id && id !== "all" && chosenPreset && chosenPreset.levels) {
+        return chosenPreset.levels.find((l) => l.id === id) || null;
+      }
+      return null;
+    }
+    // Where to frame the inset: physical (globe) → world; political → the preset's
+    // region if known (so "UK minimap" region centres on the UK), else the level
+    // type's default view.
+    function minimapView(level) {
+      if (!window.GeoRegions) return { center: [20, 0], zoom: 2 };
+      const physical = !level || !window.MinimapRender || MinimapRender.schemaOf(level) === "physical";
+      if (physical) return GeoRegions.level("globe");
+      if (chosenPreset && chosenPreset.region && GeoRegions.has(chosenPreset.region)) {
+        return GeoRegions.region(chosenPreset.region);
+      }
+      return GeoRegions.level(level.type);
+    }
+    function renderMinimapInset() {
+      if (!minimapMapEl || !window.MinimapRender) return;
+      const level = selectedLevelObj() || { type: "globe" };
+      // Shape follows the level: the globe reads as a round locator, a region as
+      // a rectangular map (so a region isn't clipped into the globe circle).
+      const overlay = minimapMapEl.closest(".minimap-overlay");
+      if (overlay) overlay.dataset.schema = MinimapRender.schemaOf(level);
+      MinimapRender.render(minimapMapEl, level, minimapView(level));
     }
 
     function fillLevelMenu(pr) {
@@ -372,15 +410,31 @@
       }
     }
 
+    // Mount a styled locator preview (the minimap's own look — land colour on
+    // background, real geography) into a picker/library card thumbnail.
+    function mountMinimapThumb(el, preset) {
+      if (!el || !preset || !window.MinimapRender || !window.GeoRegions) return;
+      // Represent the preset by a political (styled) level; fall back to a
+      // synthetic region level for presets that only carry a globe level.
+      const level =
+        (preset.levels || []).find((l) => MinimapRender.schemaOf(l) === "political") || { type: "region" };
+      const region = preset.region && GeoRegions.has(preset.region) ? preset.region : null;
+      const view = region ? GeoRegions.region(region) : GeoRegions.level("region");
+      MinimapRender.render(el, level, view);
+    }
+
     presetTrigger?.addEventListener("click", async () => {
       if (!window.pickerModal) return;
       const pool = allMinimaps();
-      const items = pool.map((e) => ({
-        name: e.name,
-        id: e.id,
-        thumb: e.thumb ? { bg: e.thumb, dark: e.dark } : undefined,
-      }));
-      const choice = await window.pickerModal({ title: "Choose a minimap preset", items });
+      const items = pool.map((e) => ({ name: e.name, id: e.id, preset: e }));
+      const choice = await window.pickerModal({
+        title: "Choose a minimap preset",
+        items,
+        onCard: (card, item) => {
+          const thumb = card.querySelector(".picker-card__thumb");
+          if (thumb && item && item.preset) mountMinimapThumb(thumb, item.preset);
+        },
+      });
       if (!choice) return;
       chosenPreset = pool.find((e) => e.name === choice.name) || null;
       showPresetChip(choice.name);
@@ -393,7 +447,7 @@
       levelMenu,
       levelValue,
       "data-level-id",
-      () => {}
+      () => renderMinimapInset()
     );
 
     // Placement -> move the preview overlay into a corner.

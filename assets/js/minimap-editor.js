@@ -3,14 +3,6 @@
   const M = window.MinimapModel;
   if (!M) return;
 
-  // Representative SVG shapes for the preview (fills use currentColor / stroke vars).
-  const REGION_SVG =
-    '<svg class="mm-preview__region" viewBox="0 0 100 100" aria-hidden="true">' +
-    '<path d="M18 30 L46 20 L74 28 L82 52 L64 78 L34 82 L14 60 Z"/></svg>';
-  const BLOB_SVG =
-    '<svg class="mm-preview__blob" viewBox="0 0 100 100" aria-hidden="true">' +
-    '<path d="M20 40 Q35 18 55 30 Q80 24 78 50 Q84 74 58 74 Q30 82 22 60 Z"/></svg>';
-
   // --- State ---
   let preset = M.makeDefaultPreset();
   let selectedId = preset.levels[0].id;
@@ -22,7 +14,6 @@
   const typeEl = $("[data-mm-level-type]");
   const fieldsEl = $("[data-mm-fields]");
   const previewLabelEl = $("[data-mm-preview-label]");
-  const previewStageEl = $("[data-mm-preview-stage]");
 
   function selectedLevel() {
     return preset.levels.find((l) => l.id === selectedId) || preset.levels[0];
@@ -136,22 +127,16 @@
   }
 
   // --- Render: preview ---
+  // Render the selected level into the live preview. MinimapRender draws every
+  // level as a styled vector locator on a canvas (globe = orthographic sphere,
+  // region = mercator land in the level's own colours). Framed by the level
+  // type's default view (the editor's preset isn't bound to a specific region).
   function renderPreview() {
     const lvl = selectedLevel();
     previewLabelEl.textContent = lvl.name;
-    const s = lvl.settings;
-    const stage = previewStageEl;
-    stage.style.setProperty("--mm-bg", s.background || "#fff");
-    if (lvl.schema === "physical") {
-      stage.style.setProperty("--mm-water", s.water || "#cfe8f5");
-      stage.style.setProperty("--mm-land", s.land || "#e9e6df");
-      stage.innerHTML = '<div class="mm-preview__globe">' + BLOB_SVG + "</div>";
-    } else {
-      stage.style.setProperty("--mm-land", s.land || "#e9e6df");
-      stage.style.setProperty("--mm-stroke", s.strokeColor || "#8a8a8a");
-      stage.style.setProperty("--mm-stroke-w", String(s.strokeWidth ?? 1));
-      stage.style.setProperty("--mm-opacity", String(s.opacity ?? 100));
-      stage.innerHTML = REGION_SVG;
+    const mapEl = $("[data-mm-preview-map]");
+    if (mapEl && window.MinimapRender && window.GeoRegions) {
+      MinimapRender.render(mapEl, lvl, GeoRegions.level(lvl.type));
     }
   }
 
@@ -203,31 +188,9 @@
     selectedLevel,
   };
 
-  // --- Add level ---
-  const addBtn = document.querySelector("[data-mm-add-level]");
-  const addMenu = document.querySelector("[data-mm-add-menu]");
-  addBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    addMenu.hidden = !addMenu.hidden;
-  });
-  document.addEventListener("click", (e) => {
-    if (addMenu.hidden) return;
-    if (addBtn.contains(e.target) || addMenu.contains(e.target)) return;
-    addMenu.hidden = true;
-  });
-  addMenu.addEventListener("click", (e) => {
-    const opt = e.target.closest("[data-add-type]");
-    if (!opt) return;
-    const lvl = M.makeLevel(opt.dataset.addType);
-    preset.levels.push(lvl);
-    selectedId = lvl.id;
-    addMenu.hidden = true;
-    renderAll();
-  });
-
   // --- Per-level overflow menu ---
-  // Simple prompt-based rename keeps the prototype lean; duplicate/remove/default
-  // mutate state and re-render. Remove is guarded by the shared confirm dialog.
+  // Simple prompt-based rename keeps the prototype lean; rename/default
+  // mutate state and re-render. The level set is fixed (Globe + Region).
   levelsEl.addEventListener("click", async (e) => {
     const menuBtn = e.target.closest("[data-level-menu]");
     if (!menuBtn) return;
@@ -244,32 +207,8 @@
         lvl.name = next.trim();
         renderAll();
       }
-    } else if (action === "duplicate") {
-      const copy = JSON.parse(JSON.stringify(lvl));
-      copy.id = M.uid();
-      copy.name = lvl.name + " copy";
-      preset.levels.push(copy);
-      selectedId = copy.id;
-      renderAll();
     } else if (action === "default") {
       preset.defaultLevelId = id;
-      renderAll();
-    } else if (action === "remove") {
-      if (preset.levels.length <= 1) {
-        window.alert("A preset needs at least one level.");
-        return;
-      }
-      const ok = window.confirmDialog
-        ? await window.confirmDialog({
-            title: "Remove level",
-            body: 'Remove "' + lvl.name + '" from this minimap?',
-            confirmLabel: "Remove",
-          })
-        : window.confirm("Remove this level?");
-      if (!ok) return;
-      preset.levels = preset.levels.filter((l) => l.id !== id);
-      if (preset.defaultLevelId === id) preset.defaultLevelId = preset.levels[0].id;
-      if (selectedId === id) selectedId = preset.levels[0].id;
       renderAll();
     }
   });
@@ -282,9 +221,7 @@
       menu.setAttribute("role", "menu");
       menu.innerHTML =
         '<button type="button" class="sort-option" role="menuitem" data-a="rename">Rename</button>' +
-        '<button type="button" class="sort-option" role="menuitem" data-a="duplicate">Duplicate</button>' +
-        '<button type="button" class="sort-option" role="menuitem" data-a="default">Set as default</button>' +
-        '<button type="button" class="sort-option" role="menuitem" data-a="remove">Remove</button>';
+        '<button type="button" class="sort-option" role="menuitem" data-a="default">Set as default</button>';
       const r = anchor.getBoundingClientRect();
       menu.style.position = "fixed";
       menu.style.top = Math.round(r.bottom + 4) + "px";
