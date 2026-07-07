@@ -32,6 +32,9 @@
   outline: none;
   min-width: 0;
 }
+/* Restore a focus ring the base .search__input outline:none removed. Inset so
+   it doesn't spill over the joined submit button on the right. (#169) */
+.search__input:focus-visible { outline: 2px solid var(--color-text-link); outline-offset: -2px; }
 .search__input::placeholder { color: var(--color-text-muted); }
 .search__submit {
   background: var(--color-brand-purple);

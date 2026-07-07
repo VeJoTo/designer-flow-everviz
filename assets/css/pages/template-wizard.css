@@ -461,6 +461,11 @@ body[data-page-mode="wizard"] main {
 }
 .wiz-checkbox input:checked + .wiz-checkbox__box::after { opacity: 1; }
 .wiz-checkbox input:focus-visible + .wiz-checkbox__box { outline: 2px solid var(--color-text-link); outline-offset: 2px; }
+/* These inputs are full-size opacity:0 overlays; their focus ring shows on the
+   box/track sibling above, so suppress the global :focus-visible ring that
+   would otherwise draw a stray box on the input itself. (#169) */
+.wiz-checkbox input:focus-visible,
+.wiz-switch input:focus-visible { outline: none; }
 
 /* Toggle switch — for a single on/off feature (Mini-Map enable). A sliding
    pill reads as an instant on/off setting, distinct from the Controls

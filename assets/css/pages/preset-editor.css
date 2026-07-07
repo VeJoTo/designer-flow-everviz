@@ -403,6 +403,14 @@
   border-radius: var(--radius-sm);
   padding: 4px 8px;
 }
+/* The stepper/XY inputs are borderless inside a bordered wrapper, so show the
+   keyboard focus ring on the wrapper (as .map-search:focus-within already
+   does). (#169) */
+.prop-stepper:focus-within,
+.xy-input__field:focus-within {
+  outline: 2px solid var(--color-text-link);
+  outline-offset: 2px;
+}
 .prop-stepper__input {
   width: 48px;
   border: 0;
@@ -722,6 +730,9 @@
   color: var(--color-text-primary);
   outline: none;
 }
+/* The hex field is borderless inside an unbordered .color-input, so ring the
+   input itself on keyboard focus. (#169) */
+.color-input__hex:focus-visible { outline: 2px solid var(--color-text-link); outline-offset: 2px; }
 .color-input__swatch {
   position: relative;
   width: 22px;
