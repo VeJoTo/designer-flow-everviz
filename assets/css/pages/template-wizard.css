@@ -536,6 +536,12 @@ body[data-page-mode="wizard"] main {
   display: none;
 }
 .minimap-overlay.is-on { display: block; }
+/* The globe reads as a round locator; a region reads as a rectangular map — a
+   region must not be clipped into the globe circle. */
+.minimap-overlay[data-schema="political"] {
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(16, 21, 61, 0.25);
+}
 .minimap-overlay[data-border="solid"]  { border: var(--minimap-border-width, 2px) solid var(--minimap-border-color, #123456); }
 .minimap-overlay[data-border="dashed"] { border: var(--minimap-border-width, 2px) dashed var(--minimap-border-color, #123456); }
 .minimap-overlay[data-border="dotted"] { border: var(--minimap-border-width, 2px) dotted var(--minimap-border-color, #123456); }
@@ -561,6 +567,14 @@ body[data-page-mode="wizard"] main {
   -webkit-mask: none;
   mask: none;
 }
+
+/* Keep the overlay's original absolute corner placement (do NOT set
+   position:relative — that drops it into the grid-centered stage). Clip the
+   square inset map to the circle, and drop the old grayscale filter so the
+   live map shows in colour (the filter was for the old static world.png). */
+.minimap-overlay { overflow: hidden; filter: none; }
+.minimap-overlay__map { position: absolute; inset: 0; z-index: 0; }
+.minimap-overlay__marker { position: absolute; z-index: 1; }
 
 /* Stub tabs — Enabled controls / Publish & Export (not yet designed) */
 .wiz-stub {

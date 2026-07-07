@@ -444,6 +444,7 @@
           <div class="wizard-preview" data-wizard-preview>
             <div class="wizard-preview__stage" data-preview-stage data-stage="globe">
               <div class="minimap-overlay" data-minimap-overlay data-border="off">
+                <div class="minimap-overlay__map" data-minimap-map aria-hidden="true"></div>
                 <span class="minimap-overlay__marker" data-minimap-marker hidden></span>
               </div>
             </div>
@@ -487,6 +488,10 @@
 
   <script src="assets/js/saved-maps.js" defer></script>
   <script src="assets/js/picker-modal.js" defer></script>
+  <script src="assets/js/geo-regions.js" defer></script>
+  <script src="assets/vendor/d3/d3-array.min.js" defer></script>
+  <script src="assets/vendor/d3/d3-geo.min.js" defer></script>
+  <script src="assets/js/minimap-render.js" defer></script>
   <script src="assets/js/template-wizard.js" defer></script>
   <script src="assets/js/tooltip.js" defer></script>
   <script src="assets/js/chrome.js" defer></script>

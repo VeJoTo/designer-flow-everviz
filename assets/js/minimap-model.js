@@ -3,7 +3,7 @@
 // A Level = { id, type, name, schema, settings, customStyle }.
 (function (global) {
   // Two field schemas. "physical" = globe (water/land/bg);
-  // "political" = country/continent/region/city (land/stroke/opacity/bg).
+  // "political" = region (land/stroke/opacity/bg).
   const SCHEMAS = {
     physical: {
       fields: [
@@ -26,21 +26,15 @@
   // Which schema a level type renders with.
   const TYPE_SCHEMA = {
     globe: "physical",
-    continent: "political",
-    country: "political",
     region: "political",
-    city: "political",
   };
 
   // Order used to slot a newly-added level into the ladder (far -> near).
-  const TYPE_ORDER = ["globe", "continent", "country", "region", "city"];
+  const TYPE_ORDER = ["globe", "region"];
 
   const TYPE_LABEL = {
     globe: "Globe",
-    continent: "Continent",
-    country: "Country",
     region: "Region",
-    city: "City",
   };
 
   function uid() {
