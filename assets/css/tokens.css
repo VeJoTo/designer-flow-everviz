@@ -53,7 +53,8 @@
   --color-brand-purple-soft: #E6E6FF; /* card icon backdrop */
   --color-btn-hover: #ADBAFA;         /* lavender hover for navy buttons */
   --color-accent-dot: #FF4D6D;        /* the red dot in the everviz logo */
-  --color-border-subtle: #ECE8DD;
+  --color-border-subtle: #ECE8DD;    /* decorative dividers only — NOT interactive control edges */
+  --color-border-control: #8C8A82;   /* boundary of interactive controls (inputs, selects); ≥3:1 vs white/cream per WCAG 1.4.11 */
 
   /* Typography — Gordita everywhere. Gordita ships Light/Regular/Medium/
      Bold/Black; there is no 600 Semibold, so any --fw-semibold usage
