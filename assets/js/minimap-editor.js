@@ -123,6 +123,18 @@
       lvl.settings[f.key] = v;
       renderPreview();
     });
+    // A field can declare a unit (e.g. opacity → "%"); render it as a suffix
+    // beside the input so the bare number isn't ambiguous. (#180)
+    if (f.unit) {
+      const wrap = document.createElement("span");
+      wrap.className = "mm-num";
+      wrap.appendChild(input);
+      const unit = document.createElement("span");
+      unit.className = "mm-num__unit";
+      unit.textContent = f.unit;
+      wrap.appendChild(unit);
+      return wrap;
+    }
     return input;
   }
 

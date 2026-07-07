@@ -17,7 +17,7 @@
         { key: "land", label: "Land", kind: "color", default: "#e9e6df" },
         { key: "strokeColor", label: "Stroke", kind: "color", default: "#8a8a8a" },
         { key: "strokeWidth", label: "Stroke width", kind: "number", default: 1, min: 0, max: 8 },
-        { key: "opacity", label: "Opacity", kind: "number", default: 100, min: 0, max: 100 },
+        { key: "opacity", label: "Opacity", kind: "number", default: 100, min: 0, max: 100, unit: "%" },
         { key: "background", label: "Background", kind: "color", default: "#ffffff" },
       ],
     },

@@ -64,6 +64,11 @@
 .mm-settings__type { font-size: 13px; color: var(--color-text-muted, #6a6a75); margin: 0 0 16px; }
 .mm-field { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--color-border, #e3e3ea); }
 .mm-field__label { font-size: 14px; color: var(--color-text, #1c1c24); }
+/* Number + unit suffix (e.g. Opacity "%"). Fixed input width so the unit
+   stays put and the value box doesn't greedily claim the row. (#180) */
+.mm-num { display: inline-flex; align-items: baseline; gap: 4px; }
+.mm-num .prop-input--number { width: 84px; }
+.mm-num__unit { font-size: 13px; color: var(--color-text-muted, #6a6a75); }
 /* The Advanced control reads as the everviz design-system Dropdown: a white
    card with soft elevation (no heavy border), a bold navy label, and a chevron
    on the right. The whole <details> is the box; the expanded content lives
