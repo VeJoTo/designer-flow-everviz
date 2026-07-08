@@ -57,7 +57,14 @@
     target.addEventListener("focus", () => show(target));
     target.addEventListener("blur", hide);
     target.addEventListener("click", (e) => {
-      e.preventDefault();
+      // Only swallow the click for non-navigating targets (icon buttons,
+      // placeholder `href="#"` links). Real links — e.g. the brand logo and
+      // the Designer-tools nav item, which carry a tooltip too — must be
+      // allowed to navigate. (#165)
+      const href = target.getAttribute("href");
+      const navigates =
+        target.tagName === "A" && href && href.charAt(0) !== "#";
+      if (!navigates) e.preventDefault();
       show(target);
       clearTimeout(hideTimer);
       hideTimer = setTimeout(hide, 1500);
