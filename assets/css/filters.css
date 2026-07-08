@@ -22,7 +22,7 @@
 .search { display: flex; }
 .search__input {
   flex: 1;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border-control);
   border-right: none;
   border-radius: var(--radius-sm) 0 0 var(--radius-sm);
   padding: 8px var(--space-3);
@@ -45,7 +45,7 @@
 }
 .search__submit img { filter: brightness(0) invert(1); }
 .select {
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm);
   padding: 8px var(--space-3);
   background: var(--color-bg-app);
