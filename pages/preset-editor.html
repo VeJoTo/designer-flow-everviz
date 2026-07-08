@@ -1043,7 +1043,7 @@
         if (menuEl.hidden || menuTrigger !== btn) openMenu(btn);
         else closeMenu();
       });
-      menuEl.addEventListener("click", (e) => {
+      menuEl.addEventListener("click", async (e) => {
         const action = e.target.closest("[data-action]")?.dataset.action;
         if (!action || !menuTargetLi) return;
         if (action === "menu-duplicate") {
@@ -1055,11 +1055,27 @@
           menuTargetLi.after(clone);
           serialize();
         } else if (action === "menu-delete") {
-          const next = menuTargetLi.nextElementSibling || menuTargetLi.previousElementSibling;
-          const wasSelected = menuTargetLi.classList.contains("preset-item--selected");
-          menuTargetLi.remove();
+          // Capture the target before closing the menu (closeMenu clears
+          // menuTargetLi), then guard the destructive removal behind a
+          // confirmation — deletion is unrecoverable (no undo, #101). (#166)
+          const li = menuTargetLi;
+          const name =
+            li.querySelector(".preset-item__name")?.textContent?.trim() ||
+            "this preset";
+          closeMenu();
+          const ok = await window.confirmDialog({
+            title: "Delete preset",
+            message: `Delete <strong>${escapeHtml(name)}</strong>? This can’t be undone.`,
+            confirmLabel: "Delete",
+            destructive: true,
+          });
+          if (!ok) return;
+          const next = li.nextElementSibling || li.previousElementSibling;
+          const wasSelected = li.classList.contains("preset-item--selected");
+          li.remove();
           if (wasSelected && next) selectItem(next);
           serialize();
+          return;
         }
         closeMenu();
       });
