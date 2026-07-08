@@ -37,6 +37,7 @@
     const sortTrigger = root.querySelector("[data-filter-sort-trigger]");
     const sortPopover = root.querySelector("[data-filter-sort-popover]");
     const empty = root.querySelector("[data-filter-empty]");
+    const submit = root.querySelector("[data-filter-submit]");
     const clear = root.querySelector("[data-filter-clear]");
     const chips = root.querySelector("[data-filter-chips]");
 
@@ -168,6 +169,29 @@
       search.addEventListener("input", () => {
         state.search = search.value.toLowerCase().trim();
         render();
+      });
+    }
+
+    // Search submit (the magnifier button): filtering is already live on
+    // input, so its honest job is "run the search and take me to the
+    // results" — re-apply the filter and move focus into the result set
+    // (or the no-results message), which also makes it keyboard-operable.
+    if (submit) {
+      submit.addEventListener("click", () => {
+        if (search) state.search = search.value.toLowerCase().trim();
+        render();
+        const firstVisible = grid.querySelector("[data-filter-item]:not([hidden])");
+        let target = firstVisible
+          ? firstVisible.querySelector("a[href], button") || firstVisible
+          : null;
+        if (!target && empty && !empty.hidden) target = empty;
+        if (target) {
+          if (target === empty || !target.hasAttribute("href")) {
+            target.setAttribute("tabindex", "-1");
+          }
+          target.focus({ preventScroll: true });
+          target.scrollIntoView({ block: "nearest" });
+        }
       });
     }
 
