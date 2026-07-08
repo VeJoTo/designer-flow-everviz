@@ -20,6 +20,17 @@ body[data-page-mode="editor"] { background: #F5F5F5; }
 img, svg { display: block; max-width: 100%; }
 button { font: inherit; cursor: pointer; background: none; border: none; padding: 0; color: inherit; }
 a { color: var(--color-text-link); text-decoration: none; }
+
+/* Global keyboard focus indicator — WCAG 2.4.7 Focus Visible. A single
+   baseline ring for every focusable element so focus never falls back to
+   inconsistent UA defaults or disappears. Controls that render their own
+   focus treatment (e.g. .prop-input, .picker-card, custom checkbox/switch)
+   carry a more specific rule and override this. */
+:focus-visible {
+  outline: 2px solid var(--color-text-link);
+  outline-offset: 2px;
+}
+
 h1, h2, h3, h4 { color: var(--color-text-primary); line-height: var(--lh-tight); margin: 0; font-family: var(--font-display); }
 h1 { line-height: var(--lh-display); } /* Spec: 40px / 40px */
 
@@ -63,7 +74,9 @@ h1 { line-height: var(--lh-display); } /* Spec: 40px / 40px */
   color: var(--color-text-primary);
   border: 1px solid var(--color-text-primary);
 }
-.btn--outline:hover { background: var(--color-bg-app); }
+/* Subtle navy wash of the button's own surface — reads as "lit up", not as
+   the cream page tone bleeding through. Works on white and grey/cream pages. */
+.btn--outline:hover { background: rgba(40, 39, 126, 0.06); }
 /* Discard — quiet, danger-tinted text button (used in the unsaved-changes
    prompt). Pushed to the far left of the footer, away from Cancel/Save. */
 .btn--discard {

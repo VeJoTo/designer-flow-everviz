@@ -22,7 +22,7 @@
 .search { display: flex; }
 .search__input {
   flex: 1;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border-control);
   border-right: none;
   border-radius: var(--radius-sm) 0 0 var(--radius-sm);
   padding: 8px var(--space-3);
@@ -32,6 +32,9 @@
   outline: none;
   min-width: 0;
 }
+/* Restore a focus ring the base .search__input outline:none removed. Inset so
+   it doesn't spill over the joined submit button on the right. (#169) */
+.search__input:focus-visible { outline: 2px solid var(--color-text-link); outline-offset: -2px; }
 .search__input::placeholder { color: var(--color-text-muted); }
 .search__submit {
   background: var(--color-brand-purple);
@@ -45,7 +48,7 @@
 }
 .search__submit img { filter: brightness(0) invert(1); }
 .select {
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm);
   padding: 8px var(--space-3);
   background: var(--color-bg-app);
